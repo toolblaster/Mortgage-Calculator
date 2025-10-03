@@ -3,23 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Mortgage Payoff & NPV Calculator</title>
+    <title>Ultimate Mortgage Payoff, NPV & Equity Growth Calculator</title>
     
-    <!-- Load Tailwind CSS V4 CDN -->
+    <!-- Load Tailwind CSS CDN - FIXED to use the official, unversioned link for reliability -->
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- Chart.js for dynamic visualization -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
     
-    <!-- Custom configuration for Tailwind colors (using standard Tailwind palette for easy adoption) -->
+    <!-- Custom configuration for Tailwind colors -->
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        'primary': '#1C768F', // Deep Teal-Blue
-                        'accent': '#1e8749',  // Green for savings
-                        'npv': '#E86F00', // Orange for NPV/Opportunity Cost
+                        'primary': '#1C768F', // Deep Teal-Blue (Debt Focus)
+                        'accent': '#1e8749',  // Green (Equity Focus)
+                        'npv': '#E86F00', // Orange (NPV/Opportunity Cost)
                         'dti-safe': '#10b981', // Emerald 500
                         'dti-high': '#f59e0b', // Amber 500
                         'dti-critical': '#ef4444', // Red 500
@@ -32,13 +32,14 @@
         }
     </script>
     <!-- Load Inter font -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
 
     <style>
         /* Essential structure styles that are hard to do with pure utility classes */
         #chartContainer {
             position: relative; 
-            height: 300px; /* Increased height for better visualization */
+            height: 400px; /* Increased height for better visualization */
+            width: 100%;
         }
         
         /* Ensure table cells don't wrap for a clean scrolling experience */
@@ -62,7 +63,7 @@
         <!-- Header Section -->
         <div class="bg-sky-50 p-4 rounded-lg mb-4 shadow-sm">
             <h1 class="text-xl md:text-2xl font-extrabold text-primary text-center">
-                Ultimate Mortgage Payoff & Net Present Value (NPV) Calculator
+                Ultimate Mortgage Payoff, NPV, DTI & Equity Growth Calculator
             </h1>
         </div>
         
@@ -110,7 +111,7 @@
                     </div>
                 </details>
 
-                <!-- 2. DTI ANALYSIS INPUTS (NEW SECTION) -->
+                <!-- 2. DTI ANALYSIS INPUTS -->
                 <details open class="bg-white rounded-lg shadow-lg border border-gray-200">
                     <summary class="p-4 font-bold text-base text-dti-safe border-b border-gray-200 cursor-pointer flex justify-between items-center list-none relative before:content-['+'] open:before:content-['−'] before:absolute before:right-4 before:text-xl">
                         Debt-to-Income (DTI) Inputs
@@ -129,13 +130,20 @@
                 </details>
 
 
-                <!-- 3. PITI and Advanced Payoff Details (Set to OPEN) -->
+                <!-- 3. PITI and Advanced Payoff Details (Updated for Appreciation) -->
                 <details open class="bg-white rounded-lg shadow-lg border border-gray-200">
                     <summary class="p-4 font-bold text-base text-primary border-b border-gray-200 cursor-pointer flex justify-between items-center list-none relative before:content-['+'] open:before:content-['−'] before:absolute before:right-4 before:text-xl">
                         PITI, PMI, Payoff & Economic Inputs
                     </summary>
                     <div class="input-section grid grid-cols-1 sm:grid-cols-2 gap-4 p-4">
                         
+                        <!-- NEW: Appreciation Rate -->
+                         <div class="space-y-1 col-span-1 sm:col-span-2 bg-accent/10 p-2 rounded-md border border-accent/30">
+                            <label for="appreciationRate" class="block font-bold text-sm text-accent">Annual Property Appreciation Rate (%):</label>
+                            <input type="number" id="appreciationRate" value="3.5" min="0" max="15" step="0.1" class="w-full p-2 border border-accent/50 rounded-md focus:ring-accent focus:border-accent">
+                            <p class="text-xs text-gray-600 mt-1">Used to project future home value and equity.</p>
+                        </div>
+
                         <!-- Discount Rate -->
                          <div class="space-y-1 col-span-1 sm:col-span-2 bg-npv/10 p-2 rounded-md border border-npv/30">
                             <label for="discountRate" class="block font-bold text-sm text-npv">Annual Investment/Inflation Rate (Discount Rate) %:</label>
@@ -257,7 +265,7 @@
                         PMI included until period <span id="pmiDropPeriod" class="font-bold"></span>, when LTV drops to 80%.
                     </p>
 
-                    <!-- DTI Analysis Results (NEW) -->
+                    <!-- DTI Analysis Results -->
                     <div id="dti-results" class="mt-4 p-3 rounded-lg border border-dti-safe/50 bg-white shadow-md">
                         <h3 class="text-base font-bold text-dti-safe mb-2 border-b pb-1">Debt-to-Income (DTI) Analysis</h3>
                         <div class="grid grid-cols-2 gap-4 text-center">
@@ -270,6 +278,21 @@
                                 <p class="text-xs font-medium text-gray-600">Back-End DTI (Total Debt)</p>
                                 <p id="backEndDTI" class="text-xl font-extrabold text-dti-safe"></p>
                                 <p id="backEndDTIStatus" class="text-xs font-semibold mt-1"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Equity Summary (NEW) -->
+                    <div id="equity-summary" class="mt-4 p-3 rounded-lg border border-accent/50 bg-white shadow-md">
+                        <h3 class="text-base font-bold text-accent mb-2 border-b pb-1">Projected Equity Growth</h3>
+                        <div class="grid grid-cols-2 gap-4 text-center">
+                             <div class="p-2 rounded-lg bg-gray-50 border">
+                                <p class="text-xs font-medium text-gray-600">Total Equity at Payoff</p>
+                                <p id="finalEquity" class="text-xl font-extrabold text-accent"></p>
+                            </div>
+                            <div class="p-2 rounded-lg bg-gray-50 border">
+                                <p class="text-xs font-medium text-gray-600">Final Property Value</p>
+                                <p id="finalPropertyValue" class="text-xl font-extrabold text-accent"></p>
                             </div>
                         </div>
                     </div>
@@ -324,7 +347,7 @@
                             View Full Amortization Schedule Comparison (Refi, PMI, Escalation & NPV)
                         </summary>
                         <div id="schedule" class="overflow-x-auto max-w-full p-4">
-                            <table id="amortizationTable" class="min-w-[1000px] w-full border-collapse">
+                            <table id="amortizationTable" class="min-w-[1200px] w-full border-collapse">
                                 <!-- Table content generated by JS -->
                             </table>
                             <p class="text-center text-xs text-primary/80 mt-2 italic">
@@ -351,7 +374,7 @@
             return new Intl.NumberFormat('en-US', {
                 style: 'currency',
                 currency: 'USD',
-                minimumFractionDigits: 2
+                minimumFractionDigits: 0 // Keep it simple for large values
             }).format(amount);
         };
         
@@ -375,8 +398,8 @@
             return isFinite(payment) ? payment : 0;
         }
 
-        // --- Core Amortization Generator (UPDATED FOR NPV) ---
-        function generateAmortization(principal, annualRate, periodsPerYear, totalPeriods, extraPaymentPerPeriod, lumpSumAmount, lumpSumPeriod, initialLTV, pmiRate, refiPeriod, refiRate, refiTerm, refiClosingCosts, pitiEscalationRate, discountRate) {
+        // --- Core Amortization Generator (UPDATED FOR EQUITY) ---
+        function generateAmortization(principal, annualRate, periodsPerYear, totalPeriods, extraPaymentPerPeriod, lumpSumAmount, lumpSumPeriod, initialLTV, pmiRate, refiPeriod, refiRate, refiTerm, refiClosingCosts, pitiEscalationRate, discountRate, appreciationRate) {
             
             let currentBalance = principal;
             let currentRate = annualRate;
@@ -386,16 +409,18 @@
             let standardPayment = standardPaymentOriginal;
             
             let totalInterestPaid = 0;
-            let totalPVInterestPaid = 0; // NEW: Track Present Value of Interest
+            let totalPVInterestPaid = 0; 
             let payoffPeriod = 0;
             let pmiDropPeriod = null;
 
             let amortizationSchedule = [];
             const periodicPmiRate = pmiRate / periodsPerYear;
-            const periodicDiscountRate = discountRate / periodsPerYear; // NEW: Periodic Discount Rate
+            const periodicDiscountRate = discountRate / periodsPerYear; 
+            const periodicAppreciationRate = appreciationRate / periodsPerYear; // NEW: Periodic Appreciation Rate
             
-            // Calculate property value for LTV tracking (80% LTV threshold)
-            const initialPropertyValue = principal / (initialLTV / 100);
+            // Calculate initial property value for LTV tracking and equity growth
+            const initialPropertyValue = (initialLTV > 0 && initialLTV <= 100) ? principal / (initialLTV / 100) : principal;
+            let currentPropertyValue = initialPropertyValue; // Track market value
             const pmiStopThreshold = 0.80 * initialPropertyValue;
 
             let isPMIActive = (initialLTV > 80);
@@ -407,14 +432,22 @@
             let currentMonthlyHoa = parseFloat(document.getElementById('hoa').value) || 0;
             const escalationFactor = 1 + (pitiEscalationRate / 100);
 
+            let maxBalance = 0;
+
 
             for (let period = 1; currentBalance > 0 && period <= 50 * periodsPerYear; period++) {
                 
-                // --- PITI ESCALATION LOGIC: Apply increase at the start of each new loan year ---
-                if (period > 1 && (period - 1) % periodsPerYear === 0) {
-                    currentAnnualTax *= escalationFactor;
-                    currentAnnualInsurance *= escalationFactor;
-                    currentMonthlyHoa *= escalationFactor;
+                // --- PITI & APPRECIATION LOGIC: Apply increase at the start of each new loan year ---
+                if (period > 1) {
+                    // PITI Escalation
+                    if ((period - 1) % periodsPerYear === 0) {
+                        currentAnnualTax *= escalationFactor;
+                        currentAnnualInsurance *= escalationFactor;
+                        currentMonthlyHoa *= escalationFactor;
+                    }
+                    
+                    // Property Appreciation (applied every period for smooth line)
+                    currentPropertyValue *= (1 + periodicAppreciationRate);
                 }
 
                 
@@ -424,14 +457,13 @@
                 
                 // --- REFINANCING LOGIC ---
                 if (!hasRefinanced && refiPeriod > 0 && period >= refiPeriod) {
-                    // Add closing costs to the balance being refinanced (only if principal remains)
                     if (currentBalance > 0) {
                          currentBalance += refiClosingCosts; 
                     }
                     currentRate = refiRate / 100;
                     totalPeriodsRemaining = Math.max(0, (refiTerm * periodsPerYear));
                     
-                    // Recalculate P&I payment based on current balance, new rate, and new term
+                    // Recalculate P&I payment 
                     standardPayment = calculatePayment(currentBalance, currentRate, periodsPerYear, totalPeriodsRemaining);
                     hasRefinanced = true;
                 }
@@ -441,11 +473,9 @@
                 interest = currentBalance * periodicRate;
                 
                 let calculatedPayment = standardPayment;
-                // If the principal is very small, we might need a small final payment calculation
                 if (currentBalance < calculatedPayment) {
                     calculatedPayment = currentBalance + interest;
                 } else if (calculatedPayment <= interest) {
-                    // Fallback for edge cases (should not happen with good inputs)
                     calculatedPayment = interest + 1; 
                 }
                 
@@ -463,7 +493,6 @@
                 // Check for final payment
                 if (currentBalance < totalPrincipalPaid) {
                     totalPrincipalPaid = currentBalance;
-                    // P&I principal portion (for display)
                     principalPayment = totalPrincipalPaid - extraPrincipal; 
                     if (principalPayment < 0) principalPayment = 0;
                 }
@@ -471,7 +500,7 @@
                 currentBalance -= totalPrincipalPaid;
                 totalInterestPaid += interest;
 
-                // --- NPV LOGIC: Calculate Present Value of this period's interest payment ---
+                // --- NPV LOGIC ---
                 const discountFactor = Math.pow(1 + periodicDiscountRate, period);
                 const pvInterest = interest / discountFactor;
                 totalPVInterestPaid += pvInterest;
@@ -481,7 +510,6 @@
                 let pmiPayment = 0;
                 if (isPMIActive) {
                     pmiPayment = currentBalance * periodicPmiRate;
-                    // Check LTV threshold
                     if (currentBalance <= pmiStopThreshold) {
                         isPMIActive = false;
                         pmiDropPeriod = period;
@@ -490,21 +518,22 @@
                 
                 // Total required periodic payment (P&I + PMI + Escalated PITI)
                 const periodicPITI = (currentAnnualTax / periodsPerYear) + (currentAnnualInsurance / periodsPerYear) + currentMonthlyHoa + pmiPayment;
+                
+                const currentEquity = Math.max(0, currentPropertyValue - currentBalance); // NEW Equity
 
                 amortizationSchedule.push({ 
                     period, 
                     interest: Math.max(0, interest), 
                     principalPaid: Math.max(0, totalPrincipalPaid), 
                     balance: Math.max(0, currentBalance),
+                    propertyValue: currentPropertyValue, // NEW
+                    totalEquity: currentEquity, // NEW
                     pniPrincipal: Math.max(0, principalPayment),
                     extraPayment: extraPrincipal,
                     pmi: pmiPayment,
                     rate: currentRate * 100,
                     periodicPITI: periodicPITI,
-                    currentTax: currentAnnualTax,
-                    currentInsurance: currentAnnualInsurance,
-                    currentHOA: currentMonthlyHoa,
-                    pvInterest: pvInterest // NEW: Add PV Interest for table display
+                    pvInterest: pvInterest
                 });
 
                 if (currentBalance <= 0) {
@@ -517,15 +546,17 @@
             return { 
                 schedule: amortizationSchedule, 
                 totalInterest: totalInterestPaid, 
-                totalPVInterest: totalPVInterestPaid, // NEW RETURN VALUE
+                totalPVInterest: totalPVInterestPaid, 
                 payoffPeriod, 
                 standardPayment: standardPaymentOriginal,
-                firstPeriodPITI: amortizationSchedule.length > 0 ? amortizationSchedule[0].periodicPITI * (12 / periodsPerYear) : standardPaymentOriginal, // Pass the initial monthly PITI for DTI
-                pmiDropPeriod 
+                firstPeriodPITI: amortizationSchedule.length > 0 ? amortizationSchedule[0].periodicPITI * (12 / periodsPerYear) : standardPaymentOriginal,
+                pmiDropPeriod,
+                finalPropertyValue: currentPropertyValue, // NEW
+                finalEquity: Math.max(0, currentPropertyValue) // At payoff, balance is 0
             };
         }
         
-        // --- DTI Logic (NEW) ---
+        // --- DTI Logic ---
         function calculateDTI(totalMonthlyPITI) {
             const annualIncome = parseFloat(document.getElementById('annualIncome').value) || 0;
             const monthlyNonMortgageDebt = parseFloat(document.getElementById('nonMortgageDebt').value) || 0;
@@ -542,12 +573,13 @@
             return { frontEnd: frontEndDTI, backEnd: backEndDTI };
         }
         
-        // --- DTI Renderer (NEW) ---
+        // --- DTI Renderer ---
         function renderDTI(frontEndDTI, backEndDTI) {
             const getStatus = (dti) => {
-                if (dti <= 0.36) return { text: 'Excellent', color: 'dti-safe' };
-                if (dti <= 0.43) return { text: 'Acceptable', color: 'dti-high' };
-                return { text: 'High Risk', color: 'dti-critical' };
+                const ratio = dti * 100;
+                if (ratio <= 36) return { text: 'Excellent (<36%)', color: 'dti-safe' };
+                if (ratio <= 43) return { text: 'Acceptable (<43%)', color: 'dti-high' };
+                return { text: 'High Risk (>43%)', color: 'dti-critical' };
             };
 
             const frontStatus = getStatus(frontEndDTI);
@@ -558,7 +590,7 @@
             const feStatusElement = document.getElementById('frontEndDTIStatus');
             feElement.textContent = formatPercent(frontEndDTI);
             feElement.className = `text-xl font-extrabold text-${frontStatus.color}`;
-            feStatusElement.textContent = `Status: ${frontStatus.text}`;
+            feStatusElement.textContent = frontStatus.text;
             feStatusElement.className = `text-xs font-semibold mt-1 text-${frontStatus.color}`;
 
             // Back-End
@@ -566,56 +598,88 @@
             const beStatusElement = document.getElementById('backEndDTIStatus');
             beElement.textContent = formatPercent(backEndDTI);
             beElement.className = `text-xl font-extrabold text-${backStatus.color}`;
-            beStatusElement.textContent = `Status: ${backStatus.text}`;
+            beStatusElement.textContent = backStatus.text;
             beStatusElement.className = `text-xs font-semibold mt-1 text-${backStatus.color}`;
         }
         
-        
-        // --- Chart Renderer (Updated for NPV) ---
-        function renderChart(originalInterest, newInterest, npvOriginal, npvNew) {
+        // --- Chart Renderer (REVAMPED for Equity) ---
+        function renderChart(acceleratedResults) {
             const ctx = document.getElementById('comparisonChart').getContext('2d');
             
             // Destroy previous chart instance if it exists
             if (mortgageChart) {
                 mortgageChart.destroy();
             }
+            
+            // Filter data to show every 12th period (annual view)
+            const annualData = acceleratedResults.schedule.filter((_, index) => (index + 1) % 12 === 0);
+            
+            // Add the final payoff data point if it's not exactly an annual point
+            if (acceleratedResults.payoffPeriod % 12 !== 0 && acceleratedResults.schedule.length > 0) {
+                annualData.push(acceleratedResults.schedule[acceleratedResults.schedule.length - 1]);
+            }
+            
+            const labels = annualData.map(d => `Yr ${Math.ceil(d.period / 12)}`);
+            const remainingBalance = annualData.map(d => d.balance);
+            const propertyValue = annualData.map(d => d.propertyValue);
+            const totalEquity = annualData.map(d => d.totalEquity);
 
             mortgageChart = new Chart(ctx, {
-                type: 'bar',
+                type: 'line',
                 data: {
-                    labels: ['Original Loan', 'Accelerated Scenario'],
+                    labels: labels,
                     datasets: [
                         {
-                            label: 'Total Nominal Interest',
-                            data: [originalInterest, newInterest],
-                            backgroundColor: '#1C768F', // Primary
-                            borderColor: '#1C768F',
-                            borderWidth: 1,
-                            borderRadius: 8,
-                            barThickness: 30,
+                            label: 'Property Value (Market Growth)',
+                            data: propertyValue,
+                            borderColor: '#1e8749', // Accent/Equity
+                            backgroundColor: '#1e8749',
+                            borderWidth: 3,
+                            fill: false,
+                            tension: 0.3,
+                            pointRadius: 3
                         },
                         {
-                            label: 'Total Interest NPV (Today\'s Value)',
-                            data: [npvOriginal, npvNew],
-                            backgroundColor: '#E86F00', // NPV Orange
-                            borderColor: '#E86F00',
-                            borderWidth: 1,
-                            borderRadius: 8,
-                            barThickness: 30,
+                            label: 'Total Home Equity',
+                            data: totalEquity,
+                            borderColor: '#34d399', // A lighter green
+                            backgroundColor: '#34d399',
+                            borderWidth: 2,
+                            fill: 'origin', // Fill area under Equity line
+                            tension: 0.3,
+                            pointRadius: 2,
+                            stack: 'combined'
+                        },
+                        {
+                            label: 'Remaining Loan Balance',
+                            data: remainingBalance,
+                            borderColor: '#1C768F', // Primary/Debt
+                            backgroundColor: '#1C768F',
+                            borderWidth: 3,
+                            fill: false,
+                            tension: 0.3,
+                            pointRadius: 3
                         }
                     ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    indexAxis: 'y', 
                     scales: {
                         x: {
+                            title: {
+                                display: true,
+                                text: 'Time in Years (Approx.)',
+                                font: { family: 'Inter', size: 12 }
+                            },
+                            grid: { display: false }
+                        },
+                        y: {
                             stacked: false,
                             beginAtZero: true,
                             title: {
                                 display: true,
-                                text: 'Total Cost of Interest ($)',
+                                text: 'Value ($)',
                                 font: { family: 'Inter', size: 12 }
                             },
                             ticks: {
@@ -623,25 +687,23 @@
                                     return formatCurrency(value).replace('.00', '').replace('$', ''); 
                                 }
                             }
-                        },
-                        y: {
-                            stacked: false,
-                            grid: { display: false }
                         }
                     },
                     plugins: {
-                        legend: { position: 'bottom', labels: { boxWidth: 12, font: { family: 'Inter' } } },
+                        legend: { position: 'top', labels: { boxWidth: 12, font: { family: 'Inter' } } },
                         title: {
                             display: true,
-                            text: 'Total Interest Cost Comparison (Nominal vs. NPV)',
+                            text: 'Equity Accumulation vs. Debt Payoff over Time',
                             font: { family: 'Inter', size: 14, weight: '600' }
                         },
                         tooltip: {
+                             mode: 'index',
+                             intersect: false,
                              callbacks: {
                                 label: function(context) {
                                     let label = context.dataset.label || '';
                                     if (label) { label += ': '; }
-                                    label += formatCurrency(context.parsed.x);
+                                    label += formatCurrency(context.parsed.y);
                                     return label;
                                 }
                             }
@@ -664,7 +726,7 @@
             const propertyTax = parseFloat(document.getElementById('propertyTax').value) || 0;
             const insurance = parseFloat(document.getElementById('insurance').value) || 0;
             const hoa = parseFloat(document.getElementById('hoa').value) || 0;
-            const pitiEscalationRate = parseFloat(document.getElementById('pitiEscalationRate').value) || 0;
+            const pitiEscalationRate = parseFloat(document.getElementById('pitiEscalationRate').value) / 100 || 0;
             
             // Payoff Inputs
             const extraPayment = parseFloat(document.getElementById('extraPayment').value) || 0;
@@ -677,16 +739,16 @@
             
             // Refinance Inputs
             const refiPeriod = parseInt(document.getElementById('refiPeriod').value) || 1;
-            const refiRate = parseFloat(document.getElementById('refiRate').value) || 0; // Kept as %
+            const refiRate = parseFloat(document.getElementById('refiRate').value) || 0; 
             const refiTerm = parseFloat(document.getElementById('refiTerm').value) || 0;
             const refiClosingCosts = parseFloat(document.getElementById('refiClosingCosts').value) || 0; 
             
-            // Discount Rate Input
+            // Economic Inputs
             const discountRate = parseFloat(document.getElementById('discountRate').value) / 100 || 0;
-
+            const appreciationRate = parseFloat(document.getElementById('appreciationRate').value) / 100 || 0; // NEW Appreciation Rate
             
             if (principal === 0 || termYears === 0 || annualRate === 0) {
-                // If core inputs are zeroed out (e.g., after clearing the form), hide the results
+                // If core inputs are zeroed out, hide the results
                 document.getElementById('results').style.opacity = 0; 
                 document.getElementById('schedule-wrapper').style.opacity = 0;
                 document.getElementById('shock-results').style.display = 'none';
@@ -697,16 +759,15 @@
             document.getElementById('schedule-wrapper').style.opacity = 1;
             document.getElementById('shock-results').style.display = 'none';
 
-            // === 1. ORIGINAL Scenario (No extras, no refi, no PMI, NO ESCALATION) ===
-            // Note: Escalation must be 0 for the standard scenario comparison
-            const originalResults = generateAmortization(principal, annualRate, periodsPerYear, totalPeriods, 0, 0, 0, initialLTV, 0, 0, 0, 0, 0, 0, discountRate);
+            // === 1. ORIGINAL Scenario (No extras, no refi, no PMI, NO ESCALATION, NO APPRECIATION for cost comparison) ===
+            const originalResults = generateAmortization(principal, annualRate, periodsPerYear, totalPeriods, 0, 0, 0, initialLTV, 0, 0, 0, 0, 0, 0, discountRate, 0); // Note: Appreciation is 0 here
             const standardPayment = originalResults.standardPayment; // P&I payment only
 
-            // === 2. ACCELERATED Scenario (All extras, PMI, Refi, Escalation, and Discount Rate) ===
-            const acceleratedResults = generateAmortization(principal, annualRate, periodsPerYear, totalPeriods, extraPayment, lumpSumAmount, lumpSumPeriod, initialLTV, pmiRate, refiPeriod, refiRate, refiTerm, refiClosingCosts, pitiEscalationRate, discountRate);
+            // === 2. ACCELERATED Scenario (All features active) ===
+            const acceleratedResults = generateAmortization(principal, annualRate, periodsPerYear, totalPeriods, extraPayment, lumpSumAmount, lumpSumPeriod, initialLTV, pmiRate, refiPeriod, refiRate, refiTerm, refiClosingCosts, pitiEscalationRate, discountRate, appreciationRate);
             const firstPeriodData = acceleratedResults.schedule[0];
             
-            // --- Initial PITI Calculation (for the first period, including PMI) ---
+            // --- Initial PITI Calculation ---
             const monthlyPNI = standardPayment * (12 / periodsPerYear);
             const initialPMIPeriodic = firstPeriodData ? firstPeriodData.pmi : 0;
             const initialPMIMonthly = initialPMIPeriodic * (12 / periodsPerYear);
@@ -716,22 +777,25 @@
 
             const totalMonthlyPITI = monthlyPNI + initialMonthlyTax + initialMonthlyInsurance + hoa + initialPMIMonthly;
             
-            // --- DTI Calculation (NEW) ---
+            // --- DTI Calculation ---
             const dtiResults = calculateDTI(totalMonthlyPITI);
             renderDTI(dtiResults.frontEnd, dtiResults.backEnd);
+
+            // --- Equity Summary (NEW) ---
+            document.getElementById('finalEquity').textContent = formatCurrency(acceleratedResults.finalEquity);
+            document.getElementById('finalPropertyValue').textContent = formatCurrency(acceleratedResults.finalPropertyValue);
             
             // --- Display Summary ---
             document.getElementById('totalMonthlyPaymentPITI').textContent = formatCurrency(totalMonthlyPITI);
             document.getElementById('standardPaymentDisplay').textContent = formatCurrency(standardPayment);
             
-            // Display PMI Drop Note
+            // PMI Note
             if (pmiRate > 0 && initialLTV > 80 && acceleratedResults.pmiDropPeriod) {
                  document.getElementById('pmiDropNote').style.display = 'block';
                  document.getElementById('pmiDropPeriod').textContent = acceleratedResults.pmiDropPeriod;
             } else {
                  document.getElementById('pmiDropNote').style.display = 'none';
             }
-
 
             // The accelerated P&I payment displayed should be the sum of standard P&I + extra principal
             document.getElementById('acceleratedPaymentDisplay').textContent = formatCurrency(standardPayment + extraPayment); 
@@ -747,9 +811,8 @@
             const interestSaved = originalResults.totalInterest - acceleratedResults.totalInterest;
             const npvSaved = originalResults.totalPVInterest - acceleratedResults.totalPVInterest;
 
-            // --- Render Chart ---
-            renderChart(originalResults.totalInterest, acceleratedResults.totalInterest, originalResults.totalPVInterest, acceleratedResults.totalPVInterest);
-
+            // --- Render Chart (NEW LINE CHART) ---
+            renderChart(acceleratedResults);
 
             const timeSavedPeriods = originalResults.payoffPeriod - acceleratedResults.payoffPeriod;
             const timeSavedYears = Math.floor(timeSavedPeriods / periodsPerYear);
@@ -788,7 +851,7 @@
         }
 
 
-        // --- Table Generator (Updated for NPV) ---
+        // --- Table Generator (Updated for Equity) ---
         function generateAmortizationTable(originalResults, acceleratedResults) {
             const original = originalResults.schedule;
             const accelerated = acceleratedResults.schedule;
@@ -804,7 +867,7 @@
             row1.innerHTML = `
                 <th class="py-2 px-1 border-b-2 border-gray-300">#</th>
                 <th colspan="4" class="py-2 px-1 border-b-2 border-gray-300 text-center bg-red-50/70 border-r border-red-200">Original Loan</th>
-                <th colspan="8" class="py-2 px-1 border-b-2 border-gray-300 text-center bg-sky-50/70">Accelerated Payoff Scenario</th>
+                <th colspan="10" class="py-2 px-1 border-b-2 border-gray-300 text-center bg-sky-50/70">Accelerated Payoff Scenario</th>
             `;
             
             let row2 = header.insertRow();
@@ -816,6 +879,8 @@
                 <th class="py-2 px-1 border-b border-gray-300 text-right bg-red-50/70">P&I Pmt</th>
                 <th class="py-2 px-1 border-b border-gray-300 text-right bg-red-50/70 border-r border-red-200">Balance</th>
                 
+                <th class="py-2 px-1 border-b border-gray-300 text-right bg-sky-50/70 text-accent">Home Equity</th>
+                <th class="py-2 px-1 border-b border-gray-300 text-right bg-sky-50/70 text-accent">Property Value</th>
                 <th class="py-2 px-1 border-b border-gray-300 text-right bg-sky-50/70">P&I Pmt</th>
                 <th class="py-2 px-1 border-b border-gray-300 text-right bg-sky-50/70">Tax/Ins/HOA</th>
                 <th class="py-2 px-1 border-b border-gray-300 text-right bg-sky-50/70">Nom. Interest</th>
@@ -863,6 +928,12 @@
                         ${originalData.balance ? formatCurrency(originalData.balance) : 'PAID OFF'}
                     </td>
 
+                    <td class="p-2 text-right border-r border-sky-200 ${isNewFinished ? 'text-gray-400 italic' : 'font-bold text-accent'} bg-sky-50/50">
+                        ${newData.totalEquity ? formatCurrency(newData.totalEquity) : 'FULL VALUE'}
+                    </td>
+                    <td class="p-2 text-right border-r border-sky-200 ${isNewFinished ? 'text-gray-400 italic' : 'font-medium text-accent'} bg-sky-50/50">
+                        ${newData.propertyValue ? formatCurrency(newData.propertyValue) : 'FINAL VALUE'}
+                    </td>
                     <td class="p-2 text-right border-r border-sky-200 ${isNewFinished ? 'text-gray-400 italic' : 'font-medium'} bg-sky-50/50">
                         ${newData.interest ? formatCurrency(newPNIPayment) : '-'}
                     </td>
@@ -893,38 +964,36 @@
         
         // --- Clear Form Function (UPDATED) ---
         function clearForm() {
-            // Set all numerical inputs to 0 to truly "clear" the form
-            document.getElementById('loanAmount').value = "0";
-            document.getElementById('interestRate').value = "0";
-            document.getElementById('loanTerm').value = "0";
-            document.getElementById('initialLTV').value = "0"; 
-            document.getElementById('discountRate').value = "0";
+            // Set all numerical inputs to sensible defaults or 0
+            document.getElementById('loanAmount').value = "300000";
+            document.getElementById('interestRate').value = "6.5";
+            document.getElementById('loanTerm').value = "30";
+            document.getElementById('initialLTV').value = "90"; 
+            document.getElementById('discountRate').value = "3.0";
+            document.getElementById('appreciationRate').value = "3.5";
             
             // DTI Inputs
-            document.getElementById('annualIncome').value = "0";
-            document.getElementById('nonMortgageDebt').value = "0";
+            document.getElementById('annualIncome').value = "120000";
+            document.getElementById('nonMortgageDebt').value = "800";
 
-            document.getElementById('propertyTax').value = "0";
-            document.getElementById('insurance').value = "0";
+            document.getElementById('propertyTax').value = "3600";
+            document.getElementById('insurance').value = "1200";
             document.getElementById('hoa').value = "0";
-            document.getElementById('pitiEscalationRate').value = "0"; 
-            document.getElementById('pmiRate').value = "0"; 
-            document.getElementById('extraPayment').value = "0";
-            document.getElementById('lumpSumPayment').value = "0";
-            // Keep period inputs at 1 for calculation stability (min value is 1)
+            document.getElementById('pitiEscalationRate').value = "2.0"; 
+            document.getElementById('pmiRate').value = "0.5"; 
+            document.getElementById('extraPayment').value = "100";
+            document.getElementById('lumpSumPayment').value = "5000";
+            
             document.getElementById('lumpSumPeriod').value = "1"; 
+            document.getElementById('refiPeriod').value = "60"; 
+            document.getElementById('refiRate').value = "5.0"; 
+            document.getElementById('refiTerm').value = "15"; 
+            document.getElementById('refiClosingCosts').value = "5000"; 
             
-            document.getElementById('refiPeriod').value = "1"; 
-            document.getElementById('refiRate').value = "0"; 
-            document.getElementById('refiTerm').value = "0"; 
-            document.getElementById('refiClosingCosts').value = "0"; 
+            document.getElementById('shockRateIncrease').value = "1.0";
             
-            document.getElementById('shockRateIncrease').value = "0";
-            
-            // Reset frequency dropdown to Monthly
             document.getElementById('repaymentFrequency').value = "12";
             
-            // Run calculation with cleared/zeroed inputs, which will hide the results panel
             calculateMortgage();
         }
 
