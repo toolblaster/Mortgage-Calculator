@@ -175,21 +175,21 @@
 
             <!-- Tab Navigation -->
             <div class="mb-4 border-b border-gray-200">
-                <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="main-tabs">
-                    <li class="mr-2">
-                        <button class="inline-block p-4 border-b-2 rounded-t-lg" id="mortgage-tab" type="button">
+                <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="main-tabs" role="tablist">
+                    <li class="mr-2" role="presentation">
+                        <button class="inline-block p-4 border-b-2 rounded-t-lg" id="mortgage-tab" type="button" role="tab" aria-controls="mortgage-calculator-content" aria-selected="true">
                             <svg class="w-5 h-5 inline-block mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
                             Mortgage Calculator
                         </button>
                     </li>
-                    <li class="mr-2">
-                        <button class="inline-block p-4 border-b-2 rounded-t-lg" id="affordability-tab" type="button">
+                    <li class="mr-2" role="presentation">
+                        <button class="inline-block p-4 border-b-2 rounded-t-lg" id="affordability-tab" type="button" role="tab" aria-controls="affordability-content" aria-selected="false">
                             <svg class="w-5 h-5 inline-block mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd"></path></svg>
                             Affordability
                         </button>
                     </li>
-                    <li class="mr-2">
-                        <button class="inline-block p-4 border-b-2 rounded-t-lg" id="rent-vs-buy-tab" type="button">
+                    <li class="mr-2" role="presentation">
+                        <button class="inline-block p-4 border-b-2 rounded-t-lg" id="rent-vs-buy-tab" type="button" role="tab" aria-controls="rent-vs-buy-content" aria-selected="false">
                             <svg class="w-5 h-5 inline-block mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4 2a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2V4a2 2 0 00-2-2H4zm3 2a1 1 0 011-1h2a1 1 0 110 2H8a1 1 0 01-1-1zm-1 5a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"></path></svg>
                             Rent vs. Buy Comparison
                         </button>
@@ -202,7 +202,7 @@
                 <ul id="error-list" class="mt-1.5 ml-4 list-disc list-inside"></ul>
             </div>
             
-             <div id="affordability-content" class="hidden">
+             <div id="affordability-content" class="hidden" role="tabpanel" aria-labelledby="affordability-tab">
                 <div class="main-grid-layout grid grid-cols-1 gap-6 mt-4 lg:grid-cols-5">
                     <div class="input-column flex flex-col gap-4 lg:col-span-2">
                         <details open class="bg-white rounded-lg shadow-lg border-2 border-cyan-600">
@@ -252,7 +252,7 @@
                 </div>
             </div>
 
-            <div id="mortgage-calculator-content" class="hidden">
+            <div id="mortgage-calculator-content" class="hidden" role="tabpanel" aria-labelledby="mortgage-tab">
                 <div class="main-grid-layout grid grid-cols-1 gap-6 mt-4 lg:grid-cols-5">
                     <div class="input-column flex flex-col gap-4 lg:col-span-2">
                         
@@ -552,7 +552,7 @@
                 </div>
             </div>
 
-            <div id="rent-vs-buy-content" class="hidden">
+            <div id="rent-vs-buy-content" class="hidden" role="tabpanel" aria-labelledby="rent-vs-buy-tab">
                  <div class="main-grid-layout grid grid-cols-1 gap-6 mt-4 lg:grid-cols-5">
                     <div class="input-column flex flex-col gap-4 lg:col-span-2">
                         <details open class="bg-white rounded-lg shadow-lg border-2 border-cyan-600">
