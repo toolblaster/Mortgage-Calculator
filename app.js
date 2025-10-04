@@ -40,6 +40,22 @@ function animateValue(el, endValue, duration = 500) {
     requestAnimationFrame(animation);
 }
 
+/**
+ * Applies a temporary highlight animation to an element.
+ * @param {string} elementId - The ID of the element to highlight.
+ */
+function flashHighlight(elementId) {
+    const el = document.getElementById(elementId);
+    if (el) {
+        el.classList.add('flash-highlight');
+        // Remove the class after the animation completes
+        setTimeout(() => {
+            el.classList.remove('flash-highlight');
+        }, 1000); // Duration should match the CSS animation
+    }
+}
+
+
 // --- Core Financial Calculation Functions ---
 
 /**
@@ -290,6 +306,12 @@ function calculateMortgage(isShockTest = false) {
     animateValue(document.getElementById('interestSaved'), iSaved);
     animateValue(document.getElementById('npvSaved'), npvSaved);
     setTxt('timeSaved', `${tSavedY}y ${tSavedM}m`);
+    
+    // --- Visual Feedback ---
+    if (iSaved > 0) flashHighlight('interestSaved');
+    if (npvSaved > 0) flashHighlight('npvSaved');
+    if (tSavedPeriods > 0) flashHighlight('timeSaved');
+
     renderChart(accelerated);
     generateAmortizationTable(original, accelerated);
 
@@ -357,6 +379,52 @@ function populateFormFromURL() {
     return true;
 }
 
+
+// --- Modal Management ---
+function setupModal() {
+    const modal = document.getElementById('shareModal');
+    const saveButton = document.getElementById('saveButton');
+    const closeModalButton = document.getElementById('closeModalButton');
+    const copyUrlButton = document.getElementById('copyUrlButton');
+    const shareUrlInput = document.getElementById('shareUrlInput');
+    const copyFeedback = document.getElementById('copyFeedback');
+
+    saveButton.addEventListener('click', () => {
+        // Ensure URL is up-to-date before showing
+        updateURLWithInputs();
+        shareUrlInput.value = window.location.href;
+        modal.classList.remove('hidden');
+        shareUrlInput.select(); // Select the text for easy copying
+    });
+
+    closeModalButton.addEventListener('click', () => {
+        modal.classList.add('hidden');
+        copyFeedback.textContent = ''; // Clear feedback on close
+    });
+
+    copyUrlButton.addEventListener('click', () => {
+        shareUrlInput.select();
+        try {
+            // Use execCommand for better iframe compatibility
+            document.execCommand('copy');
+            copyFeedback.textContent = 'Copied to clipboard!';
+            setTimeout(() => { copyFeedback.textContent = ''; }, 2000);
+        } catch (err) {
+            console.error('Failed to copy: ', err);
+            copyFeedback.textContent = 'Failed to copy.';
+        }
+    });
+
+    // Close modal if clicking outside of it
+    modal.addEventListener('click', (event) => {
+        if (event.target === modal) {
+            modal.classList.add('hidden');
+            copyFeedback.textContent = '';
+        }
+    });
+}
+
+
 // --- Initial Page Load ---
 window.onload = () => {
     // Populate form from URL if params exist, otherwise run with defaults
@@ -366,6 +434,9 @@ window.onload = () => {
         handleCalculation(); // Calculate with URL params
     }
     
+    // Set up the modal listeners
+    setupModal();
+
     // Set the copyright year in the footer
     document.getElementById('copyright-year').textContent = new Date().getFullYear();
 
