@@ -2,7 +2,8 @@
 
 // --- Global Variables & Chart Instance ---
 let mortgageChart = null;
-const allInputIds = [ "loanAmount", "interestRate", "loanTerm", "initialLTV", "discountRate", "appreciationRate", "annualIncome", "nonMortgageDebt", "propertyTax", "insurance", "hoa", "pitiEscalationRate", "pmiRate", "extraPayment", "lumpSumPayment", "lumpSumPeriod", "refiPeriod", "refiRate", "refiTerm", "refiClosingCosts", "shockRateIncrease", "repaymentFrequency", "currency" ];
+const allInputIds = [ "loanAmount", "interestRate", "loanTerm", "initialLTV", "discountRate", "appreciationRate", "annualIncome", "nonMortgageDebt", "propertyTax", "insurance", "hoa", "pitiEscalationRate", "pmiRate", "extraPayment", "lumpSumPayment", "lumpSumPeriod", "refiPeriod", "refiRate", "refiTerm", "refiClosingCosts", "shockRateIncrease", "repaymentFrequency", "currency", "annualMaintenance", "monthlyUtilities" ];
+let currentResults = null;
 
 // --- Helper Functions ---
 const formatCurrency = (amount) => {
@@ -151,12 +152,12 @@ function generateAmortization(principal, annualRate, periodsPerYear, totalPeriod
 }
 
 // --- DTI Calculation & Rendering ---
-function calculateDTI(totalMonthlyPITI) {
+function calculateDTI(totalMonthlyHousingCost) {
     const annualIncome = parseFloat(document.getElementById('annualIncome').value) || 0;
     const monthlyNonMortgageDebt = parseFloat(document.getElementById('nonMortgageDebt').value) || 0;
     if (annualIncome === 0) return { frontEnd: 0, backEnd: 0 };
     const grossMonthlyIncome = annualIncome / 12;
-    return { frontEnd: totalMonthlyPITI / grossMonthlyIncome, backEnd: (totalMonthlyPITI + monthlyNonMortgageDebt) / grossMonthlyIncome };
+    return { frontEnd: totalMonthlyHousingCost / grossMonthlyIncome, backEnd: (totalMonthlyHousingCost + monthlyNonMortgageDebt) / grossMonthlyIncome };
 }
 
 function renderDTI(frontEndDTI, backEndDTI) {
@@ -204,7 +205,7 @@ function renderChart(acceleratedResults) {
 // --- Input Validation ---
 function validateInputs() {
     const errors = [];
-    const fields = [ { id: 'loanAmount', name: 'Loan Principal', min: 1 }, { id: 'interestRate', name: 'Interest Rate', min: 0.1, max: 100 }, { id: 'loanTerm', name: 'Loan Term', min: 1, max: 50 }, { id: 'initialLTV', name: 'Initial LTV', min: 1, max: 100 }, { id: 'annualIncome', name: 'Annual Income', min: 0 }, { id: 'nonMortgageDebt', name: 'Non-Mortgage Debt', min: 0 }, { id: 'appreciationRate', name: 'Appreciation Rate', min: 0, max: 50 }, { id: 'discountRate', name: 'Discount Rate', min: 0, max: 50 }, { id: 'pitiEscalationRate', name: 'PITI Escalation Rate', min: 0, max: 50 }, { id: 'pmiRate', name: 'PMI Rate', min: 0, max: 10 }, { id: 'propertyTax', name: 'Property Tax', min: 0 }, { id: 'insurance', name: 'Home Insurance', min: 0 }, { id: 'hoa', name: 'HOA Dues', min: 0 }, { id: 'extraPayment', name: 'Extra Payment', min: 0 }, { id: 'lumpSumPayment', name: 'Lump Sum Payment', min: 0 } ];
+    const fields = [ { id: 'loanAmount', name: 'Loan Principal', min: 1 }, { id: 'interestRate', name: 'Interest Rate', min: 0.1, max: 100 }, { id: 'loanTerm', name: 'Loan Term', min: 1, max: 50 }, { id: 'initialLTV', name: 'Initial LTV', min: 1, max: 100 }, { id: 'annualIncome', name: 'Annual Income', min: 0 }, { id: 'nonMortgageDebt', name: 'Non-Mortgage Debt', min: 0 }, { id: 'appreciationRate', name: 'Appreciation Rate', min: 0, max: 50 }, { id: 'discountRate', name: 'Discount Rate', min: 0, max: 50 }, { id: 'pitiEscalationRate', name: 'PITI Escalation Rate', min: 0, max: 50 }, { id: 'pmiRate', name: 'PMI Rate', min: 0, max: 10 }, { id: 'propertyTax', name: 'Property Tax', min: 0 }, { id: 'insurance', name: 'Home Insurance', min: 0 }, { id: 'hoa', name: 'HOA Dues', min: 0 }, { id: 'extraPayment', name: 'Extra Payment', min: 0 }, { id: 'lumpSumPayment', name: 'Lump Sum Payment', min: 0 }, { id: 'annualMaintenance', name: 'Annual Maintenance', min: 0, max: 20 }, { id: 'monthlyUtilities', name: 'Monthly Utilities', min: 0 } ];
     fields.forEach(field => {
         const value = parseFloat(document.getElementById(field.id).value);
         if (isNaN(value)) errors.push(`${field.name} must be a number.`);
@@ -258,6 +259,8 @@ function calculateMortgage(isShockTest = false) {
     const ltv = getVal('initialLTV'), pmiRate = getVal('pmiRate') / 100;
     const refiP = getVal('refiPeriod'), refiR = getVal('refiRate'), refiT = getVal('refiTerm'), refiC = getVal('refiClosingCosts');
     const discRate = getVal('discountRate') / 100, apprRate = getVal('appreciationRate') / 100;
+    const annualMaintenanceRate = getVal('annualMaintenance') / 100;
+    const monthlyUtilities = getVal('monthlyUtilities');
     
     const resultsEl = document.getElementById('results');
     resultsEl.style.opacity = 1;
@@ -272,13 +275,18 @@ function calculateMortgage(isShockTest = false) {
     const pniMonthly = standardPmt * (12 / periodsPerYear);
     const pmiMonthly = (accelerated.schedule[0] ? accelerated.schedule[0].pmi : 0) * (12 / periodsPerYear);
     const totalPITI = pniMonthly + (pTax / 12) + (ins / 12) + hoa + pmiMonthly;
-    renderDTI(calculateDTI(totalPITI).frontEnd, calculateDTI(totalPITI).backEnd);
+
+    const initialPropertyValue = (ltv > 0 && ltv <= 100) ? principal / (ltv / 100) : principal;
+    const monthlyMaintenance = (initialPropertyValue * annualMaintenanceRate) / 12;
+    const totalMonthlyOwnershipCost = totalPITI + monthlyMaintenance + monthlyUtilities;
+
+    renderDTI(calculateDTI(totalMonthlyOwnershipCost).frontEnd, calculateDTI(totalMonthlyOwnershipCost).backEnd);
 
     const setTxt = (id, val) => document.getElementById(id).textContent = val;
     animateValue(document.getElementById('finalEquity'), accelerated.finalEquity);
     animateValue(document.getElementById('finalPropertyValue'), accelerated.finalPropertyValue);
     setTxt('totalMonthlyPaymentPITI', formatCurrency(totalPITI));
-    setTxt('standardPaymentDisplay', formatCurrency(standardPmt));
+    setTxt('totalOwnershipCost', formatCurrency(totalMonthlyOwnershipCost));
     
     const pmiNote = document.getElementById('pmiDropNote');
     if (pmiRate > 0 && ltv > 80 && accelerated.pmiDropPeriod) {
@@ -296,6 +304,7 @@ function calculateMortgage(isShockTest = false) {
     const tSavedPeriods = original.payoffPeriod - accelerated.payoffPeriod;
     const tSavedY = Math.floor(tSavedPeriods / periodsPerYear);
     const tSavedM = Math.round((tSavedPeriods % periodsPerYear) * (12 / periodsPerYear));
+    const timeSavedStr = `${tSavedY}y ${tSavedM}m`;
     const payoffDate = (periods) => {
         let d = new Date();
         d.setMonth(d.getMonth() + Math.round(periods * (12 / periodsPerYear)));
@@ -305,7 +314,7 @@ function calculateMortgage(isShockTest = false) {
     setTxt('newPayoffDate', payoffDate(accelerated.payoffPeriod));
     animateValue(document.getElementById('interestSaved'), iSaved);
     animateValue(document.getElementById('npvSaved'), npvSaved);
-    setTxt('timeSaved', `${tSavedY}y ${tSavedM}m`);
+    setTxt('timeSaved', timeSavedStr);
     
     // --- Visual Feedback ---
     if (iSaved > 0) flashHighlight('interestSaved');
@@ -325,6 +334,18 @@ function calculateMortgage(isShockTest = false) {
         setTxt('shockPaymentDisplay', formatCurrency(shockPmt));
         setTxt('paymentIncrease', formatCurrency(shockPmt - standardPmt));
     }
+
+    currentResults = {
+        original,
+        accelerated,
+        totalPITI,
+        totalMonthlyOwnershipCost,
+        dti: calculateDTI(totalMonthlyOwnershipCost),
+        interestSaved: iSaved,
+        npvSaved: npvSaved,
+        timeSaved: timeSavedStr,
+        inputs: Object.fromEntries(allInputIds.map(id => [id, document.getElementById(id).value]))
+    };
 }
 
 function generateAmortizationTable(originalResults, acceleratedResults) {
@@ -347,7 +368,7 @@ function generateAmortizationTable(originalResults, acceleratedResults) {
 
 // --- Form Reset ---
 function resetForm() {
-    const defaults = { loanAmount: "300000", interestRate: "6.5", loanTerm: "30", initialLTV: "90", discountRate: "3.0", appreciationRate: "3.5", annualIncome: "120000", nonMortgageDebt: "800", propertyTax: "3600", insurance: "1200", hoa: "0", pitiEscalationRate: "2.0", pmiRate: "0.5", extraPayment: "100", lumpSumPayment: "5000", lumpSumPeriod: "1", refiPeriod: "60", refiRate: "5.0", refiTerm: "15", refiClosingCosts: "5000", shockRateIncrease: "1.0" };
+    const defaults = { loanAmount: "300000", interestRate: "6.5", loanTerm: "30", initialLTV: "90", discountRate: "3.0", appreciationRate: "3.5", annualIncome: "120000", nonMortgageDebt: "800", propertyTax: "3600", insurance: "1200", hoa: "0", pitiEscalationRate: "2.0", pmiRate: "0.5", extraPayment: "100", lumpSumPayment: "5000", lumpSumPeriod: "1", refiPeriod: "60", refiRate: "5.0", refiTerm: "15", refiClosingCosts: "5000", shockRateIncrease: "1.0", annualMaintenance: "1.0", monthlyUtilities: "300" };
     for (const id in defaults) document.getElementById(id).value = defaults[id];
     document.getElementById('repaymentFrequency').value = "12";
     document.getElementById('currency').value = "USD";
@@ -424,6 +445,126 @@ function setupModal() {
     });
 }
 
+// --- PDF Generation ---
+function generatePDF() {
+    if (!currentResults) {
+        alert("Please calculate a scenario first to generate a report.");
+        return;
+    }
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    const { inputs, totalPITI, totalMonthlyOwnershipCost, dti, original, accelerated, interestSaved, npvSaved, timeSaved } = currentResults;
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(20);
+    doc.setTextColor(28, 118, 143); // Primary Color
+    doc.text("Strategic Mortgage Planner", 105, 20, { align: 'center' });
+    doc.setFontSize(10);
+    doc.setTextColor(100);
+    doc.setFont("helvetica", "normal");
+    doc.text("Personalized Mortgage Report", 105, 27, { align: 'center' });
+    doc.text(`Report Generated: ${new Date().toLocaleDateString()}`, 105, 32, { align: 'center' });
+
+    const summaryData = [
+        ['Loan Principal', formatCurrency(inputs.loanAmount)],
+        ['Interest Rate', `${inputs.interestRate}%`],
+        ['Loan Term', `${inputs.loanTerm} Years`],
+        ['Est. PITI + PMI', formatCurrency(totalPITI)],
+        ['Total Monthly Ownership Cost', formatCurrency(totalMonthlyOwnershipCost)],
+        ['Front-End DTI (Housing)', formatPercent(dti.frontEnd)],
+        ['Back-End DTI (Total Debt)', formatPercent(dti.backEnd)]
+    ];
+    doc.autoTable({
+        startY: 40,
+        head: [['Key Metric', 'Value']],
+        body: summaryData,
+        theme: 'striped',
+        headStyles: { fillColor: [28, 118, 143] }
+    });
+
+    const comparisonData = [
+        ['Payoff Date', payoffDate(original.payoffPeriod, inputs.repaymentFrequency), payoffDate(accelerated.payoffPeriod, inputs.repaymentFrequency)],
+        ['Total Interest Paid', formatCurrency(original.totalInterest), formatCurrency(accelerated.totalInterest)],
+        ['NPV of Interest Cost', formatCurrency(original.totalPVInterest), formatCurrency(accelerated.totalPVInterest)],
+        ['Final Equity', formatCurrency(original.finalEquity), formatCurrency(accelerated.finalEquity)]
+    ];
+    doc.autoTable({
+        startY: doc.lastAutoTable.finalY + 10,
+        head: [['Metric', 'Original Loan', 'Accelerated Scenario']],
+        body: comparisonData,
+        theme: 'grid',
+        headStyles: { fillColor: [28, 118, 143] }
+    });
+
+    doc.setFontSize(14);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(30, 135, 73); // Accent color
+    doc.text("Accelerated Payoff Savings Summary", 14, doc.lastAutoTable.finalY + 15);
+    const savingsData = [
+        ['Nominal Interest Saved', formatCurrency(interestSaved)],
+        ['NPV (True Value) Saved', formatCurrency(npvSaved)],
+        ['Time Shaved Off Loan', timeSaved]
+    ];
+    doc.autoTable({
+        startY: doc.lastAutoTable.finalY + 22,
+        body: savingsData,
+        theme: 'plain',
+    });
+
+    doc.addPage();
+    doc.setFontSize(16);
+    doc.setTextColor(28, 118, 143);
+    doc.text("Accelerated Amortization Schedule (Annual Summary)", 105, 15, { align: 'center' });
+    
+    const schedule = accelerated.schedule;
+    const periodsPerYear = parseInt(inputs.repaymentFrequency);
+    const annualData = [];
+    let yearInterest = 0, yearPrincipal = 0, yearExtra = 0;
+    for (let i = 0; i < schedule.length; i++) {
+        yearInterest += schedule[i].interest;
+        yearPrincipal += schedule[i].pniPrincipal;
+        yearExtra += schedule[i].extraPayment;
+
+        if ((i + 1) % periodsPerYear === 0 || i === schedule.length - 1) {
+            const yearEnd = schedule[i];
+            annualData.push([
+                `Year ${Math.ceil(yearEnd.period / periodsPerYear)}`,
+                formatCurrency(yearInterest),
+                formatCurrency(yearPrincipal + yearExtra),
+                formatCurrency(yearEnd.totalEquity),
+                formatCurrency(yearEnd.balance)
+            ]);
+            yearInterest = 0;
+            yearPrincipal = 0;
+            yearExtra = 0;
+        }
+    }
+    doc.autoTable({
+        startY: 25,
+        head: [['Year', 'Total Interest Paid', 'Total Principal Paid', 'End of Year Equity', 'End of Year Balance']],
+        body: annualData,
+        theme: 'striped',
+        headStyles: { fillColor: [28, 118, 143] }
+    });
+
+    const pageCount = doc.internal.getNumberOfPages();
+    for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFontSize(8);
+        doc.setTextColor(150);
+        doc.text(`Page ${i} of ${pageCount}`, doc.internal.pageSize.width - 20, doc.internal.pageSize.height - 10);
+        doc.text('Disclaimer: This is for informational purposes only. Consult a financial professional.', 105, doc.internal.pageSize.height - 10, { align: 'center' });
+    }
+
+    doc.save(`Mortgage_Report_${new Date().toISOString().slice(0,10)}.pdf`);
+}
+
+const payoffDate = (periods, periodsPerYear) => {
+    let d = new Date();
+    d.setMonth(d.getMonth() + Math.round(periods * (12 / periodsPerYear)));
+    return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
+};
 
 // --- Initial Page Load ---
 window.onload = () => {
