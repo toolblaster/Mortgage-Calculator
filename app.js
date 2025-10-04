@@ -291,21 +291,6 @@ function resetForm() {
     handleCalculation();
 }
 
-// --- Social Sharing ---
-function initializeSharing() {
-    const url = encodeURIComponent(window.location.href);
-    const title = encodeURIComponent(document.title);
-    const shareText = encodeURIComponent("Check out this advanced mortgage planner to forecast your equity, DTI, and potential savings!");
-
-    document.getElementById('share-facebook').href = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
-    document.getElementById('share-twitter').href = `https://twitter.com/intent/tweet?url=${url}&text=${shareText}`;
-    document.getElementById('share-linkedin').href = `https://www.linkedin.com/shareArticle?mini=true&url=${url}&title=${title}&summary=${shareText}`;
-    document.getElementById('share-reddit').href = `https://www.reddit.com/submit?url=${url}&title=${title}`;
-    document.getElementById('share-whatsapp').href = `https://api.whatsapp.com/send?text=${shareText}%20${url}`;
-    document.getElementById('share-email').href = `mailto:?subject=${title}&body=${shareText}%20${url}`;
-}
-
-
 // --- Initial Page Load ---
 window.onload = () => {
     // Run the main calculator function on load
@@ -313,9 +298,6 @@ window.onload = () => {
     
     // Set the copyright year in the footer
     document.getElementById('copyright-year').textContent = new Date().getFullYear();
-
-    // Set up social sharing links
-    initializeSharing();
 
     // Automatically load the content guide
     loadGuide();
