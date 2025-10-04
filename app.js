@@ -892,9 +892,11 @@ function setupTabs() {
         for (const key in tabs) {
             if (key === tab) {
                 tabs[key].button.classList.add('active');
+                tabs[key].button.setAttribute('aria-selected', 'true');
                 tabs[key].content.classList.remove('hidden');
             } else {
                 tabs[key].button.classList.remove('active');
+                tabs[key].button.setAttribute('aria-selected', 'false');
                 tabs[key].content.classList.add('hidden');
             }
         }
