@@ -24,7 +24,7 @@ details[open] summary ~ * { animation: sweep .5s ease-in-out; }
 .tooltip-text { visibility: hidden; width: 220px; background-color: #1f2937; color: #fff; text-align: center; border-radius: 6px; padding: 8px; position: absolute; z-index: 10; bottom: 125%; left: 50%; margin-left: -110px; opacity: 0; transition: opacity 0.3s; font-size: 12px; font-weight: normal; }
 .tooltip-text::after { content: ""; position: absolute; top: 100%; left: 50%; margin-left: -5px; border-width: 5px; border-style: solid; border-color: #1f2937 transparent transparent transparent; }
 .tooltip-container:hover .tooltip-text, .tooltip-container:focus-within .tooltip-text { visibility: visible; opacity: 1; }
-#chartContainer, #rent-vs-buy-chart-container { position: relative; height: 400px; width: 100%; }
+#chartContainer, #rent-vs-buy-chart-container, #affordability-chart-container { position: relative; height: 400px; width: 100%; }
 #amortizationTable th, #amortizationTable td { white-space: nowrap; }
 
 /* Tab Styles */
