@@ -2,8 +2,10 @@
 
 // --- Global Variables & Chart Instance ---
 let mortgageChart = null;
-const allInputIds = [ "loanAmount", "interestRate", "loanTerm", "initialLTV", "discountRate", "appreciationRate", "annualIncome", "nonMortgageDebt", "propertyTax", "insurance", "hoa", "pitiEscalationRate", "pmiRate", "extraPayment", "lumpSumPayment", "lumpSumPeriod", "refiPeriod", "refiRate", "refiTerm", "refiClosingCosts", "shockRateIncrease", "repaymentFrequency", "currency", "annualMaintenance", "monthlyUtilities" ];
+let rentVsBuyChart = null;
+const allInputIds = [ "loanAmount", "interestRate", "loanTerm", "initialLTV", "discountRate", "appreciationRate", "annualIncome", "nonMortgageDebt", "propertyTax", "insurance", "hoa", "pitiEscalationRate", "pmiRate", "extraPayment", "lumpSumPayment", "lumpSumPeriod", "refiPeriod", "refiRate", "refiTerm", "refiClosingCosts", "shockRateIncrease", "repaymentFrequency", "currency", "annualMaintenance", "monthlyUtilities", "monthlyRent", "rentIncrease", "investmentReturn", "closingCosts", "sellingCosts" ];
 let currentResults = null;
+let currentTab = 'mortgage';
 
 // --- Helper Functions ---
 const formatCurrency = (amount) => {
@@ -151,6 +153,82 @@ function generateAmortization(principal, annualRate, periodsPerYear, totalPeriod
     return { schedule: amortizationSchedule, totalInterest: totalInterestPaid, totalPVInterest: totalPVInterestPaid, payoffPeriod, standardPayment: standardPaymentOriginal, firstPeriodPITI: amortizationSchedule.length > 0 ? amortizationSchedule[0].periodicPITI * (12 / periodsPerYear) : standardPaymentOriginal, pmiDropPeriod, finalPropertyValue: currentPropertyValue, finalEquity: Math.max(0, currentPropertyValue) };
 }
 
+// --- Rent vs. Buy Calculation ---
+function calculateRentVsBuy() {
+    const loanAmount = parseFloat(document.getElementById('loanAmount').value);
+    const initialLTV = parseFloat(document.getElementById('initialLTV').value);
+    const homePrice = loanAmount / (initialLTV / 100);
+    const downPayment = homePrice - loanAmount;
+    const closingCosts = parseFloat(document.getElementById('closingCosts').value);
+    const sellingCostsRate = parseFloat(document.getElementById('sellingCosts').value) / 100;
+    
+    const monthlyRent = parseFloat(document.getElementById('monthlyRent').value);
+    const annualRentIncrease = parseFloat(document.getElementById('rentIncrease').value) / 100;
+    const annualInvestmentReturn = parseFloat(document.getElementById('investmentReturn').value) / 100;
+    const loanTermYears = parseFloat(document.getElementById('loanTerm').value);
+    const periodsPerYear = 12; // Assuming monthly for this comparison
+    const totalPeriods = loanTermYears * periodsPerYear;
+
+    // Buying calculation
+    const buyingResults = generateAmortization(
+        loanAmount,
+        parseFloat(document.getElementById('interestRate').value) / 100,
+        periodsPerYear,
+        totalPeriods,
+        0, 0, 0, initialLTV,
+        parseFloat(document.getElementById('pmiRate').value) / 100,
+        0, 0, 0, 0,
+        parseFloat(document.getElementById('pitiEscalationRate').value) / 100,
+        parseFloat(document.getElementById('discountRate').value) / 100,
+        parseFloat(document.getElementById('appreciationRate').value) / 100
+    );
+
+    const buyingNetWorth = buyingResults.finalEquity - (buyingResults.finalPropertyValue * sellingCostsRate);
+    
+    // Renting calculation
+    let investmentPortfolio = downPayment + closingCosts;
+    let currentMonthlyRent = monthlyRent;
+    const monthlyInvestmentReturn = annualInvestmentReturn / 12;
+
+    const totalMonthlyOwnershipCost = (buyingResults.standardPayment * (12 / periodsPerYear)) + 
+                                     (parseFloat(document.getElementById('propertyTax').value) / 12) + 
+                                     (parseFloat(document.getElementById('insurance').value) / 12) + 
+                                     parseFloat(document.getElementById('hoa').value) +
+                                     ((homePrice * (parseFloat(document.getElementById('annualMaintenance').value) / 100)) / 12) +
+                                     parseFloat(document.getElementById('monthlyUtilities').value);
+    
+    let rentingTimeline = [];
+    let buyingTimeline = [];
+
+    for (let i = 1; i <= totalPeriods; i++) {
+        const monthlySavings = totalMonthlyOwnershipCost - currentMonthlyRent;
+        investmentPortfolio += monthlySavings;
+        investmentPortfolio *= (1 + monthlyInvestmentReturn);
+        
+        if (i % 12 === 0) {
+            currentMonthlyRent *= (1 + annualRentIncrease);
+        }
+        
+        const year = Math.ceil(i / 12);
+        if (i % 12 === 0 || i === totalPeriods) {
+            rentingTimeline.push({ year: year, netWorth: investmentPortfolio });
+            const buyingData = buyingResults.schedule[i - 1];
+            if(buyingData) {
+                const currentBuyingNetWorth = buyingData.totalEquity - (buyingData.propertyValue * sellingCostsRate);
+                buyingTimeline.push({ year: year, netWorth: currentBuyingNetWorth });
+            }
+        }
+    }
+    
+    return {
+        buyingNetWorth,
+        rentingNetWorth: investmentPortfolio,
+        rentingTimeline,
+        buyingTimeline
+    };
+}
+
+
 // --- DTI Calculation & Rendering ---
 function calculateDTI(totalMonthlyHousingCost) {
     const annualIncome = parseFloat(document.getElementById('annualIncome').value) || 0;
@@ -202,12 +280,84 @@ function renderChart(acceleratedResults) {
     });
 }
 
+function renderRentVsBuyChart(rentingTimeline, buyingTimeline) {
+    const ctx = document.getElementById('rentVsBuyChart').getContext('2d');
+    if (rentVsBuyChart) rentVsBuyChart.destroy();
+    
+    const labels = rentingTimeline.map(d => `Year ${d.year}`);
+    
+    rentVsBuyChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Buying Net Worth',
+                    data: buyingTimeline.map(d => d.netWorth),
+                    borderColor: '#10b981', // green-500
+                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                    fill: true,
+                    tension: 0.3
+                },
+                {
+                    label: 'Renting Net Worth',
+                    data: rentingTimeline.map(d => d.netWorth),
+                    borderColor: '#3b82f6', // blue-500
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    fill: true,
+                    tension: 0.3
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: value => formatCurrency(value)
+                    }
+                }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Long-Term Net Worth: Renting vs. Buying',
+                    font: { size: 16 }
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    callbacks: {
+                        label: c => `${c.dataset.label}: ${formatCurrency(c.parsed.y)}`
+                    }
+                }
+            }
+        }
+    });
+}
+
+
 // --- Input Validation ---
 function validateInputs() {
     const errors = [];
     const fields = [ { id: 'loanAmount', name: 'Loan Principal', min: 1 }, { id: 'interestRate', name: 'Interest Rate', min: 0.1, max: 100 }, { id: 'loanTerm', name: 'Loan Term', min: 1, max: 50 }, { id: 'initialLTV', name: 'Initial LTV', min: 1, max: 100 }, { id: 'annualIncome', name: 'Annual Income', min: 0 }, { id: 'nonMortgageDebt', name: 'Non-Mortgage Debt', min: 0 }, { id: 'appreciationRate', name: 'Appreciation Rate', min: 0, max: 50 }, { id: 'discountRate', name: 'Discount Rate', min: 0, max: 50 }, { id: 'pitiEscalationRate', name: 'PITI Escalation Rate', min: 0, max: 50 }, { id: 'pmiRate', name: 'PMI Rate', min: 0, max: 10 }, { id: 'propertyTax', name: 'Property Tax', min: 0 }, { id: 'insurance', name: 'Home Insurance', min: 0 }, { id: 'hoa', name: 'HOA Dues', min: 0 }, { id: 'extraPayment', name: 'Extra Payment', min: 0 }, { id: 'lumpSumPayment', name: 'Lump Sum Payment', min: 0 }, { id: 'annualMaintenance', name: 'Annual Maintenance', min: 0, max: 20 }, { id: 'monthlyUtilities', name: 'Monthly Utilities', min: 0 } ];
+    
+    if (currentTab === 'rent-vs-buy') {
+        fields.push(
+            { id: 'monthlyRent', name: 'Monthly Rent', min: 1 },
+            { id: 'rentIncrease', name: 'Rent Increase', min: 0, max: 20 },
+            { id: 'investmentReturn', name: 'Investment Return', min: 0, max: 30 },
+            { id: 'closingCosts', name: 'Closing Costs', min: 0 },
+            { id: 'sellingCosts', name: 'Selling Costs', min: 0, max: 20 }
+        );
+    }
+
     fields.forEach(field => {
-        const value = parseFloat(document.getElementById(field.id).value);
+        const el = document.getElementById(field.id);
+        if (!el) return;
+        const value = parseFloat(el.value);
         if (isNaN(value)) errors.push(`${field.name} must be a number.`);
         else {
             if (field.min !== undefined && value < field.min) errors.push(`${field.name} must be at least ${field.min}.`);
@@ -233,7 +383,11 @@ function handleCalculation(isShockTest = false) {
     setTimeout(() => {
         try { 
             if (validateInputs()) {
-                calculateMortgage(isShockTest);
+                if(currentTab === 'mortgage') {
+                    calculateMortgage(isShockTest);
+                } else {
+                    runRentVsBuyAnalysis();
+                }
                 updateURLWithInputs();
             }
         } 
@@ -245,9 +399,29 @@ function handleCalculation(isShockTest = false) {
             errorContainer.classList.remove('hidden');
         } finally {
             calculateButton.disabled = false;
-            calculateButton.textContent = 'Calculate Full Scenario';
+            calculateButton.textContent = 'Calculate Scenario';
         }
     }, 50);
+}
+
+function runRentVsBuyAnalysis() {
+    const results = calculateRentVsBuy();
+    
+    document.getElementById('buyingNetWorth').textContent = formatCurrency(results.buyingNetWorth);
+    document.getElementById('rentingNetWorth').textContent = formatCurrency(results.rentingNetWorth);
+    
+    const conclusionEl = document.getElementById('rent-vs-buy-conclusion');
+    if (results.buyingNetWorth > results.rentingNetWorth) {
+        conclusionEl.innerHTML = `<p class="text-lg font-bold text-green-700">Buying appears to be the better financial decision in this scenario.</p>`;
+    } else {
+        conclusionEl.innerHTML = `<p class="text-lg font-bold text-blue-700">Renting and investing the difference appears to be the better financial decision in this scenario.</p>`;
+    }
+
+    renderRentVsBuyChart(results.rentingTimeline, results.buyingTimeline);
+    
+    const resultsEl = document.getElementById('rent-vs-buy-results');
+    resultsEl.style.opacity = 1;
+    resultsEl.classList.add('results-animate-in');
 }
 
 function calculateMortgage(isShockTest = false) {
@@ -368,8 +542,11 @@ function generateAmortizationTable(originalResults, acceleratedResults) {
 
 // --- Form Reset ---
 function resetForm() {
-    const defaults = { loanAmount: "300000", interestRate: "6.5", loanTerm: "30", initialLTV: "90", discountRate: "3.0", appreciationRate: "3.5", annualIncome: "120000", nonMortgageDebt: "800", propertyTax: "3600", insurance: "1200", hoa: "0", pitiEscalationRate: "2.0", pmiRate: "0.5", extraPayment: "100", lumpSumPayment: "5000", lumpSumPeriod: "1", refiPeriod: "60", refiRate: "5.0", refiTerm: "15", refiClosingCosts: "5000", shockRateIncrease: "1.0", annualMaintenance: "1.0", monthlyUtilities: "300" };
-    for (const id in defaults) document.getElementById(id).value = defaults[id];
+    const defaults = { loanAmount: "300000", interestRate: "6.5", loanTerm: "30", initialLTV: "90", discountRate: "3.0", appreciationRate: "3.5", annualIncome: "120000", nonMortgageDebt: "800", propertyTax: "3600", insurance: "1200", hoa: "0", pitiEscalationRate: "2.0", pmiRate: "0.5", extraPayment: "100", lumpSumPayment: "5000", lumpSumPeriod: "1", refiPeriod: "60", refiRate: "5.0", refiTerm: "15", refiClosingCosts: "5000", shockRateIncrease: "1.0", annualMaintenance: "1.0", monthlyUtilities: "300", monthlyRent: "2000", rentIncrease: "3.0", investmentReturn: "7.0", closingCosts: "8000", sellingCosts: "6.0" };
+    for (const id in defaults) {
+        const el = document.getElementById(id);
+        if (el) el.value = defaults[id];
+    }
     document.getElementById('repaymentFrequency').value = "12";
     document.getElementById('currency').value = "USD";
     history.pushState(null, '', window.location.pathname); // Clear URL params on reset
@@ -447,8 +624,8 @@ function setupModal() {
 
 // --- PDF Generation ---
 function generatePDF() {
-    if (!currentResults) {
-        alert("Please calculate a scenario first to generate a report.");
+    if (!currentResults || currentTab !== 'mortgage') {
+        alert("Please calculate a scenario on the Mortgage Calculator tab first to generate a report.");
         return;
     }
 
@@ -566,8 +743,40 @@ const payoffDate = (periods, periodsPerYear) => {
     return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
 };
 
+// --- Tab Management ---
+function setupTabs() {
+    const mortgageTab = document.getElementById('mortgage-tab');
+    const rentVsBuyTab = document.getElementById('rent-vs-buy-tab');
+    const mortgageContent = document.getElementById('mortgage-calculator-content');
+    const rentVsBuyContent = document.getElementById('rent-vs-buy-content');
+
+    function switchTab(tab) {
+        currentTab = tab;
+        if (tab === 'mortgage') {
+            mortgageTab.classList.add('active');
+            rentVsBuyTab.classList.remove('active');
+            mortgageContent.classList.remove('hidden');
+            rentVsBuyContent.classList.add('hidden');
+        } else {
+            mortgageTab.classList.remove('active');
+            rentVsBuyTab.classList.add('active');
+            mortgageContent.classList.add('hidden');
+            rentVsBuyContent.classList.remove('hidden');
+        }
+    }
+
+    mortgageTab.addEventListener('click', () => switchTab('mortgage'));
+    rentVsBuyTab.addEventListener('click', () => switchTab('rent-vs-buy'));
+
+    // Set initial active tab
+    switchTab('mortgage');
+}
+
+
 // --- Initial Page Load ---
 window.onload = () => {
+    setupTabs();
+
     // Populate form from URL if params exist, otherwise run with defaults
     if (!populateFormFromURL()) {
         resetForm(); // Set defaults if no params
