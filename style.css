@@ -1,0 +1,37 @@
+/* Global Site Styles */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    font-family: 'Inter', sans-serif;
+    background-color: #f3f4f6;
+}
+main.content-wrapper {
+    flex-grow: 1;
+}
+.container {
+    max-width: 1280px;
+}
+
+/* Page-Specific Calculator Styles */
+details > summary { list-style: none; }
+details > summary::-webkit-details-marker { display: none; }
+details[open] summary ~ * { animation: sweep .5s ease-in-out; }
+@keyframes sweep { 0% { opacity: 0; transform: translateY(-10px) } 100% { opacity: 1; transform: translateY(0) } }
+.tooltip-container { position: relative; display: inline-flex; align-items: center; }
+.tooltip-icon { margin-left: 6px; cursor: help; color: #9ca3af; border: 1px solid #d1d5db; border-radius: 9999px; width: 16px; height: 16px; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; }
+.tooltip-text { visibility: hidden; width: 220px; background-color: #1f2937; color: #fff; text-align: center; border-radius: 6px; padding: 8px; position: absolute; z-index: 10; bottom: 125%; left: 50%; margin-left: -110px; opacity: 0; transition: opacity 0.3s; font-size: 12px; font-weight: normal; }
+.tooltip-text::after { content: ""; position: absolute; top: 100%; left: 50%; margin-left: -5px; border-width: 5px; border-style: solid; border-color: #1f2937 transparent transparent transparent; }
+.tooltip-container:hover .tooltip-text, .tooltip-container:focus-within .tooltip-text { visibility: visible; opacity: 1; }
+#chartContainer { position: relative; height: 400px; width: 100%; }
+#amortizationTable th, #amortizationTable td { white-space: nowrap; }
+@media (min-width: 1024px) { .main-grid-layout { grid-template-columns: 30% 1fr; } }
+@media print { .no-print, #calculateButton, #resetButton, .input-column, header, footer, details > summary { display: none !important; } .content-wrapper, #results, #schedule-wrapper { box-shadow: none !important; border: none !important; } .main-grid-layout { display: block; } details { open: true !important; } details[open] { page-break-before: always; } .output-column { width: 100%; } #chartContainer { height: 350px !important; } }
+
+/* Styles for Prose on Legal Page */
+.prose p {
+    margin-bottom: 1em;
+}
+.prose h2 {
+    margin-bottom: 0.5em;
+}
