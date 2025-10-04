@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Mortgage Payoff, NPV & Equity Growth Calculator</title>
+    <title>Strategic Mortgage Planner - NPV, DTI & Equity Forecaster</title>
 
     <!-- SEO & Social Meta Tags -->
     <meta name="description" content="An advanced mortgage calculator to analyze payoff scenarios, equity growth, Debt-to-Income (DTI), Net Present Value (NPV) of costs, and potential refinance options.">
-    <meta name="keywords" content="mortgage calculator, equity calculator, mortgage payoff, amortization, NPV, DTI, refinance calculator, home loan">
-    <meta property="og:title" content="Ultimate Mortgage Payoff, NPV & Equity Growth Calculator">
+    <meta name="keywords" content="mortgage planner, strategic mortgage calculator, equity calculator, mortgage payoff, amortization, NPV, DTI, refinance calculator, home loan">
+    <meta property="og:title" content="Strategic Mortgage Planner">
     <meta property="og:description" content="Model your mortgage with advanced scenarios including extra payments, refinancing, and property appreciation.">
     <meta property="og:type" content="website">
-    <meta property="og:image" content="https://placehold.co/1200x630/1c768f/ffffff?text=Mortgage+Calculator">
-    <link rel="icon" href="https://placehold.co/32x32/1c768f/ffffff?text=MC" type="image/png">
+    <meta property="og:image" content="https://placehold.co/1200x630/1c768f/ffffff?text=Strategic+Mortgage+Planner">
+    <link rel="icon" href="https://placehold.co/32x32/1c768f/ffffff?text=SMP" type="image/png">
 
     <!-- Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -93,10 +93,11 @@
 
     <main class="calculator-container bg-white p-4 md:p-8 rounded-xl shadow-2xl w-full max-w-6xl">
         
-        <header class="bg-sky-50 p-4 rounded-lg mb-4 shadow-sm">
-            <h1 class="text-xl md:text-2xl font-extrabold text-primary text-center">
-                Ultimate Mortgage Payoff, NPV, DTI & Equity Growth Calculator
+        <header class="bg-sky-50 p-4 rounded-lg mb-4 shadow-sm text-center">
+            <h1 class="text-xl md:text-2xl font-extrabold text-primary">
+                Strategic Mortgage Planner
             </h1>
+            <p class="text-sm text-gray-600 mt-1">NPV, DTI, Equity & Payoff Forecaster</p>
         </header>
 
         <div id="error-messages" class="hidden p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 border border-red-200" role="alert">
@@ -371,7 +372,7 @@
         </div>
         
         <footer class="text-center text-xs text-gray-500 mt-8 border-t pt-4">
-            <p>&copy; <span id="copyright-year">2025</span> Ultimate Mortgage Calculator. All Rights Reserved.</p>
+            <p>&copy; <span id="copyright-year">2025</span> Strategic Mortgage Planner. All Rights Reserved.</p>
             <p class="mt-1"><strong>Disclaimer:</strong> This calculator is for informational and illustrative purposes only and is not an offer for credit. The accuracy of this calculator is not guaranteed.</p>
         </footer>
     </main>
@@ -599,7 +600,7 @@
             const payoffDate = (periods) => {
                 let d = new Date();
                 d.setMonth(d.getMonth() + Math.round(periods * (12 / periodsPerYear)));
-                return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
+                return d.toLocaleString('en-US', { year: 'numeric', month: 'long' });
             };
             setTxt('originalPayoffDate', payoffDate(original.payoffPeriod));
             setTxt('newPayoffDate', payoffDate(accelerated.payoffPeriod));
