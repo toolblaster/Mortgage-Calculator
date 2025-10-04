@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>How Much House Can I Afford? — Complete Guide + Free Calculator</title>
+    <title>How Much House Can I Afford? Complete Guide + Free Calculator</title>
 
     <!-- SEO & Social Meta Tags -->
     <meta name="description" content="Our complete guide explains the formula for home affordability (income, debt, DTI) and includes a free calculator to find your true budget in the US, UK, and Canada.">
@@ -31,6 +31,26 @@
 
     <!-- Shared Stylesheet (relative path from blog folder) -->
     <link rel="stylesheet" href="../style.css">
+    <style>
+        .prose h1 {
+            @apply text-2xl md:text-3xl font-extrabold text-primary;
+        }
+        .prose h2 {
+            @apply text-xl md:text-2xl font-bold text-primary;
+        }
+        .prose h3 {
+            @apply text-lg font-semibold text-gray-800;
+        }
+        .prose {
+            font-family: 'Inter', sans-serif;
+        }
+        .content-section {
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+        }
+    </style>
 </head>
 <body class="bg-gray-100">
     <!-- Reusable SVG Icon Definition -->
@@ -47,7 +67,7 @@
     <header class="bg-white/80 backdrop-blur-lg shadow-sm sticky top-0 z-50 no-print">
         <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-center h-14">
-                <a href="../index.html" class="flex items-center space-x-2 text-primary hover:opacity-80 transition-opacity">
+                <a href="../" class="flex items-center space-x-2 text-primary hover:opacity-80 transition-opacity">
                     <svg class="h-6 w-6" aria-hidden="true">
                         <use href="#logo-icon"></use>
                     </svg>
@@ -64,94 +84,134 @@
         <article class="bg-white p-4 md:p-8 rounded-xl shadow-2xl w-full max-w-4xl mx-auto my-4 md:my-8">
             <!-- Article Header -->
             <header class="text-center mb-8">
-                <h1>How Much House Can I Afford? — Complete Guide + Free Calculator</h1>
+                <h1 class="text-2xl md:text-3xl font-extrabold text-primary">How Much House Can I Afford? <strong>Complete Guide + Free Calculator</strong></h1>
                 <p class="mt-2 text-base md:text-lg text-gray-600">Your journey to homeownership starts with one crucial question. Let's find the real answer.</p>
-                <div class="mt-4 text-xs text-gray-500">
-                    <span>Published on October 5, 2025</span> | <span>By Vikas</span>
+                <div class="mt-4 text-xs text-gray-700">
+                    <span>Published By <strong>Vikas Rana</strong></span>
                 </div>
             </header>
 
-            <div class="prose max-w-none mx-auto">
+            <div class="prose prose-sm max-w-none mx-auto">
                 <!-- Intro -->
                 <p>Buying a home is a huge milestone, but the excitement can quickly turn to confusion when it comes to the budget. You've heard of pre-approvals and online estimators, but what can you <em>truly</em> afford without stretching your finances too thin? This guide breaks down the essential formula for home affordability and gives you the tools to find your perfect number.</p>
 
                 <!-- Affordability Formula Section -->
-                <section class="mt-8">
+                <section class="mt-6 content-section">
                     <h2>The Core Affordability Formula: 4 Keys to Your Budget</h2>
                     <p>At its heart, home affordability isn't a mystery. It's a calculation based on four key financial pillars. Understanding each one is the first step to gaining control over your home search.</p>
                     <ul class="space-y-4 mt-4">
                         <li class="flex items-start">
-                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-100 text-primary flex items-center justify-center mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" /></svg></div>
-                            <div><h3><strong>Your Income</strong></h3><p>This is the foundation. Lenders look at your gross (pre-tax) monthly income to determine the baseline for what you can borrow.</p></div>
+                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-100 text-sky-800 flex items-center justify-center mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" /></svg></div>
+                            <div><h3>Your Income</h3><p>This is the foundation. Lenders look at your gross (pre-tax) monthly income to determine the baseline for what you can borrow.</p></div>
                         </li>
                         <li class="flex items-start">
-                             <div class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-100 text-primary flex items-center justify-center mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg></div>
-                            <div><h3><strong>Your Monthly Debts</strong></h3><p>This includes car payments, student loans, credit card debt, and any other fixed monthly obligations. The lower your existing debt, the more you can allocate to a mortgage.</p></div>
+                             <div class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-100 text-sky-800 flex items-center justify-center mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg></div>
+                            <div><h3>Your Monthly Debts</h3><p>This includes car payments, student loans, credit card debt, and any other fixed monthly obligations. The lower your existing debt, the more you can allocate to a mortgage.</p></div>
                         </li>
                         <li class="flex items-start">
-                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-100 text-primary flex items-center justify-center mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg></div>
-                            <div><h3><strong>The Interest Rate & Term</strong></h3><p>The current mortgage rates and the length of your loan (e.g., 15 or 30 years) directly impact the size of your monthly payment and, therefore, how much you can afford to borrow overall.</p></div>
+                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-100 text-sky-800 flex items-center justify-center mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg></div>
+                            <div><h3>The Interest Rate & Term</h3><p>The current mortgage rates and the length of your loan (e.g., 15 or 30 years) directly impact the size of your monthly payment and, therefore, how much you can afford to borrow overall.</p></div>
                         </li>
                     </ul>
                 </section>
 
                 <!-- Factors Affecting It Section -->
-                <section class="mt-8">
+                <section class="mt-6 content-section">
                     <h2>Key Factors That Influence Your Buying Power</h2>
                     <p>Beyond the basic formula, several other critical elements determine your final home loan eligibility and affordability.</p>
                      <ul class="space-y-4 mt-4">
                         <li class="flex items-start">
-                           <div class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-100 text-primary flex items-center justify-center mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v.01M12 6v.01M12 18v-2m0-2v-2m0-2v-2m0-2V7m0 0V6" /></svg></div>
-                            <div><h3><strong>Down Payment</strong></h3><p>The amount you pay upfront. A larger down payment (ideally 20% or more) reduces your loan amount, lowers your monthly payment, and helps you avoid Private Mortgage Insurance (PMI).</p></div>
+                           <div class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-100 text-sky-800 flex items-center justify-center mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v.01M12 6v.01M12 18v-2m0-2v-2m0-2v-2m0-2V7m0 0V6" /></svg></div>
+                            <div><h3>Down Payment</h3><p>The amount you pay upfront. A larger down payment (ideally 20% or more) reduces your loan amount, lowers your monthly payment, and helps you avoid Private Mortgage Insurance (PMI).</p></div>
                         </li>
                         <li class="flex items-start">
-                           <div class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-100 text-primary flex items-center justify-center mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></div>
-                            <div><h3><strong>Credit Score</strong></h3><p>A higher credit score signals to lenders that you are a reliable borrower, unlocking better interest rates. Even a small rate reduction can save you tens of thousands over the life of the loan.</p></div>
+                           <div class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-100 text-sky-800 flex items-center justify-center mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></div>
+                            <div><h3>Credit Score</h3><p>A higher credit score signals to lenders that you are a reliable borrower, unlocking better interest rates. Even a small rate reduction can save you tens of thousands over the life of the loan.</p></div>
                         </li>
                         <li class="flex items-start">
-                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-100 text-primary flex items-center justify-center mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" /></svg></div>
-                            <div><h3><strong>Debt-to-Income (DTI) Ratio</strong></h3><p>This is the most critical factor. It's your total monthly debts divided by your gross monthly income. Most lenders prefer a total DTI of 36% or less, though some may go up to 43%.</p></div>
+                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-100 text-sky-800 flex items-center justify-center mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" /></svg></div>
+                            <div><h3>Debt-to-Income (DTI) Ratio</h3><p>This is the most critical factor. It's your total monthly debts divided by your gross monthly income. Most lenders prefer a total DTI of 36% or less, though some may go up to 43%.</p></div>
+                        </li>
+                    </ul>
+                </section>
+                
+                <!-- Hidden Costs Section -->
+                <section class="mt-6 content-section">
+                    <h2>Beyond the Sticker Price: Uncovering Hidden Costs</h2>
+                    <p>Your mortgage is just one piece of the puzzle. Being a homeowner comes with ongoing expenses that every first-time buyer should anticipate. Don't let these catch you by surprise!</p>
+                     <ul class="space-y-4 mt-4">
+                        <li class="flex items-start">
+                           <div class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-100 text-sky-800 flex items-center justify-center mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25-2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3" /></svg></div>
+                            <div><h3>Closing Costs</h3><p>These are fees for services that complete the real estate transaction, like appraisals and title searches. Budget an extra 2-5% of the home's purchase price for them.</p></div>
+                        </li>
+                        <li class="flex items-start">
+                           <div class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-100 text-sky-800 flex items-center justify-center mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.242 1.453l-1.005.827c-.294.24-.438.613-.438.995a6.427 6.427 0 010 .255c0 .382.144.755.438.995l1.005.827c.48.398.668 1.036.242 1.453l-1.296 2.247a1.125 1.125 0 01-1.37.49l-1.217-.456c-.355-.133-.75-.072-1.075.124a6.57 6.57 0 01-.22.127c-.332.183-.582.495-.645.87l-.213 1.281c-.09.543-.56.94-1.11.94h-2.593c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.063-.374-.313-.686-.645-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.37-.49l-1.296-2.247a1.125 1.125 0 01.242-1.453l1.005-.827c.294-.24.438-.613-.438-.995a6.427 6.427 0 010-.255c0-.382-.144-.755-.438-.995l-1.005-.827c-.48-.398-.668-1.036-.242-1.453l1.296-2.247a1.125 1.125 0 011.37-.49l1.217.456c.355.133.75.072 1.076-.124.072-.044.146-.087.22-.127.332-.183.582-.495-.645-.87l.213-1.281z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg></div>
+                            <div><h3>Maintenance & Repairs</h3><p>Experts suggest setting aside 1-3% of your home's value each year for upkeep. A new roof or water heater can be a significant, unplanned expense.</p></div>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-100 text-sky-800 flex items-center justify-center mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m5.231 13.5h-8.01a1.5 1.5 0 01-1.5-1.5V7.5a1.5 1.5 0 011.5-1.5h8.01" /></svg></div>
+                            <div><h3>Higher Utility Bills</h3><p>Moving from a small apartment to a larger house often means a noticeable jump in heating, cooling, and electricity costs.</p></div>
                         </li>
                     </ul>
                 </section>
 
                 <!-- Interactive Section -->
-                <section class="mt-8">
+                <section class="mt-6">
                     <div class="bg-primary/10 p-6 rounded-lg text-center shadow-inner border border-primary/20">
                         <h2>Find Your Magic Number: The Interactive Affordability Calculator</h2>
                         <p class="mt-2 text-gray-700">Theory is one thing, but seeing your own numbers is another. Our free calculator goes beyond basic estimates. Input your income, debts, and desired DTI to see a realistic home price you can comfortably afford.</p>
-                        <a href="../index.html#affordability-tab" class="mt-4 inline-block bg-accent hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-transform transform hover:scale-105">
+                        <a href="../#affordability-tab" class="mt-4 inline-block bg-accent hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-transform transform hover:scale-105">
                             Calculate My Home Affordability
                         </a>
                     </div>
                 </section>
 
                 <!-- Example Scenarios Section -->
-                <section class="mt-8">
+                <section class="mt-6 content-section">
                     <h2>Affordability in Action: Case Studies from Around the World</h2>
                     <p>Budgets can vary wildly based on location and income. Here are a few simplified examples to illustrate how affordability works in practice.</p>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
                         <div class="border p-4 rounded-lg bg-gray-50">
-                            <h3><strong>USA Example</strong></h3>
+                            <h3>USA Example</h3>
                             <p class="text-sm"><strong>Income:</strong> $90,000/year<br><strong>Debts:</strong> $600/month<br><strong>Down Payment:</strong> $50,000<br>
                             <strong class="text-primary">Est. Affordable Price: ~$350,000</strong></p>
                         </div>
                         <div class="border p-4 rounded-lg bg-gray-50">
-                             <h3><strong>UK Example</strong></h3>
+                             <h3>UK Example</h3>
                             <p class="text-sm"><strong>Income:</strong> £65,000/year<br><strong>Debts:</strong> £350/month<br><strong>Down Payment:</strong> £40,000<br>
                             <strong class="text-primary">Est. Affordable Price: ~£280,000</strong></p>
                         </div>
                         <div class="border p-4 rounded-lg bg-gray-50">
-                             <h3><strong>Canada Example</strong></h3>
-                            <p class="text-sm"><strong>Income:</strong> C$110,000/year<br><strong>Debts:</strong> C$800/month<br><strong>Down Payment:</strong> C$70,000<br>
+                             <h3>Canada Example</h3>
+                            <p class="text-sm"><strong>Income:</strong> C$110,000/year<br><strong>Debts:</strong> C$800/month<br><strong>Down Payment:</strong> C$70,0.00<br>
                             <strong class="text-primary">Est. Affordable Price: ~C$450,000</strong></p>
                         </div>
                     </div>
-                     <p class="text-xs text-center mt-2 italic text-gray-500">Note: Examples are for illustrative purposes and assume a 36% DTI, 6.5% interest rate, and average property taxes/insurance.</p>
+                     <p class="text-xs text-center mt-2 italic text-gray-600">Note: Examples are for illustrative purposes and assume a 36% DTI, 6.5% interest rate, and average property taxes/insurance.</p>
+                </section>
+                
+                <!-- The Human Side Section -->
+                <section class="mt-6 content-section">
+                    <h2>It's Not Just Numbers: The Human Side of Affordability</h2>
+                    <p>A calculator can tell you what you <em>can</em> borrow, but only you can decide what you're <em>comfortable</em> paying. Your lifestyle and future goals are just as important as your DTI ratio.</p>
+                     <ul class="space-y-4 mt-4">
+                        <li class="flex items-start">
+                           <div class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-100 text-sky-800 flex items-center justify-center mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></div>
+                            <div><h3>Future Plans</h3><p>Are you planning to start a family, change careers, or go back to school? A lower mortgage payment can provide the flexibility to pursue these dreams without financial strain.</p></div>
+                        </li>
+                        <li class="flex items-start">
+                           <div class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-100 text-sky-800 flex items-center justify-center mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg></div>
+                            <div><h3>Lifestyle Choices</h3><p>Do you love to travel, dine out, or invest in hobbies? Maxing out your mortgage could mean cutting back on the activities that bring you joy. Find a balance that works for you.</p></div>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-100 text-sky-800 flex items-center justify-center mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 9.75h4.875a2.625 2.625 0 010 5.25H12M8.25 9.75L10.5 7.5M8.25 9.75L10.5 12m9-7.243V21.75l-3.75-1.5-3.75 1.5-3.75-1.5-3.75 1.5V4.757c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0c1.1.128 1.907 1.077 1.907 2.185z" /></svg></div>
+                            <div><h3>Peace of Mind</h3><p>Being "house poor"—where most of your income goes to housing costs—can be incredibly stressful. Aim for a payment that lets you build savings and handle unexpected emergencies with confidence.</p></div>
+                        </li>
+                    </ul>
                 </section>
 
                 <!-- Tips Section -->
-                <section class="mt-8">
+                <section class="mt-6 content-section">
                     <h2>3 Tips to Increase Your Buying Power</h2>
                     <p>If your affordability number is lower than you'd like, don't despair. You have the power to change it. Here are three effective strategies:</p>
                     <ul class="space-y-2 mt-4">
@@ -162,10 +222,39 @@
                 </section>
                 
                 <!-- Final CTA -->
-                <div class="mt-8 border-t pt-6 text-center">
+                <div class="mt-6 border-t pt-6 text-center">
                     <p class="text-lg">Once you know what you can afford, the next step is to see how different loan scenarios will affect your monthly budget.</p>
-                     <a href="../index.html" class="font-bold text-accent hover:underline"><strong>Use our Strategic Mortgage Calculator to find your exact monthly payment.</strong></a>
+                     <a href="../" class="font-bold text-accent hover:underline"><strong>Use our Strategic Mortgage Calculator to find your exact monthly payment.</strong></a>
                 </div>
+
+                <!-- Share Section -->
+                <section class="mt-6 pt-6 border-t">
+                    <h2 class="text-center text-xl font-bold text-gray-800 mb-4">Found This Guide Helpful? Share It!</h2>
+                    <div class="flex flex-wrap justify-center items-center gap-3">
+                        <!-- Twitter -->
+                        <a id="share-twitter" href="#" target="_blank" rel="noopener noreferrer" title="Share on Twitter" class="p-3 bg-[#1DA1F2] text-white rounded-full hover:bg-[#0c85d0] transition-colors">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.223.085a4.93 4.93 0 004.6 3.419A9.9 9.9 0 010 17.54a13.94 13.94 0 007.547 2.21c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg>
+                        </a>
+                        <!-- Facebook -->
+                        <a id="share-facebook" href="#" target="_blank" rel="noopener noreferrer" title="Share on Facebook" class="p-3 bg-[#1877F2] text-white rounded-full hover:bg-[#166fe5] transition-colors">
+                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clip-rule="evenodd"/></svg>
+                        </a>
+                        <!-- LinkedIn -->
+                        <a id="share-linkedin" href="#" target="_blank" rel="noopener noreferrer" title="Share on LinkedIn" class="p-3 bg-[#0077B5] text-white rounded-full hover:bg-[#006097] transition-colors">
+                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                        </a>
+                        <!-- WhatsApp -->
+                        <a id="share-whatsapp" href="#" target="_blank" rel="noopener noreferrer" title="Share on WhatsApp" class="p-3 bg-[#25D366] text-white rounded-full hover:bg-[#1ebe59] transition-colors">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.31-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/>
+                            </svg>
+                        </a>
+                        <!-- Email -->
+                        <a id="share-email" href="#" title="Share via Email" class="p-3 bg-gray-600 text-white rounded-full hover:bg-gray-700 transition-colors">
+                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path></svg>
+                        </a>
+                    </div>
+                </section>
 
             </div>
         </article>
@@ -182,7 +271,29 @@
         </div>
     </footer>
     <script>
-        document.getElementById('copyright-year').textContent = new Date().getFullYear();
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('copyright-year').textContent = new Date().getFullYear();
+
+            // --- Social Sharing Links ---
+            const postUrl = encodeURIComponent(window.location.href);
+            const postTitle = encodeURIComponent(document.title);
+            const postSource = encodeURIComponent("Strategic Mortgage Planner");
+
+            const twitterShare = document.getElementById('share-twitter');
+            if(twitterShare) twitterShare.href = `https://twitter.com/intent/tweet?url=${postUrl}&text=${postTitle}`;
+            
+            const facebookShare = document.getElementById('share-facebook');
+            if(facebookShare) facebookShare.href = `https://www.facebook.com/sharer/sharer.php?u=${postUrl}`;
+
+            const linkedinShare = document.getElementById('share-linkedin');
+            if(linkedinShare) linkedinShare.href = `https://www.linkedin.com/shareArticle?mini=true&url=${postUrl}&title=${postTitle}&source=${postSource}`;
+            
+            const whatsappShare = document.getElementById('share-whatsapp');
+            if(whatsappShare) whatsappShare.href = `https://api.whatsapp.com/send?text=${postTitle}%20${postUrl}`;
+
+            const emailShare = document.getElementById('share-email');
+            if(emailShare) emailShare.href = `mailto:?subject=${postTitle}&body=Check out this helpful guide on home affordability: ${postUrl}`;
+        });
     </script>
 </body>
 </html>
