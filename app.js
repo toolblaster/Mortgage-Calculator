@@ -1,6 +1,32 @@
-/* --- JAVASCRIPT LOGIC --- */
+/*
+================================================
+Strategic Mortgage Planner - Application Logic
+================================================
+This script handles all the financial calculations,
+chart rendering, user interactions, and state
+management for the mortgage calculator tool.
 
-// --- Global Variables & Chart Instance ---
+TABLE OF CONTENTS
+-----------------
+1. Global Variables & Chart Instances
+2. Helper Functions (Formatting, Animation)
+3. Core Financial Calculation Functions
+    - calculatePayment
+    - generateAmortization
+    - calculateRentVsBuy
+    - calculateAffordability
+4. DTI (Debt-to-Income) Calculation & Rendering
+5. Chart Rendering Functions
+6. Input Validation
+7. Main Calculation Orchestration
+8. Form & State Management (Reset, URL)
+9. UI Component Management (Modal, Tabs, PDF)
+10. Initial Page Load & Event Listeners
+================================================
+*/
+
+
+// --- 1. Global Variables & Chart Instances ---
 let mortgageChart = null;
 let rentVsBuyChart = null;
 let affordabilityChart = null;
@@ -8,7 +34,14 @@ const allInputIds = [ "loanAmount", "interestRate", "loanTerm", "initialLTV", "d
 let currentResults = null;
 let currentTab = 'mortgage';
 
-// --- Helper Functions ---
+
+// --- 2. Helper Functions ---
+
+/**
+ * Formats a number as a currency string based on the selected currency.
+ * @param {number} amount - The number to format.
+ * @returns {string} The formatted currency string.
+ */
 const formatCurrency = (amount) => {
     const currency = document.getElementById('currency').value || 'USD';
     // Use a specific locale that matches the common format for these currencies
@@ -18,8 +51,8 @@ const formatCurrency = (amount) => {
 const formatPercent = (amount) => (amount * 100).toFixed(1) + '%';
 
 /**
- * Animates a numerical value in a DOM element.
- * @param {HTMLElement} el - The element to update.
+ * Animates a numerical value in a DOM element from a start to an end value.
+ * @param {HTMLElement} el - The DOM element to update.
  * @param {number} endValue - The final value to display.
  * @param {number} duration - Animation duration in milliseconds.
  */
@@ -45,7 +78,7 @@ function animateValue(el, endValue, duration = 500) {
 }
 
 /**
- * Applies a temporary highlight animation to an element.
+ * Applies a temporary highlight animation to an element to draw user attention.
  * @param {string} elementId - The ID of the element to highlight.
  */
 function flashHighlight(elementId) {
@@ -59,14 +92,13 @@ function flashHighlight(elementId) {
     }
 }
 
+/**
+ * Updates all currency symbols in the UI based on the dropdown selection.
+ */
 function updateCurrencySymbols() {
     const currency = document.getElementById('currency').value;
     const symbols = {
-        'USD': '$',
-        'EUR': '€',
-        'GBP': '£',
-        'CAD': 'C$',
-        'AUD': 'A$'
+        'USD': '$', 'EUR': '€', 'GBP': '£', 'CAD': 'C$', 'AUD': 'A$'
     };
     const symbol = symbols[currency] || '$';
 
@@ -87,10 +119,10 @@ function updateCurrencySymbols() {
 }
 
 
-// --- Core Financial Calculation Functions ---
+// --- 3. Core Financial Calculation Functions ---
 
 /**
- * Calculates the periodic payment for a fixed-rate loan.
+ * Calculates the periodic payment for a fixed-rate loan using the standard formula.
  * @param {number} principal - The total loan amount.
  * @param {number} annualRate - The annual interest rate (e.g., 0.065).
  * @param {number} periodsPerYear - The number of payments per year.
@@ -106,7 +138,7 @@ function calculatePayment(principal, annualRate, periodsPerYear, totalPeriods) {
 
 /**
  * Generates the full amortization schedule and calculates key financial metrics.
- * This is the main engine of the calculator.
+ * This is the main calculation engine, handling extra payments, refinancing, PMI, etc.
  * @returns {object} An object containing the schedule, totals, and other key metrics.
  */
 function generateAmortization(principal, annualRate, periodsPerYear, totalPeriods, extraPaymentPerPeriod, lumpSumAmount, lumpSumPeriod, initialLTV, pmiRate, refiPeriod, refiRate, refiTerm, refiClosingCosts, pitiEscalationRate, discountRate, appreciationRate) {
@@ -181,7 +213,10 @@ function generateAmortization(principal, annualRate, periodsPerYear, totalPeriod
     return { schedule: amortizationSchedule, totalInterest: totalInterestPaid, totalPVInterest: totalPVInterestPaid, payoffPeriod, standardPayment: standardPaymentOriginal, firstPeriodPITI: amortizationSchedule.length > 0 ? amortizationSchedule[0].periodicPITI * (12 / periodsPerYear) : standardPaymentOriginal, pmiDropPeriod, finalPropertyValue: currentPropertyValue, finalEquity: Math.max(0, currentPropertyValue) };
 }
 
-// --- Rent vs. Buy Calculation ---
+/**
+ * Calculates and compares the long-term financial outcomes of renting vs. buying.
+ * @returns {object} Financial outcomes for both scenarios.
+ */
 function calculateRentVsBuy() {
     const loanAmount = parseFloat(document.getElementById('loanAmount').value);
     const initialLTV = parseFloat(document.getElementById('initialLTV').value);
@@ -256,7 +291,10 @@ function calculateRentVsBuy() {
     };
 }
 
-// --- Affordability Calculation ---
+/**
+ * Calculates the maximum affordable home price based on user's income, debts, and DTI preferences.
+ * @returns {object} Affordability metrics like max home price, loan amount, and PITI.
+ */
 function calculateAffordability() {
     const annualIncome = parseFloat(document.getElementById('annualIncome').value);
     const monthlyDebts = parseFloat(document.getElementById('nonMortgageDebt').value);
@@ -300,7 +338,7 @@ function calculateAffordability() {
 }
 
 
-// --- DTI Calculation & Rendering ---
+// --- 4. DTI Calculation & Rendering ---
 function calculateDTI(totalMonthlyHousingCost) {
     const annualIncome = parseFloat(document.getElementById('annualIncome').value) || 0;
     const monthlyNonMortgageDebt = parseFloat(document.getElementById('nonMortgageDebt').value) || 0;
@@ -329,7 +367,8 @@ function renderDTI(frontEndDTI, backEndDTI) {
     applyStatus('backEndDTI', 'backEndDTIStatus', getStatus(backEndDTI));
 }
 
-// --- Chart Rendering ---
+
+// --- 5. Chart Rendering Functions ---
 function renderChart(acceleratedResults) {
     const ctx = document.getElementById('comparisonChart').getContext('2d');
     if (mortgageChart) mortgageChart.destroy();
@@ -447,7 +486,7 @@ function renderAffordabilityChart(results) {
 }
 
 
-// --- Input Validation ---
+// --- 6. Input Validation ---
 function validateInputs() {
     const errors = [];
     const fields = [ { id: 'loanAmount', name: 'Loan Principal', min: 1 }, { id: 'interestRate', name: 'Interest Rate', min: 0.1, max: 100 }, { id: 'loanTerm', name: 'Loan Term', min: 1, max: 50 }, { id: 'initialLTV', name: 'Initial LTV', min: 1, max: 100 }, { id: 'annualIncome', name: 'Annual Income', min: 0 }, { id: 'nonMortgageDebt', name: 'Non-Mortgage Debt', min: 0 }, { id: 'appreciationRate', name: 'Appreciation Rate', min: 0, max: 50 }, { id: 'discountRate', name: 'Discount Rate', min: 0, max: 50 }, { id: 'pitiEscalationRate', name: 'PITI Escalation Rate', min: 0, max: 50 }, { id: 'pmiRate', name: 'PMI Rate', min: 0, max: 10 }, { id: 'propertyTax', name: 'Property Tax', min: 0 }, { id: 'insurance', name: 'Home Insurance', min: 0 }, { id: 'hoa', name: 'HOA Dues', min: 0 }, { id: 'extraPayment', name: 'Extra Payment', min: 0 }, { id: 'lumpSumPayment', name: 'Lump Sum Payment', min: 0 }, { id: 'annualMaintenance', name: 'Annual Maintenance', min: 0, max: 20 }, { id: 'monthlyUtilities', name: 'Monthly Utilities', min: 0 } ];
@@ -489,11 +528,13 @@ function validateInputs() {
     return true;
 }
 
-// --- Main Calculation Orchestration ---
+// --- 7. Main Calculation Orchestration ---
 function handleCalculation(isShockTest = false) {
     const calculateButton = document.getElementById('calculateButton');
     calculateButton.disabled = true;
     calculateButton.textContent = 'Calculating...';
+    
+    // Use a short timeout to allow the UI to update to "Calculating..."
     setTimeout(() => {
         try { 
             if (validateInputs()) {
@@ -599,7 +640,8 @@ function calculateMortgage(isShockTest = false) {
         setTxt('pmiDropPeriod', accelerated.pmiDropPeriod);
     } else { pmiNote.style.display = 'none'; }
     
-    setTxt('acceleratedPaymentDisplay', formatCurrency(standardPmt + extraP));
+    setTxt('standardPaymentDisplay', formatCurrency(standardPmt * (12 / periodsPerYear)));
+    setTxt('acceleratedPaymentDisplay', formatCurrency((standardPmt + extraP) * (12/periodsPerYear)));
     animateValue(document.getElementById('totalInterestOriginal'), original.totalInterest);
     animateValue(document.getElementById('totalInterestNew'), accelerated.totalInterest);
     animateValue(document.getElementById('npvOriginal'), original.totalPVInterest);
@@ -610,13 +652,8 @@ function calculateMortgage(isShockTest = false) {
     const tSavedY = Math.floor(tSavedPeriods / periodsPerYear);
     const tSavedM = Math.round((tSavedPeriods % periodsPerYear) * (12 / periodsPerYear));
     const timeSavedStr = `${tSavedY}y ${tSavedM}m`;
-    const payoffDate = (periods) => {
-        let d = new Date();
-        d.setMonth(d.getMonth() + Math.round(periods * (12 / periodsPerYear)));
-        return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
-    };
-    setTxt('originalPayoffDate', payoffDate(original.payoffPeriod));
-    setTxt('newPayoffDate', payoffDate(accelerated.payoffPeriod));
+    setTxt('originalPayoffDate', payoffDate(original.payoffPeriod, periodsPerYear));
+    setTxt('newPayoffDate', payoffDate(accelerated.payoffPeriod, periodsPerYear));
     animateValue(document.getElementById('interestSaved'), iSaved);
     animateValue(document.getElementById('npvSaved'), npvSaved);
     setTxt('timeSaved', timeSavedStr);
@@ -671,7 +708,7 @@ function generateAmortizationTable(originalResults, acceleratedResults) {
     body.innerHTML = rowsHtml;
 }
 
-// --- Form Reset ---
+// --- 8. Form & State Management ---
 function resetForm() {
     const defaults = { loanAmount: "300000", interestRate: "6.5", loanTerm: "30", initialLTV: "90", discountRate: "3.0", appreciationRate: "3.5", annualIncome: "120000", nonMortgageDebt: "800", propertyTax: "3600", insurance: "1200", hoa: "0", pitiEscalationRate: "2.0", pmiRate: "0.5", extraPayment: "100", lumpSumPayment: "5000", lumpSumPeriod: "1", refiPeriod: "60", refiRate: "5.0", refiTerm: "15", refiClosingCosts: "5000", shockRateIncrease: "1.0", annualMaintenance: "1.0", monthlyUtilities: "300", monthlyRent: "2000", rentIncrease: "3.0", investmentReturn: "7.0", closingCosts: "8000", sellingCosts: "6.0", downPaymentAmount: "60000", desiredFrontEndDTI: "28", desiredBackEndDTI: "36" };
     for (const id in defaults) {
@@ -685,7 +722,6 @@ function resetForm() {
     updateCurrencySymbols();
 }
 
-// --- URL State Management ---
 function updateURLWithInputs() {
     const params = new URLSearchParams();
     allInputIds.forEach(id => {
@@ -710,7 +746,7 @@ function populateFormFromURL() {
 }
 
 
-// --- Modal Management ---
+// --- 9. UI Component Management ---
 function setupModal() {
     const modal = document.getElementById('shareModal');
     const saveButton = document.getElementById('saveButton');
@@ -720,22 +756,20 @@ function setupModal() {
     const copyFeedback = document.getElementById('copyFeedback');
 
     saveButton.addEventListener('click', () => {
-        // Ensure URL is up-to-date before showing
         updateURLWithInputs();
         shareUrlInput.value = window.location.href;
         modal.classList.remove('hidden');
-        shareUrlInput.select(); // Select the text for easy copying
+        shareUrlInput.select();
     });
 
     closeModalButton.addEventListener('click', () => {
         modal.classList.add('hidden');
-        copyFeedback.textContent = ''; // Clear feedback on close
+        copyFeedback.textContent = '';
     });
 
     copyUrlButton.addEventListener('click', () => {
         shareUrlInput.select();
         try {
-            // Use execCommand for better iframe compatibility
             document.execCommand('copy');
             copyFeedback.textContent = 'Copied to clipboard!';
             setTimeout(() => { copyFeedback.textContent = ''; }, 2000);
@@ -745,7 +779,6 @@ function setupModal() {
         }
     });
 
-    // Close modal if clicking outside of it
     modal.addEventListener('click', (event) => {
         if (event.target === modal) {
             modal.classList.add('hidden');
@@ -754,7 +787,6 @@ function setupModal() {
     });
 }
 
-// --- PDF Generation ---
 function generatePDF() {
     if (currentTab !== 'mortgage') {
         alert("PDF reports are only available for the 'Mortgage Calculator' tab.");
@@ -873,13 +905,14 @@ function generatePDF() {
     doc.save(`Mortgage_Report_${new Date().toISOString().slice(0,10)}.pdf`);
 }
 
-const payoffDate = (periods, periodsPerYear) => {
+function payoffDate(periods, periodsPerYear) {
     let d = new Date();
-    d.setMonth(d.getMonth() + Math.round(periods * (12 / periodsPerYear)));
+    // Calculate total months to add
+    const totalMonths = Math.round(periods / (periodsPerYear / 12));
+    d.setMonth(d.getMonth() + totalMonths);
     return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
 };
 
-// --- Tab Management ---
 function setupTabs() {
     const tabs = {
         'mortgage': { button: document.getElementById('mortgage-tab'), content: document.getElementById('mortgage-calculator-content') },
@@ -906,14 +939,25 @@ function setupTabs() {
         tabs[key].button.addEventListener('click', () => switchTab(key));
     }
     
-    // Set initial active tab
-    switchTab('mortgage');
+    switchTab('mortgage'); // Set initial active tab
 }
 
 
-// --- Initial Page Load ---
+// --- 10. Initial Page Load & Event Listeners ---
 window.onload = () => {
+    // Initialize UI components
     setupTabs();
+    setupModal();
+
+    // Set the copyright year in the footer
+    document.getElementById('copyright-year').textContent = new Date().getFullYear();
+
+    // Set up listeners and initial state
+    document.getElementById('currency').addEventListener('change', updateCurrencySymbols);
+    updateCurrencySymbols();
+
+    // Automatically load the SEO content guide
+    loadGuide();
 
     // Populate form from URL if params exist, otherwise run with defaults
     if (!populateFormFromURL()) {
@@ -921,36 +965,25 @@ window.onload = () => {
     } else {
         handleCalculation(); // Calculate with URL params
     }
-    
-    // Set up the modal listeners
-    setupModal();
-
-    // Set the copyright year in the footer
-    document.getElementById('copyright-year').textContent = new Date().getFullYear();
-
-    // Add currency change listener and initial symbol update
-    document.getElementById('currency').addEventListener('change', updateCurrencySymbols);
-    updateCurrencySymbols();
-
-    // Automatically load the content guide
-    loadGuide();
 };
 
-// --- SEO Content Loader ---
+/**
+ * Fetches and injects the SEO content guide into the main page.
+ */
 function loadGuide() {
     const guideContent = document.getElementById('guide-content');
     if (!guideContent) return;
 
     fetch('content-guide.html')
         .then(response => {
-            if (!response.ok) throw new Error('Network response was not ok');
+            if (!response.ok) throw new Error('Network response was not ok for content guide.');
             return response.text();
         })
         .then(html => {
             guideContent.innerHTML = html;
         })
         .catch(error => {
-            guideContent.innerHTML = '<p class="text-red-500 text-center">Sorry, the guide could not be loaded.</p>';
+            guideContent.innerHTML = '<p class="text-red-500 text-center p-8">Sorry, the homeowner\'s guide could not be loaded at this time.</p>';
             console.error('Error fetching content guide:', error);
         });
 }
