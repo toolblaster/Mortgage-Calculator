@@ -9,7 +9,7 @@
     <meta name="description" content="An advanced mortgage calculator to analyze payoff scenarios, equity growth, Debt-to-Income (DTI), Net Present Value (NPV) of costs, and potential refinance options.">
     <meta property="og:title" content="Strategic Mortgage Planner">
     <meta property="og:description" content="Model your mortgage with advanced scenarios including extra payments, refinancing, and property appreciation.">
-    <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIHJ4PSIyMCIgZmlsbD0iIzFDNzY4RiIvPjxwYXRoIGQ9Ik01MCAyNUwyNSA0NVY3NUg0MS42NjY3VjU4LjMzMzNINTguMzMzM1Y3NUg3NVY0NUw1MCAyNVoiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik00MCA2NUw1MCA1NUw2MCA2NSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNNTAgNTVWNDUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW59InJvdW5kIi8+PC9zdmc+">
+    <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIHJ4PSIyMCIgZmlsbD0iIzFDNzY4RiIvPjxwYXRoIGQ9Ik01MCAyNUwyNSA0NVY3NUg0MS42NjY3VjU4LjMzMzNINTguMzMzM1Y3NUg3NVY0NUw1MCAyNVoiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik00MCA2NUw1MCA1NUw2MCA2NSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm9unZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik01MCA1NVY0NSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48L3N2Zz4=">
 
     <!-- Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -143,7 +143,13 @@
                                 <input type="number" id="discountRate" value="3.0" min="0" max="20" step="0.1" class="w-full p-2 border border-npv/50 rounded-md focus:ring-npv focus:border-npv">
                             </div>
                             <div class="space-y-1">
-                                <label for="pitiEscalationRate" class="block font-medium text-sm text-red-700">PITI Escalation Rate (%):</label>
+                                <!-- UI ENHANCEMENT: Added a tooltip for clarity -->
+                                <label for="pitiEscalationRate" class="block font-medium text-sm text-red-700">
+                                    <span class="tooltip-container">Annual Tax/Ins Escalation (%):
+                                        <span class="tooltip-icon" tabindex="0">?</span>
+                                        <span class="tooltip-text">The estimated annual increase for property taxes and homeowner's insurance. This does NOT apply to HOA dues.</span>
+                                    </span>
+                                </label>
                                 <input type="number" id="pitiEscalationRate" value="2.0" min="0" max="10" step="0.1" class="w-full p-2 border border-red-300 rounded-md focus:ring-red-500 focus:border-red-500">
                             </div>
                             <div class="space-y-1">
