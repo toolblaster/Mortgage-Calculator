@@ -3,7 +3,8 @@
 // --- Global Variables & Chart Instance ---
 let mortgageChart = null;
 let rentVsBuyChart = null;
-const allInputIds = [ "loanAmount", "interestRate", "loanTerm", "initialLTV", "discountRate", "appreciationRate", "annualIncome", "nonMortgageDebt", "propertyTax", "insurance", "hoa", "pitiEscalationRate", "pmiRate", "extraPayment", "lumpSumPayment", "lumpSumPeriod", "refiPeriod", "refiRate", "refiTerm", "refiClosingCosts", "shockRateIncrease", "repaymentFrequency", "currency", "annualMaintenance", "monthlyUtilities", "monthlyRent", "rentIncrease", "investmentReturn", "closingCosts", "sellingCosts" ];
+let affordabilityChart = null;
+const allInputIds = [ "loanAmount", "interestRate", "loanTerm", "initialLTV", "discountRate", "appreciationRate", "annualIncome", "nonMortgageDebt", "propertyTax", "insurance", "hoa", "pitiEscalationRate", "pmiRate", "extraPayment", "lumpSumPayment", "lumpSumPeriod", "refiPeriod", "refiRate", "refiTerm", "refiClosingCosts", "shockRateIncrease", "repaymentFrequency", "currency", "annualMaintenance", "monthlyUtilities", "monthlyRent", "rentIncrease", "investmentReturn", "closingCosts", "sellingCosts", "downPaymentAmount", "desiredFrontEndDTI", "desiredBackEndDTI" ];
 let currentResults = null;
 let currentTab = 'mortgage';
 
@@ -56,6 +57,33 @@ function flashHighlight(elementId) {
             el.classList.remove('flash-highlight');
         }, 1000); // Duration should match the CSS animation
     }
+}
+
+function updateCurrencySymbols() {
+    const currency = document.getElementById('currency').value;
+    const symbols = {
+        'USD': '$',
+        'EUR': '€',
+        'GBP': '£',
+        'CAD': 'C$',
+        'AUD': 'A$'
+    };
+    const symbol = symbols[currency] || '$';
+
+    const symbolSpanIds = [
+        'mc-loan-currency', 'mc-tax-currency', 'mc-ins-currency', 'mc-hoa-currency',
+        'mc-util-currency', 'mc-extra-currency', 'mc-lump-currency', 'mc-refi-currency',
+        'dti-income-currency', 'dti-debt-currency',
+        'afford-down-payment-currency',
+        'rvb-rent-currency', 'rvb-closing-costs-currency'
+    ];
+
+    symbolSpanIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.textContent = symbol;
+        }
+    });
 }
 
 
@@ -228,6 +256,49 @@ function calculateRentVsBuy() {
     };
 }
 
+// --- Affordability Calculation ---
+function calculateAffordability() {
+    const annualIncome = parseFloat(document.getElementById('annualIncome').value);
+    const monthlyDebts = parseFloat(document.getElementById('nonMortgageDebt').value);
+    const downPayment = parseFloat(document.getElementById('downPaymentAmount').value);
+    const frontEndDTI = parseFloat(document.getElementById('desiredFrontEndDTI').value) / 100;
+    const backEndDTI = parseFloat(document.getElementById('desiredBackEndDTI').value) / 100;
+    const annualRate = parseFloat(document.getElementById('interestRate').value) / 100;
+    const termYears = parseFloat(document.getElementById('loanTerm').value);
+    const annualTax = parseFloat(document.getElementById('propertyTax').value);
+    const annualInsurance = parseFloat(document.getElementById('insurance').value);
+
+    const monthlyIncome = annualIncome / 12;
+    const monthlyTax = annualTax / 12;
+    const monthlyInsurance = annualInsurance / 12;
+
+    const maxPaymentFromFrontEnd = monthlyIncome * frontEndDTI;
+    const maxPaymentFromBackEnd = (monthlyIncome * backEndDTI) - monthlyDebts;
+
+    const maxPITI = Math.min(maxPaymentFromFrontEnd, maxPaymentFromBackEnd);
+    const maxPI = maxPITI - monthlyTax - monthlyInsurance;
+
+    if (maxPI <= 0) {
+        return { homePrice: 0, loanAmount: 0, piti: 0, pi: 0, tax: 0, insurance: 0 };
+    }
+
+    const periodsPerYear = 12;
+    const totalPeriods = termYears * periodsPerYear;
+    const monthlyRate = annualRate / periodsPerYear;
+    
+    const loanAmount = maxPI * (1 - Math.pow(1 + monthlyRate, -totalPeriods)) / monthlyRate;
+    const homePrice = loanAmount + downPayment;
+
+    return {
+        homePrice: homePrice,
+        loanAmount: loanAmount,
+        piti: maxPITI,
+        pi: maxPI,
+        tax: monthlyTax,
+        insurance: monthlyInsurance
+    };
+}
+
 
 // --- DTI Calculation & Rendering ---
 function calculateDTI(totalMonthlyHousingCost) {
@@ -338,6 +409,43 @@ function renderRentVsBuyChart(rentingTimeline, buyingTimeline) {
     });
 }
 
+function renderAffordabilityChart(results) {
+    const ctx = document.getElementById('affordabilityChart').getContext('2d');
+    if (affordabilityChart) affordabilityChart.destroy();
+    
+    affordabilityChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Principal & Interest', 'Property Tax', 'Home Insurance'],
+            datasets: [{
+                label: 'Monthly Payment Breakdown',
+                data: [results.pi, results.tax, results.insurance],
+                backgroundColor: ['#1C768F', '#f59e0b', '#10b981'],
+                borderColor: '#ffffff',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Estimated Monthly Payment Breakdown'
+                },
+                legend: {
+                    position: 'bottom',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: c => `${c.label}: ${formatCurrency(c.raw)}`
+                    }
+                }
+            }
+        }
+    });
+}
+
 
 // --- Input Validation ---
 function validateInputs() {
@@ -351,6 +459,12 @@ function validateInputs() {
             { id: 'investmentReturn', name: 'Investment Return', min: 0, max: 30 },
             { id: 'closingCosts', name: 'Closing Costs', min: 0 },
             { id: 'sellingCosts', name: 'Selling Costs', min: 0, max: 20 }
+        );
+    } else if (currentTab === 'affordability') {
+        fields.push(
+            { id: 'downPaymentAmount', name: 'Down Payment', min: 0 },
+            { id: 'desiredFrontEndDTI', name: 'Housing DTI', min: 10, max: 50 },
+            { id: 'desiredBackEndDTI', name: 'Total DTI', min: 10, max: 50 }
         );
     }
 
@@ -385,8 +499,10 @@ function handleCalculation(isShockTest = false) {
             if (validateInputs()) {
                 if(currentTab === 'mortgage') {
                     calculateMortgage(isShockTest);
-                } else {
+                } else if (currentTab === 'rent-vs-buy') {
                     runRentVsBuyAnalysis();
+                } else if (currentTab === 'affordability') {
+                    runAffordabilityAnalysis();
                 }
                 updateURLWithInputs();
             }
@@ -423,6 +539,21 @@ function runRentVsBuyAnalysis() {
     resultsEl.style.opacity = 1;
     resultsEl.classList.add('results-animate-in');
 }
+
+function runAffordabilityAnalysis() {
+    const results = calculateAffordability();
+    
+    document.getElementById('affordableHomePrice').textContent = formatCurrency(results.homePrice);
+    document.getElementById('affordableLoanAmount').textContent = formatCurrency(results.loanAmount);
+    document.getElementById('affordablePITI').textContent = formatCurrency(results.piti);
+
+    renderAffordabilityChart(results);
+    
+    const resultsEl = document.getElementById('affordability-results');
+    resultsEl.style.opacity = 1;
+    resultsEl.classList.add('results-animate-in');
+}
+
 
 function calculateMortgage(isShockTest = false) {
     const getVal = id => parseFloat(document.getElementById(id).value);
@@ -542,7 +673,7 @@ function generateAmortizationTable(originalResults, acceleratedResults) {
 
 // --- Form Reset ---
 function resetForm() {
-    const defaults = { loanAmount: "300000", interestRate: "6.5", loanTerm: "30", initialLTV: "90", discountRate: "3.0", appreciationRate: "3.5", annualIncome: "120000", nonMortgageDebt: "800", propertyTax: "3600", insurance: "1200", hoa: "0", pitiEscalationRate: "2.0", pmiRate: "0.5", extraPayment: "100", lumpSumPayment: "5000", lumpSumPeriod: "1", refiPeriod: "60", refiRate: "5.0", refiTerm: "15", refiClosingCosts: "5000", shockRateIncrease: "1.0", annualMaintenance: "1.0", monthlyUtilities: "300", monthlyRent: "2000", rentIncrease: "3.0", investmentReturn: "7.0", closingCosts: "8000", sellingCosts: "6.0" };
+    const defaults = { loanAmount: "300000", interestRate: "6.5", loanTerm: "30", initialLTV: "90", discountRate: "3.0", appreciationRate: "3.5", annualIncome: "120000", nonMortgageDebt: "800", propertyTax: "3600", insurance: "1200", hoa: "0", pitiEscalationRate: "2.0", pmiRate: "0.5", extraPayment: "100", lumpSumPayment: "5000", lumpSumPeriod: "1", refiPeriod: "60", refiRate: "5.0", refiTerm: "15", refiClosingCosts: "5000", shockRateIncrease: "1.0", annualMaintenance: "1.0", monthlyUtilities: "300", monthlyRent: "2000", rentIncrease: "3.0", investmentReturn: "7.0", closingCosts: "8000", sellingCosts: "6.0", downPaymentAmount: "60000", desiredFrontEndDTI: "28", desiredBackEndDTI: "36" };
     for (const id in defaults) {
         const el = document.getElementById(id);
         if (el) el.value = defaults[id];
@@ -551,6 +682,7 @@ function resetForm() {
     document.getElementById('currency').value = "USD";
     history.pushState(null, '', window.location.pathname); // Clear URL params on reset
     handleCalculation();
+    updateCurrencySymbols();
 }
 
 // --- URL State Management ---
@@ -624,7 +756,11 @@ function setupModal() {
 
 // --- PDF Generation ---
 function generatePDF() {
-    if (!currentResults || currentTab !== 'mortgage') {
+    if (currentTab !== 'mortgage') {
+        alert("PDF reports are only available for the 'Mortgage Calculator' tab.");
+        return;
+    }
+    if (!currentResults) {
         alert("Please calculate a scenario on the Mortgage Calculator tab first to generate a report.");
         return;
     }
@@ -745,29 +881,29 @@ const payoffDate = (periods, periodsPerYear) => {
 
 // --- Tab Management ---
 function setupTabs() {
-    const mortgageTab = document.getElementById('mortgage-tab');
-    const rentVsBuyTab = document.getElementById('rent-vs-buy-tab');
-    const mortgageContent = document.getElementById('mortgage-calculator-content');
-    const rentVsBuyContent = document.getElementById('rent-vs-buy-content');
+    const tabs = {
+        'mortgage': { button: document.getElementById('mortgage-tab'), content: document.getElementById('mortgage-calculator-content') },
+        'affordability': { button: document.getElementById('affordability-tab'), content: document.getElementById('affordability-content') },
+        'rent-vs-buy': { button: document.getElementById('rent-vs-buy-tab'), content: document.getElementById('rent-vs-buy-content') }
+    };
 
     function switchTab(tab) {
         currentTab = tab;
-        if (tab === 'mortgage') {
-            mortgageTab.classList.add('active');
-            rentVsBuyTab.classList.remove('active');
-            mortgageContent.classList.remove('hidden');
-            rentVsBuyContent.classList.add('hidden');
-        } else {
-            mortgageTab.classList.remove('active');
-            rentVsBuyTab.classList.add('active');
-            mortgageContent.classList.add('hidden');
-            rentVsBuyContent.classList.remove('hidden');
+        for (const key in tabs) {
+            if (key === tab) {
+                tabs[key].button.classList.add('active');
+                tabs[key].content.classList.remove('hidden');
+            } else {
+                tabs[key].button.classList.remove('active');
+                tabs[key].content.classList.add('hidden');
+            }
         }
     }
 
-    mortgageTab.addEventListener('click', () => switchTab('mortgage'));
-    rentVsBuyTab.addEventListener('click', () => switchTab('rent-vs-buy'));
-
+    for (const key in tabs) {
+        tabs[key].button.addEventListener('click', () => switchTab(key));
+    }
+    
     // Set initial active tab
     switchTab('mortgage');
 }
@@ -789,6 +925,10 @@ window.onload = () => {
 
     // Set the copyright year in the footer
     document.getElementById('copyright-year').textContent = new Date().getFullYear();
+
+    // Add currency change listener and initial symbol update
+    document.getElementById('currency').addEventListener('change', updateCurrencySymbols);
+    updateCurrencySymbols();
 
     // Automatically load the content guide
     loadGuide();
