@@ -7,9 +7,7 @@
 
     <!-- SEO & Social Meta Tags -->
     <meta name="description" content="An advanced mortgage calculator to analyze payoff scenarios, equity growth, Debt-to-Income (DTI), Net Present Value (NPV) of costs, and potential refinance options.">
-    <meta property="og:title" content="Strategic Mortgage Planner">
-    <meta property="og:description" content="Model your mortgage with advanced scenarios including extra payments, refinancing, and property appreciation.">
-    <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIHJ4PSIyMCIgZmlsbD0iIzFDNzY4RiIvPjxwYXRoIGQ9Ik01MCAyNUwyNSA0NVY3NUg0MS42NjY3VjU4LjMzMzNINTguMzMzM1Y3NUg3NVY0NUw1MCAyNVoiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik00MCA2NUw1MCA1NUw2MCA2NSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNNTAgNTVWNDUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PC9zdmc+">
+    <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwMCIgaGVpZ2hтPSIxMDAiIHJ4PSIyMCIgZmlsbD0iIzFDNzY4RiIvPjxwYXRoIGQ9Ik01MCAyNUwyNSA0NVY3NUg0MS42NjY3VjU4LjMzMzNINTguMzMzM1Y3NUg3NVY0NUw1MCAyNVoiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik00MCA2NUw1MCA1NUw2MCA2NSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNNTAgNTVWNDUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PC9zdmc+">
 
     <!-- Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -33,6 +31,108 @@
 
     <!-- Global Stylesheet -->
     <link rel="stylesheet" href="style.css">
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": ["FinancialService", "WebApplication"],
+          "name": "Strategic Mortgage Planner",
+          "alternateName": "Advanced Mortgage Calculator with NPV, DTI & Equity Forecaster",
+          "description": "An advanced mortgage calculator to analyze payoff scenarios, equity growth, Debt-to-Income (DTI), Net Present Value (NPV) of costs, and potential refinance options.",
+          "applicationCategory": "FinanceApplication",
+          "operatingSystem": "Any (Web Application)",
+          "serviceType": "Mortgage Calculator",
+          "provider": {
+            "@type": "Organization",
+            "name": "Toolblaster.com",
+            "url": "https://toolblaster.com"
+          },
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [{
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Toolblaster Home",
+            "item": "https://toolblaster.com"
+          },{
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Strategic Mortgage Planner"
+          }]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [{
+            "@type": "Question",
+            "name": "Is it always better to make extra mortgage payments?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Not always. If your mortgage has a very low interest rate, you might get a better return by investing your extra cash elsewhere. Use the NPV (Net Present Value) feature in our calculator to compare the real return on each choice."
+            }
+          },{
+            "@type": "Question",
+            "name": "How is this different from a bank's calculator?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Most bank calculators only show you the monthly payment. Ours is a strategic planner that reveals the long-term financial impact of your decisions, focusing on key metrics like home equity, Net Present Value (NPV), and Debt-to-Income (DTI)."
+            }
+          },{
+            "@type": "Question",
+            "name": "When should I consider refinancing?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Refinancing is often a good idea if you can significantly lower your interest rate (e.g., by at least 0.75-1%) or if you want to shorten your loan term. Our planner's 'Refinance Scenario' section helps you see if the long-term interest savings outweigh the closing costs."
+            }
+          },{
+            "@type": "Question",
+            "name": "How does a bi-weekly payment plan help?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "A bi-weekly plan involves making 26 half-payments a year, which equals 13 full monthly payments instead of the standard 12. This extra payment is applied directly to the principal, helping you pay off the loan faster and save a significant amount on interest over the life of the loan."
+            }
+          },{
+            "@type": "Question",
+            "name": "What is PMI and how do I get rid of it?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Private Mortgage Insurance (PMI) is typically required if your down payment is less than 20% of the home's value (an LTV over 80%). You can usually request to have PMI removed once your loan balance drops to 80% of the home's original appraised value. Our calculator projects when you are expected to reach this important milestone."
+            }
+          }]
+        },
+        {
+          "@type": "HowTo",
+          "name": "How to Use the Strategic Mortgage Planner",
+          "description": "A step-by-step guide to get the most accurate and insightful results from the mortgage planner.",
+          "step": [
+            {
+              "@type": "HowToStep",
+              "name": "Start with Your Core Loan Details",
+              "text": "Enter your initial loan amount, interest rate, and term. This forms the baseline for all subsequent calculations and scenarios."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Add Your Financial Picture",
+              "text": "Input your gross annual income and other monthly debts (like car payments or student loans). This is crucial for the DTI (Debt-to-Income) analysis, showing how your mortgage fits into your overall budget."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Model Future Scenarios",
+              "text": "Use the 'PITI, Payoff & Economic Inputs' section to see how extra payments, property appreciation, and inflation (the Discount Rate) impact your wealth over time. This is where you can unlock the true strategic power of the tool."
+            }
+          ]
+        }
+      ]
+    }
+    </script>
 </head>
 <body>
 
@@ -143,11 +243,10 @@
                                 <input type="number" id="discountRate" value="3.0" min="0" max="20" step="0.1" class="w-full p-2 border border-npv/50 rounded-md focus:ring-npv focus:border-npv">
                             </div>
                             <div class="space-y-1">
-                                <!-- UI ENHANCEMENT: Added a tooltip for clarity -->
                                 <label for="pitiEscalationRate" class="block font-medium text-sm text-red-700">
-                                    <span class="tooltip-container">Annual Tax/Ins Escalation (%):
+                                    <span class="tooltip-container">PITI Escalation Rate (%):
                                         <span class="tooltip-icon" tabindex="0">?</span>
-                                        <span class="tooltip-text">The estimated annual increase for property taxes and homeowner's insurance. This does NOT apply to HOA dues.</span>
+                                        <span class="tooltip-text">The estimated annual increase for property taxes and home insurance. Helps model rising costs over time.</span>
                                     </span>
                                 </label>
                                 <input type="number" id="pitiEscalationRate" value="2.0" min="0" max="10" step="0.1" class="w-full p-2 border border-red-300 rounded-md focus:ring-red-500 focus:border-red-500">
@@ -350,8 +449,8 @@
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div class="text-center text-xs">
                 <p>&copy; <span id="copyright-year">2025</span> Strategic Mortgage Planner. All Rights Reserved. | <a href="legal.html" class="hover:text-white underline">Contact & Legal</a></p>
+                <p class="mt-1">A part of <a href="https://toolblaster.com" target="_blank" class="text-white hover:underline font-semibold">toolblaster.com</a> Network</p>
                  <p class="mt-1"><strong>Disclaimer:</strong> This tool is for informational purposes only. Consult a financial professional before making decisions.</p>
-                 <p class="mt-2">A part of the <a href="https://toolblaster.com" target="_blank" rel="noopener noreferrer" class="hover:text-white underline">toolblaster.com</a> Network</p>
             </div>
         </div>
     </footer>
