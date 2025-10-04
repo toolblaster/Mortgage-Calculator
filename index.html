@@ -14,39 +14,30 @@
     <meta property="og:image" content="https://placehold.co/1200x630/1c768f/ffffff?text=Mortgage+Calculator">
     <link rel="icon" href="https://placehold.co/32x32/1c768f/ffffff?text=MC" type="image/png">
 
-
-    <!-- Load Tailwind CSS CDN -->
+    <!-- Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Chart.js for dynamic visualization -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
     
-    <!-- Custom configuration for Tailwind colors -->
+    <!-- App Configuration -->
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        'primary': '#1C768F', // Deep Teal-Blue (Debt Focus)
-                        'accent': '#1e8749',  // Green (Equity Focus)
-                        'npv': '#E86F00', // Orange (NPV/Opportunity Cost)
-                        'dti-safe': '#10b981', // Emerald 500
-                        'dti-high': '#f59e0b', // Amber 500
-                        'dti-critical': '#ef4444', // Red 500
+                        'primary': '#1C768F', 'accent': '#1e8749', 'npv': '#E86F00',
+                        'dti-safe': '#10b981', 'dti-high': '#f59e0b', 'dti-critical': '#ef4444',
                     },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    }
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }
                 }
             }
         }
     </script>
-    <!-- Load Inter font -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
 
     <style>
         /* General styling and animations */
         html { scroll-behavior: smooth; }
+        body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
         details > summary { list-style: none; }
         details > summary::-webkit-details-marker { display: none; }
         details[open] summary ~ * { animation: sweep .5s ease-in-out; }
@@ -55,50 +46,68 @@
             100% { opacity: 1; transform: translateY(0) }
         }
 
+        /* Tooltip styles */
+        .tooltip-container { position: relative; display: inline-flex; align-items: center; }
+        .tooltip-icon {
+            margin-left: 6px; cursor: help; color: #9ca3af; border: 1px solid #d1d5db;
+            border-radius: 9999px; width: 16px; height: 16px; display: inline-flex;
+            align-items: center; justify-content: center; font-size: 10px; font-weight: bold;
+        }
+        .tooltip-text {
+            visibility: hidden; width: 220px; background-color: #1f2937; color: #fff;
+            text-align: center; border-radius: 6px; padding: 8px; position: absolute;
+            z-index: 10; bottom: 125%; left: 50%; margin-left: -110px; opacity: 0;
+            transition: opacity 0.3s; font-size: 12px; font-weight: normal;
+        }
+        .tooltip-text::after {
+            content: ""; position: absolute; top: 100%; left: 50%;
+            margin-left: -5px; border-width: 5px; border-style: solid;
+            border-color: #1f2937 transparent transparent transparent;
+        }
+        .tooltip-container:hover .tooltip-text, .tooltip-container:focus-within .tooltip-text {
+            visibility: visible; opacity: 1;
+        }
+
         /* Essential structure styles */
-        #chartContainer {
-            position: relative; 
-            height: 400px;
-            width: 100%;
-        }
+        #chartContainer { position: relative; height: 400px; width: 100%; }
+        #amortizationTable th, #amortizationTable td { white-space: nowrap; }
         
-        #amortizationTable th, #amortizationTable td {
-            white-space: nowrap; 
-        }
-        
-        /* Two-column layout for large screens */
         @media (min-width: 1024px) {
-            .main-grid-layout {
-                grid-template-columns: 30% 1fr; 
-            }
+            .main-grid-layout { grid-template-columns: 30% 1fr; }
         }
-        
+
+        /* Print-friendly styles */
+        @media print {
+            body { padding: 0; }
+            .no-print, #calculateButton, #resetButton, .input-column, header, footer, details > summary { display: none !important; }
+            main, #results, #schedule-wrapper { box-shadow: none !important; border: none !important; }
+            .main-grid-layout { display: block; }
+            details { open: true !important; } /* Ensure schedule is visible */
+            details[open] { page-break-before: always; }
+            .output-column { width: 100%; }
+            #chartContainer { height: 350px !important; }
+        }
     </style>
 </head>
 <body class="bg-gray-100 font-sans p-2 md:p-6 flex justify-center text-gray-800 text-sm">
 
     <main class="calculator-container bg-white p-4 md:p-8 rounded-xl shadow-2xl w-full max-w-6xl">
         
-        <!-- Header Section -->
         <header class="bg-sky-50 p-4 rounded-lg mb-4 shadow-sm">
             <h1 class="text-xl md:text-2xl font-extrabold text-primary text-center">
                 Ultimate Mortgage Payoff, NPV, DTI & Equity Growth Calculator
             </h1>
         </header>
 
-        <!-- Error Message Area -->
         <div id="error-messages" class="hidden p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 border border-red-200" role="alert">
             <span class="font-medium">Please correct the following errors:</span>
             <ul id="error-list" class="mt-1.5 ml-4 list-disc list-inside"></ul>
         </div>
         
-        <!-- Main Grid Layout -->
         <div class="main-grid-layout grid grid-cols-1 gap-6 mt-4 lg:grid-cols-2">
             
-            <!-- === LEFT COLUMN: ALL INPUTS === -->
             <div class="input-column flex flex-col gap-4">
                 
-                <!-- 1. Loan Core Details -->
                 <details open class="bg-white rounded-lg shadow-lg border border-gray-200">
                     <summary class="p-4 font-bold text-base text-primary border-b border-gray-200 cursor-pointer flex justify-between items-center relative before:content-['+'] open:before:content-['−'] before:absolute before:right-4 before:text-xl">
                         Loan Core Details
@@ -108,22 +117,23 @@
                             <label for="loanAmount" class="block font-medium text-sm text-gray-700">Loan Principal ($/£/€):</label>
                             <input type="number" id="loanAmount" value="300000" min="1000" step="1000" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
                         </div>
-                        
                         <div class="space-y-1">
-                            <label for="initialLTV" class="block font-medium text-sm text-gray-700">Initial LTV (%):</label>
+                            <label for="initialLTV" class="block font-medium text-sm text-gray-700">
+                                <span class="tooltip-container">Initial LTV (%):
+                                    <span class="tooltip-icon" tabindex="0">?</span>
+                                    <span class="tooltip-text">Loan-to-Value (LTV) is your loan amount divided by the property's value. An LTV over 80% typically requires PMI.</span>
+                                </span>
+                            </label>
                             <input type="number" id="initialLTV" value="90" min="5" max="100" step="1" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
                         </div>
-            
                         <div class="space-y-1">
                             <label for="interestRate" class="block font-medium text-sm text-gray-700">Annual P&I Rate (%):</label>
                             <input type="number" id="interestRate" value="6.5" min="0.1" max="25" step="0.1" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
                         </div>
-            
                         <div class="space-y-1">
                             <label for="loanTerm" class="block font-medium text-sm text-gray-700">Original Term (Years):</label>
                             <input type="number" id="loanTerm" value="30" min="5" max="50" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
                         </div>
-                        
                         <div class="space-y-1 col-span-1 sm:col-span-2">
                             <label for="repaymentFrequency" class="block font-medium text-sm text-gray-700">Frequency (Periods/yr):</label>
                             <select id="repaymentFrequency" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary h-[42px]">
@@ -136,7 +146,6 @@
                     </div>
                 </details>
 
-                <!-- 2. DTI ANALYSIS INPUTS -->
                 <details open class="bg-white rounded-lg shadow-lg border border-gray-200">
                     <summary class="p-4 font-bold text-base text-dti-safe border-b border-gray-200 cursor-pointer flex justify-between items-center relative before:content-['+'] open:before:content-['−'] before:absolute before:right-4 before:text-xl">
                         Debt-to-Income (DTI) Inputs
@@ -154,24 +163,24 @@
                     </div>
                 </details>
 
-
-                <!-- 3. PITI and Advanced Payoff Details -->
                 <details open class="bg-white rounded-lg shadow-lg border border-gray-200">
                     <summary class="p-4 font-bold text-base text-primary border-b border-gray-200 cursor-pointer flex justify-between items-center relative before:content-['+'] open:before:content-['−'] before:absolute before:right-4 before:text-xl">
                         PITI, Payoff & Economic Inputs
                     </summary>
                     <div class="input-section grid grid-cols-1 sm:grid-cols-2 gap-4 p-4">
-                        
-                         <div class="space-y-1 col-span-1 sm:col-span-2 bg-accent/10 p-2 rounded-md border border-accent/30">
+                        <div class="space-y-1 col-span-1 sm:col-span-2 bg-accent/10 p-2 rounded-md border border-accent/30">
                             <label for="appreciationRate" class="block font-bold text-sm text-accent">Annual Property Appreciation (%):</label>
                             <input type="number" id="appreciationRate" value="3.5" min="0" max="15" step="0.1" class="w-full p-2 border border-accent/50 rounded-md focus:ring-accent focus:border-accent">
                         </div>
-
-                         <div class="space-y-1 col-span-1 sm:col-span-2 bg-npv/10 p-2 rounded-md border border-npv/30">
-                            <label for="discountRate" class="block font-bold text-sm text-npv">Annual Investment/Inflation Rate (%):</label>
+                        <div class="space-y-1 col-span-1 sm:col-span-2 bg-npv/10 p-2 rounded-md border border-npv/30">
+                            <label for="discountRate" class="block font-bold text-sm text-npv">
+                                 <span class="tooltip-container">Annual Investment/Inflation Rate (%):
+                                    <span class="tooltip-icon" tabindex="0">?</span>
+                                    <span class="tooltip-text">Also called the Discount Rate. Represents the return you could get by investing your money elsewhere (e.g., stock market) or the rate of inflation. Used for NPV.</span>
+                                </span>
+                            </label>
                             <input type="number" id="discountRate" value="3.0" min="0" max="20" step="0.1" class="w-full p-2 border border-npv/50 rounded-md focus:ring-npv focus:border-npv">
                         </div>
-                        
                         <div class="space-y-1">
                             <label for="pitiEscalationRate" class="block font-medium text-sm text-red-700">PITI Escalation Rate (%):</label>
                             <input type="number" id="pitiEscalationRate" value="2.0" min="0" max="10" step="0.1" class="w-full p-2 border border-red-300 rounded-md focus:ring-red-500 focus:border-red-500">
@@ -180,7 +189,6 @@
                             <label for="pmiRate" class="block font-medium text-sm text-gray-700">Annual PMI Rate (%):</label>
                             <input type="number" id="pmiRate" value="0.5" min="0" max="5" step="0.05" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
                         </div>
-                        
                         <div class="space-y-1">
                             <label for="propertyTax" class="block font-medium text-sm text-gray-700">Annual Property Tax ($):</label>
                             <input type="number" id="propertyTax" value="3600" min="0" step="10" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
@@ -193,26 +201,21 @@
                             <label for="hoa" class="block font-medium text-sm text-gray-700">Monthly HOA Dues ($):</label>
                             <input type="number" id="hoa" value="0" min="0" step="10" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
                         </div>
-                        
                         <div class="space-y-1">
                             <label for="extraPayment" class="block font-medium text-sm text-gray-700">Extra Principal (Per Period):</label>
                             <input type="number" id="extraPayment" value="100" min="0" step="10" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
                         </div>
-                        
                         <div class="space-y-1">
                             <label for="lumpSumPayment" class="block font-medium text-sm text-gray-700">One-Time Lump Sum ($):</label>
                             <input type="number" id="lumpSumPayment" value="5000" min="0" step="500" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
                         </div>
-                        
                         <div class="space-y-1">
                             <label for="lumpSumPeriod" class="block font-medium text-sm text-gray-700">Lump Sum Applied at Period:</label>
                             <input type="number" id="lumpSumPeriod" value="1" min="1" max="360" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
                         </div>
-                        
                     </div>
                 </details>
 
-                <!-- 4. Refinance Scenario -->
                 <details class="bg-white rounded-lg shadow-lg border border-gray-200">
                     <summary class="p-4 font-bold text-base text-primary border-b border-gray-200 cursor-pointer flex justify-between items-center relative before:content-['+'] open:before:content-['−'] before:absolute before:right-4 before:text-xl">
                         Refinance Scenario Modeling
@@ -222,12 +225,10 @@
                             <label for="refiPeriod" class="block font-medium text-sm text-gray-700">Refinance at Period:</label>
                             <input type="number" id="refiPeriod" value="60" min="1" max="360" step="12" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
                         </div>
-                        
                         <div class="space-y-1">
                             <label for="refiClosingCosts" class="block font-medium text-sm text-red-700">Refi Closing Costs ($):</label>
                             <input type="number" id="refiClosingCosts" value="5000" min="0" step="100" class="w-full p-2 border border-red-300 rounded-md focus:ring-red-500 focus:border-red-500">
                         </div>
-
                         <div class="space-y-1">
                             <label for="refiRate" class="block font-medium text-sm text-gray-700">New Annual Rate (%):</label>
                             <input type="number" id="refiRate" value="5.0" min="0.1" max="20" step="0.1" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
@@ -239,7 +240,6 @@
                     </div>
                 </details>
 
-                <!-- 5. Interest Rate Shock Test -->
                 <details class="bg-white rounded-lg shadow-lg border border-gray-200">
                     <summary class="p-4 font-bold text-base text-primary border-b border-gray-200 cursor-pointer flex justify-between items-center relative before:content-['+'] open:before:content-['−'] before:absolute before:right-4 before:text-xl">
                         Interest Rate Shock Test
@@ -257,7 +257,6 @@
                     </div>
                 </details>
                 
-                <!-- PRIMARY CTA BUTTONS -->
                 <div class="flex flex-col sm:flex-row gap-3 md:gap-4 mt-2">
                     <button id="calculateButton" onclick="handleCalculation()" class="w-full px-4 py-3 bg-primary text-white font-semibold rounded-lg shadow-xl hover:bg-sky-700 transition duration-150 min-h-11">
                         Calculate Full Scenario
@@ -268,11 +267,18 @@
                 </div>
             </div>
             
-            <!-- === RIGHT COLUMN: ALL OUTPUTS === -->
             <div class="output-column flex flex-col gap-4">
 
                 <div id="results" class="p-4 bg-gray-50 rounded-lg shadow-inner border border-gray-200" aria-live="polite">
-                    <h2 class="text-xl font-bold text-gray-800 mb-2">Calculation Summary</h2>
+                    <div class="flex justify-between items-center mb-2">
+                         <h2 class="text-xl font-bold text-gray-800">Calculation Summary</h2>
+                         <button onclick="window.print()" class="no-print p-2 rounded-md hover:bg-gray-200 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2H5zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4V3zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2H5zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1z"/>
+                                <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z"/>
+                            </svg>
+                         </button>
+                    </div>
                     
                     <p class="text-xl py-2 font-bold">Estimated Initial Monthly Payment (PITI + PMI): <span id="totalMonthlyPaymentPITI" class="text-primary"></span></p>
                     
@@ -364,69 +370,45 @@
             </div>
         </div>
         
+        <footer class="text-center text-xs text-gray-500 mt-8 border-t pt-4">
+            <p>&copy; 2025 Ultimate Mortgage Calculator. All Rights Reserved.</p>
+            <p class="mt-1"><strong>Disclaimer:</strong> This calculator is for informational and illustrative purposes only and is not an offer for credit. The accuracy of this calculator is not guaranteed.</p>
+        </footer>
     </main>
 
     <script>
         /* --- JAVASCRIPT LOGIC --- */
-        
-        let mortgageChart = null; // Global reference for the chart instance
+        let mortgageChart = null;
+        const formatCurrency = (amount) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }).format(amount);
+        const formatPercent = (amount) => (amount * 100).toFixed(1) + '%';
 
-        // --- UTILITY FUNCTIONS ---
-        const formatCurrency = (amount) => {
-            return new Intl.NumberFormat('en-US', {
-                style: 'currency',
-                currency: 'USD',
-                minimumFractionDigits: 0
-            }).format(amount);
-        };
-        
-        const formatPercent = (amount) => {
-             return (amount * 100).toFixed(1) + '%';
-        }
-
-        // --- CORE FINANCIAL CALCULATIONS ---
         function calculatePayment(principal, annualRate, periodsPerYear, totalPeriods) {
-            if (annualRate <= 0 || totalPeriods <= 0) {
-                return principal / (totalPeriods > 0 ? totalPeriods : 1); 
-            }
+            if (annualRate <= 0 || totalPeriods <= 0) return principal / (totalPeriods > 0 ? totalPeriods : 1);
             const periodicRate = annualRate / periodsPerYear;
             const payment = principal * periodicRate / (1 - Math.pow(1 + periodicRate, -totalPeriods));
             return isFinite(payment) ? payment : 0;
         }
 
         function generateAmortization(principal, annualRate, periodsPerYear, totalPeriods, extraPaymentPerPeriod, lumpSumAmount, lumpSumPeriod, initialLTV, pmiRate, refiPeriod, refiRate, refiTerm, refiClosingCosts, pitiEscalationRate, discountRate, appreciationRate) {
-            
-            let currentBalance = principal;
-            let currentRate = annualRate;
-            let totalPeriodsRemaining = totalPeriods;
-            
+            let currentBalance = principal, currentRate = annualRate, totalPeriodsRemaining = totalPeriods;
             const standardPaymentOriginal = calculatePayment(principal, annualRate, periodsPerYear, totalPeriods);
             let standardPayment = standardPaymentOriginal;
-            
-            let totalInterestPaid = 0;
-            let totalPVInterestPaid = 0; 
-            let payoffPeriod = 0;
-            let pmiDropPeriod = null;
-
+            let totalInterestPaid = 0, totalPVInterestPaid = 0, payoffPeriod = 0, pmiDropPeriod = null;
             let amortizationSchedule = [];
             const periodicPmiRate = pmiRate / periodsPerYear;
-            const periodicDiscountRate = discountRate / periodsPerYear; 
+            const periodicDiscountRate = discountRate / periodsPerYear;
             const periodicAppreciationRate = appreciationRate / periodsPerYear;
-            
             const initialPropertyValue = (initialLTV > 0 && initialLTV <= 100) ? principal / (initialLTV / 100) : principal;
             let currentPropertyValue = initialPropertyValue;
             const pmiStopThreshold = 0.80 * initialPropertyValue;
-
             let isPMIActive = (initialLTV > 80);
             let hasRefinanced = false;
-
             let currentAnnualTax = parseFloat(document.getElementById('propertyTax').value) || 0;
             let currentAnnualInsurance = parseFloat(document.getElementById('insurance').value) || 0;
             let currentMonthlyHoa = parseFloat(document.getElementById('hoa').value) || 0;
             const escalationFactor = 1 + (pitiEscalationRate / 100);
 
             for (let period = 1; currentBalance > 0 && period <= 50 * periodsPerYear; period++) {
-                
                 if (period > 1) {
                     if ((period - 1) % periodsPerYear === 0) {
                         currentAnnualTax *= escalationFactor;
@@ -435,51 +417,31 @@
                     }
                     currentPropertyValue *= (1 + periodicAppreciationRate);
                 }
-                
                 let periodicRate = currentRate / periodsPerYear;
-                let principalPayment = 0;
-                let interest = 0;
-                
                 if (!hasRefinanced && refiPeriod > 0 && period >= refiPeriod) {
-                    if (currentBalance > 0) {
-                         currentBalance += refiClosingCosts; 
-                    }
+                    if (currentBalance > 0) currentBalance += refiClosingCosts;
                     currentRate = refiRate / 100;
                     totalPeriodsRemaining = Math.max(0, (refiTerm * periodsPerYear));
                     standardPayment = calculatePayment(currentBalance, currentRate, periodsPerYear, totalPeriodsRemaining);
                     hasRefinanced = true;
                 }
-
-                interest = currentBalance * periodicRate;
+                let interest = currentBalance * periodicRate;
                 let calculatedPayment = standardPayment;
-
-                if (currentBalance < calculatedPayment) {
-                    calculatedPayment = currentBalance + interest;
-                } else if (calculatedPayment <= interest) {
-                    calculatedPayment = interest + 1; 
-                }
-                
-                principalPayment = calculatedPayment - interest;
+                if (currentBalance < calculatedPayment) calculatedPayment = currentBalance + interest;
+                else if (calculatedPayment <= interest) calculatedPayment = interest + 1;
+                let principalPayment = calculatedPayment - interest;
                 let extraPrincipal = extraPaymentPerPeriod;
-                
-                if (lumpSumAmount > 0 && period === lumpSumPeriod) {
-                    extraPrincipal += lumpSumAmount;
-                }
-                
+                if (lumpSumAmount > 0 && period === lumpSumPeriod) extraPrincipal += lumpSumAmount;
                 let totalPrincipalPaid = principalPayment + extraPrincipal;
-                
                 if (currentBalance < totalPrincipalPaid) {
                     totalPrincipalPaid = currentBalance;
                     principalPayment = Math.max(0, totalPrincipalPaid - extraPrincipal);
                 }
-                
                 currentBalance -= totalPrincipalPaid;
                 totalInterestPaid += interest;
-
                 const discountFactor = Math.pow(1 + periodicDiscountRate, period);
                 const pvInterest = interest / discountFactor;
                 totalPVInterestPaid += pvInterest;
-
                 let pmiPayment = 0;
                 if (isPMIActive) {
                     pmiPayment = currentBalance * periodicPmiRate;
@@ -488,57 +450,25 @@
                         pmiDropPeriod = period;
                     }
                 }
-                
                 const periodicPITI = (currentAnnualTax / periodsPerYear) + (currentAnnualInsurance / periodsPerYear) + currentMonthlyHoa + pmiPayment;
                 const currentEquity = Math.max(0, currentPropertyValue - currentBalance);
-
-                amortizationSchedule.push({ 
-                    period, 
-                    interest: Math.max(0, interest), 
-                    principalPaid: Math.max(0, totalPrincipalPaid), 
-                    balance: Math.max(0, currentBalance),
-                    propertyValue: currentPropertyValue,
-                    totalEquity: currentEquity,
-                    pniPrincipal: Math.max(0, principalPayment),
-                    extraPayment: extraPrincipal,
-                    pmi: pmiPayment,
-                    rate: currentRate * 100,
-                    periodicPITI: periodicPITI,
-                    pvInterest: pvInterest
-                });
-
+                amortizationSchedule.push({ period, interest: Math.max(0, interest), principalPaid: Math.max(0, totalPrincipalPaid), balance: Math.max(0, currentBalance), propertyValue: currentPropertyValue, totalEquity: currentEquity, pniPrincipal: Math.max(0, principalPayment), extraPayment: extraPrincipal, pmi: pmiPayment, rate: currentRate * 100, periodicPITI: periodicPITI, pvInterest: pvInterest });
                 if (currentBalance <= 0) {
                     payoffPeriod = period;
                     break;
                 }
             }
-            
-            return { 
-                schedule: amortizationSchedule, 
-                totalInterest: totalInterestPaid, 
-                totalPVInterest: totalPVInterestPaid, 
-                payoffPeriod, 
-                standardPayment: standardPaymentOriginal,
-                firstPeriodPITI: amortizationSchedule.length > 0 ? amortizationSchedule[0].periodicPITI * (12 / periodsPerYear) : standardPaymentOriginal,
-                pmiDropPeriod,
-                finalPropertyValue: currentPropertyValue,
-                finalEquity: Math.max(0, currentPropertyValue)
-            };
+            return { schedule: amortizationSchedule, totalInterest: totalInterestPaid, totalPVInterest: totalPVInterestPaid, payoffPeriod, standardPayment: standardPaymentOriginal, firstPeriodPITI: amortizationSchedule.length > 0 ? amortizationSchedule[0].periodicPITI * (12 / periodsPerYear) : standardPaymentOriginal, pmiDropPeriod, finalPropertyValue: currentPropertyValue, finalEquity: Math.max(0, currentPropertyValue) };
         }
-        
-        // --- DTI Logic ---
+
         function calculateDTI(totalMonthlyPITI) {
             const annualIncome = parseFloat(document.getElementById('annualIncome').value) || 0;
             const monthlyNonMortgageDebt = parseFloat(document.getElementById('nonMortgageDebt').value) || 0;
-            
             if (annualIncome === 0) return { frontEnd: 0, backEnd: 0 };
             const grossMonthlyIncome = annualIncome / 12;
-            const frontEndDTI = totalMonthlyPITI / grossMonthlyIncome;
-            const backEndDTI = (totalMonthlyPITI + monthlyNonMortgageDebt) / grossMonthlyIncome;
-            return { frontEnd: frontEndDTI, backEnd: backEndDTI };
+            return { frontEnd: totalMonthlyPITI / grossMonthlyIncome, backEnd: (totalMonthlyPITI + monthlyNonMortgageDebt) / grossMonthlyIncome };
         }
-        
-        // --- UI RENDERERS ---
+
         function renderDTI(frontEndDTI, backEndDTI) {
             const getStatus = (dti) => {
                 const ratio = dti * 100;
@@ -546,35 +476,26 @@
                 if (ratio <= 43) return { text: 'Acceptable (<43%)', color: 'dti-high' };
                 return { text: 'High Risk (>43%)', color: 'dti-critical' };
             };
-
-            const frontStatus = getStatus(frontEndDTI);
-            const backStatus = getStatus(backEndDTI);
-
-            const feElement = document.getElementById('frontEndDTI');
-            const feStatusElement = document.getElementById('frontEndDTIStatus');
-            feElement.textContent = formatPercent(frontEndDTI);
-            feElement.className = `text-xl font-extrabold text-${frontStatus.color}`;
-            feStatusElement.textContent = frontStatus.text;
-            feStatusElement.className = `text-xs font-semibold mt-1 text-${frontStatus.color}`;
-
-            const beElement = document.getElementById('backEndDTI');
-            const beStatusElement = document.getElementById('backEndDTIStatus');
-            beElement.textContent = formatPercent(backEndDTI);
-            beElement.className = `text-xl font-extrabold text-${backStatus.color}`;
-            beStatusElement.textContent = backStatus.text;
-            beStatusElement.className = `text-xs font-semibold mt-1 text-${backStatus.color}`;
+            const applyStatus = (elementId, statusElementId, status) => {
+                const el = document.getElementById(elementId);
+                const statusEl = document.getElementById(statusElementId);
+                el.className = `text-xl font-extrabold text-${status.color}`;
+                statusEl.textContent = status.text;
+                statusEl.className = `text-xs font-semibold mt-1 text-${status.color}`;
+            };
+            document.getElementById('frontEndDTI').textContent = formatPercent(frontEndDTI);
+            applyStatus('frontEndDTI', 'frontEndDTIStatus', getStatus(frontEndDTI));
+            document.getElementById('backEndDTI').textContent = formatPercent(backEndDTI);
+            applyStatus('backEndDTI', 'backEndDTIStatus', getStatus(backEndDTI));
         }
-        
+
         function renderChart(acceleratedResults) {
             const ctx = document.getElementById('comparisonChart').getContext('2d');
             if (mortgageChart) mortgageChart.destroy();
-            
             const schedule = acceleratedResults.schedule;
-            const step = Math.ceil(schedule.length / 50); // Show ~50 data points for performance
+            const step = Math.ceil(schedule.length / 50);
             const chartData = schedule.filter((_, index) => index % step === 0 || index === schedule.length - 1);
-
             const labels = chartData.map(d => `Yr ${Math.ceil(d.period / 12)}`);
-
             mortgageChart = new Chart(ctx, {
                 type: 'line',
                 data: {
@@ -585,52 +506,21 @@
                         { label: 'Loan Balance', data: chartData.map(d => d.balance), borderColor: '#1C768F', borderWidth: 3, fill: false, tension: 0.3, pointRadius: 2 }
                     ]
                 },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    scales: {
-                        y: { beginAtZero: true, ticks: { callback: value => formatCurrency(value).replace('.00', '').replace('$', '') } }
-                    },
-                    plugins: {
-                        title: { display: true, text: 'Equity Accumulation vs. Debt Payoff', font: { size: 14, weight: '600' } },
-                        tooltip: { mode: 'index', intersect: false, callbacks: { label: c => `${c.dataset.label}: ${formatCurrency(c.parsed.y)}` } }
-                    }
-                }
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { callback: value => formatCurrency(value).replace('.00', '').replace('$', '') } } }, plugins: { title: { display: true, text: 'Equity Accumulation vs. Debt Payoff', font: { size: 14, weight: '600' } }, tooltip: { mode: 'index', intersect: false, callbacks: { label: c => `${c.dataset.label}: ${formatCurrency(c.parsed.y)}` } } } }
             });
         }
-        
-        // --- VALIDATION & MAIN CONTROLLER ---
 
         function validateInputs() {
             const errors = [];
-            const fields = [
-                { id: 'loanAmount', name: 'Loan Principal', min: 1 },
-                { id: 'interestRate', name: 'Interest Rate', min: 0.1, max: 100 },
-                { id: 'loanTerm', name: 'Loan Term', min: 1, max: 50 },
-                { id: 'initialLTV', name: 'Initial LTV', min: 1, max: 100 },
-                { id: 'annualIncome', name: 'Annual Income', min: 0 },
-                { id: 'nonMortgageDebt', name: 'Non-Mortgage Debt', min: 0 },
-                { id: 'appreciationRate', name: 'Appreciation Rate', min: 0, max: 50 },
-                { id: 'discountRate', name: 'Discount Rate', min: 0, max: 50 },
-                { id: 'pitiEscalationRate', name: 'PITI Escalation Rate', min: 0, max: 50 },
-                { id: 'pmiRate', name: 'PMI Rate', min: 0, max: 10 },
-                { id: 'propertyTax', name: 'Property Tax', min: 0 },
-                { id: 'insurance', name: 'Home Insurance', min: 0 },
-                { id: 'hoa', name: 'HOA Dues', min: 0 },
-                { id: 'extraPayment', name: 'Extra Payment', min: 0 },
-                { id: 'lumpSumPayment', name: 'Lump Sum Payment', min: 0 },
-            ];
-
+            const fields = [ { id: 'loanAmount', name: 'Loan Principal', min: 1 }, { id: 'interestRate', name: 'Interest Rate', min: 0.1, max: 100 }, { id: 'loanTerm', name: 'Loan Term', min: 1, max: 50 }, { id: 'initialLTV', name: 'Initial LTV', min: 1, max: 100 }, { id: 'annualIncome', name: 'Annual Income', min: 0 }, { id: 'nonMortgageDebt', name: 'Non-Mortgage Debt', min: 0 }, { id: 'appreciationRate', name: 'Appreciation Rate', min: 0, max: 50 }, { id: 'discountRate', name: 'Discount Rate', min: 0, max: 50 }, { id: 'pitiEscalationRate', name: 'PITI Escalation Rate', min: 0, max: 50 }, { id: 'pmiRate', name: 'PMI Rate', min: 0, max: 10 }, { id: 'propertyTax', name: 'Property Tax', min: 0 }, { id: 'insurance', name: 'Home Insurance', min: 0 }, { id: 'hoa', name: 'HOA Dues', min: 0 }, { id: 'extraPayment', name: 'Extra Payment', min: 0 }, { id: 'lumpSumPayment', name: 'Lump Sum Payment', min: 0 } ];
             fields.forEach(field => {
-                const input = document.getElementById(field.id);
-                const value = parseFloat(input.value);
-                if (isNaN(value)) {
-                    errors.push(`${field.name} must be a number.`);
-                } else {
+                const value = parseFloat(document.getElementById(field.id).value);
+                if (isNaN(value)) errors.push(`${field.name} must be a number.`);
+                else {
                     if (field.min !== undefined && value < field.min) errors.push(`${field.name} must be at least ${field.min}.`);
                     if (field.max !== undefined && value > field.max) errors.push(`${field.name} cannot exceed ${field.max}.`);
                 }
             });
-
             const errorContainer = document.getElementById('error-messages');
             const errorList = document.getElementById('error-list');
             if (errors.length > 0) {
@@ -642,225 +532,121 @@
             return true;
         }
 
-
         function handleCalculation(isShockTest = false) {
             const calculateButton = document.getElementById('calculateButton');
             calculateButton.disabled = true;
             calculateButton.textContent = 'Calculating...';
-            
-            // Allow the UI to update before running the heavy calculation
             setTimeout(() => {
-                try {
-                    if (validateInputs()) {
-                        calculateMortgage(isShockTest);
-                    }
-                } catch (e) {
+                try { if (validateInputs()) calculateMortgage(isShockTest); } 
+                catch (e) {
                     console.error("Calculation Error:", e);
                     const errorContainer = document.getElementById('error-messages');
                     const errorList = document.getElementById('error-list');
-                    errorList.innerHTML = `<li>An unexpected error occurred during calculation. Please check console for details.</li>`;
+                    errorList.innerHTML = `<li>An unexpected error occurred. Please check console.</li>`;
                     errorContainer.classList.remove('hidden');
                 } finally {
                     calculateButton.disabled = false;
                     calculateButton.textContent = 'Calculate Full Scenario';
                 }
-            }, 50); // 50ms delay
+            }, 50);
         }
 
         function calculateMortgage(isShockTest = false) {
-            // Get all values from inputs
-            const principal = parseFloat(document.getElementById('loanAmount').value);
-            const annualRate = parseFloat(document.getElementById('interestRate').value) / 100;
-            const termYears = parseFloat(document.getElementById('loanTerm').value);
-            const periodsPerYear = parseInt(document.getElementById('repaymentFrequency').value);
-            const totalPeriods = termYears * periodsPerYear;
-            const propertyTax = parseFloat(document.getElementById('propertyTax').value);
-            const insurance = parseFloat(document.getElementById('insurance').value);
-            const hoa = parseFloat(document.getElementById('hoa').value);
-            const pitiEscalationRate = parseFloat(document.getElementById('pitiEscalationRate').value) / 100;
-            const extraPayment = parseFloat(document.getElementById('extraPayment').value);
-            const lumpSumAmount = parseFloat(document.getElementById('lumpSumPayment').value);
-            const lumpSumPeriod = parseInt(document.getElementById('lumpSumPeriod').value);
-            const initialLTV = parseFloat(document.getElementById('initialLTV').value);
-            const pmiRate = parseFloat(document.getElementById('pmiRate').value) / 100;
-            const refiPeriod = parseInt(document.getElementById('refiPeriod').value);
-            const refiRate = parseFloat(document.getElementById('refiRate').value); 
-            const refiTerm = parseFloat(document.getElementById('refiTerm').value);
-            const refiClosingCosts = parseFloat(document.getElementById('refiClosingCosts').value); 
-            const discountRate = parseFloat(document.getElementById('discountRate').value) / 100;
-            const appreciationRate = parseFloat(document.getElementById('appreciationRate').value) / 100;
+            const getVal = id => parseFloat(document.getElementById(id).value);
+            const principal = getVal('loanAmount'), annualRate = getVal('interestRate') / 100, termYears = getVal('loanTerm');
+            const periodsPerYear = parseInt(document.getElementById('repaymentFrequency').value), totalPeriods = termYears * periodsPerYear;
+            const pTax = getVal('propertyTax'), ins = getVal('insurance'), hoa = getVal('hoa'), pitiEsc = getVal('pitiEscalationRate') / 100;
+            const extraP = getVal('extraPayment'), lumpSum = getVal('lumpSumPayment'), lumpPeriod = getVal('lumpSumPeriod');
+            const ltv = getVal('initialLTV'), pmiRate = getVal('pmiRate') / 100;
+            const refiP = getVal('refiPeriod'), refiR = getVal('refiRate'), refiT = getVal('refiTerm'), refiC = getVal('refiClosingCosts');
+            const discRate = getVal('discountRate') / 100, apprRate = getVal('appreciationRate') / 100;
             
-            document.getElementById('results').style.opacity = 1; 
+            document.getElementById('results').style.opacity = 1;
             document.getElementById('schedule-wrapper').style.opacity = 1;
             document.getElementById('shock-results').style.display = 'none';
 
-            // Scenarios
-            const originalResults = generateAmortization(principal, annualRate, periodsPerYear, totalPeriods, 0, 0, 0, initialLTV, 0, 0, 0, 0, 0, 0, discountRate, 0);
-            const acceleratedResults = generateAmortization(principal, annualRate, periodsPerYear, totalPeriods, extraPayment, lumpSumAmount, lumpSumPeriod, initialLTV, pmiRate, refiPeriod, refiRate, refiTerm, refiClosingCosts, pitiEscalationRate, discountRate, appreciationRate);
+            const original = generateAmortization(principal, annualRate, periodsPerYear, totalPeriods, 0, 0, 0, ltv, 0, 0, 0, 0, 0, 0, discRate, 0);
+            const accelerated = generateAmortization(principal, annualRate, periodsPerYear, totalPeriods, extraP, lumpSum, lumpPeriod, ltv, pmiRate, refiP, refiR, refiT, refiC, pitiEsc, discRate, apprRate);
             
-            // PITI and DTI
-            const firstPeriodData = acceleratedResults.schedule[0];
-            const standardPayment = originalResults.standardPayment;
-            const monthlyPNI = standardPayment * (12 / periodsPerYear);
-            const initialPMIMonthly = (firstPeriodData ? firstPeriodData.pmi : 0) * (12 / periodsPerYear);
-            const totalMonthlyPITI = monthlyPNI + (propertyTax / 12) + (insurance / 12) + hoa + initialPMIMonthly;
+            const standardPmt = original.standardPayment;
+            const pniMonthly = standardPmt * (12 / periodsPerYear);
+            const pmiMonthly = (accelerated.schedule[0] ? accelerated.schedule[0].pmi : 0) * (12 / periodsPerYear);
+            const totalPITI = pniMonthly + (pTax / 12) + (ins / 12) + hoa + pmiMonthly;
+            renderDTI(calculateDTI(totalPITI).frontEnd, calculateDTI(totalPITI).backEnd);
+
+            const setTxt = (id, val) => document.getElementById(id).textContent = val;
+            setTxt('finalEquity', formatCurrency(accelerated.finalEquity));
+            setTxt('finalPropertyValue', formatCurrency(accelerated.finalPropertyValue));
+            setTxt('totalMonthlyPaymentPITI', formatCurrency(totalPITI));
+            setTxt('standardPaymentDisplay', formatCurrency(standardPmt));
             
-            const dtiResults = calculateDTI(totalMonthlyPITI);
-            renderDTI(dtiResults.frontEnd, dtiResults.backEnd);
-
-            // Update UI
-            document.getElementById('finalEquity').textContent = formatCurrency(acceleratedResults.finalEquity);
-            document.getElementById('finalPropertyValue').textContent = formatCurrency(acceleratedResults.finalPropertyValue);
-            document.getElementById('totalMonthlyPaymentPITI').textContent = formatCurrency(totalMonthlyPITI);
-            document.getElementById('standardPaymentDisplay').textContent = formatCurrency(standardPayment);
+            const pmiNote = document.getElementById('pmiDropNote');
+            if (pmiRate > 0 && ltv > 80 && accelerated.pmiDropPeriod) {
+                pmiNote.style.display = 'block';
+                setTxt('pmiDropPeriod', accelerated.pmiDropPeriod);
+            } else { pmiNote.style.display = 'none'; }
             
-            const pmiDropNote = document.getElementById('pmiDropNote');
-            if (pmiRate > 0 && initialLTV > 80 && acceleratedResults.pmiDropPeriod) {
-                 pmiDropNote.style.display = 'block';
-                 document.getElementById('pmiDropPeriod').textContent = acceleratedResults.pmiDropPeriod;
-            } else {
-                 pmiDropNote.style.display = 'none';
-            }
-
-            document.getElementById('acceleratedPaymentDisplay').textContent = formatCurrency(standardPayment + extraPayment);
-            document.getElementById('totalInterestOriginal').textContent = formatCurrency(originalResults.totalInterest);
-            document.getElementById('totalInterestNew').textContent = formatCurrency(acceleratedResults.totalInterest);
-            document.getElementById('npvOriginal').textContent = formatCurrency(originalResults.totalPVInterest);
-            document.getElementById('npvNew').textContent = formatCurrency(acceleratedResults.totalPVInterest);
-
-            const interestSaved = originalResults.totalInterest - acceleratedResults.totalInterest;
-            const npvSaved = originalResults.totalPVInterest - acceleratedResults.totalPVInterest;
-
-            const timeSavedPeriods = originalResults.payoffPeriod - acceleratedResults.payoffPeriod;
-            const timeSavedYears = Math.floor(timeSavedPeriods / periodsPerYear);
-            const timeSavedMonths = Math.round((timeSavedPeriods % periodsPerYear) * (12 / periodsPerYear));
-
-            const calculatePayoffDate = (totalPeriods) => {
-                let d = new Date(); 
-                d.setMonth(d.getMonth() + Math.round(totalPeriods * (12 / periodsPerYear)));
+            setTxt('acceleratedPaymentDisplay', formatCurrency(standardPmt + extraP));
+            setTxt('totalInterestOriginal', formatCurrency(original.totalInterest));
+            setTxt('totalInterestNew', formatCurrency(accelerated.totalInterest));
+            setTxt('npvOriginal', formatCurrency(original.totalPVInterest));
+            setTxt('npvNew', formatCurrency(accelerated.totalPVInterest));
+            const iSaved = original.totalInterest - accelerated.totalInterest;
+            const npvSaved = original.totalPVInterest - accelerated.totalPVInterest;
+            const tSavedPeriods = original.payoffPeriod - accelerated.payoffPeriod;
+            const tSavedY = Math.floor(tSavedPeriods / periodsPerYear);
+            const tSavedM = Math.round((tSavedPeriods % periodsPerYear) * (12 / periodsPerYear));
+            const payoffDate = (periods) => {
+                let d = new Date();
+                d.setMonth(d.getMonth() + Math.round(periods * (12 / periodsPerYear)));
                 return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
-            }
-
-            document.getElementById('originalPayoffDate').textContent = calculatePayoffDate(originalResults.payoffPeriod);
-            document.getElementById('newPayoffDate').textContent = calculatePayoffDate(acceleratedResults.payoffPeriod);
-            document.getElementById('interestSaved').textContent = formatCurrency(interestSaved);
-            document.getElementById('npvSaved').textContent = formatCurrency(npvSaved);
-            document.getElementById('timeSaved').textContent = `${timeSavedYears}y ${timeSavedMonths}m`;
-
-            renderChart(acceleratedResults);
-            generateAmortizationTable(originalResults, acceleratedResults);
+            };
+            setTxt('originalPayoffDate', payoffDate(original.payoffPeriod));
+            setTxt('newPayoffDate', payoffDate(accelerated.payoffPeriod));
+            setTxt('interestSaved', formatCurrency(iSaved));
+            setTxt('npvSaved', formatCurrency(npvSaved));
+            setTxt('timeSaved', `${tSavedY}y ${tSavedM}m`);
+            renderChart(accelerated);
+            generateAmortizationTable(original, accelerated);
 
             if (isShockTest) {
-                const shockIncrease = parseFloat(document.getElementById('shockRateIncrease').value) / 100;
-                const shockRate = annualRate + shockIncrease;
-                const shockPayment = calculatePayment(principal, shockRate, periodsPerYear, totalPeriods);
-                
+                const shockInc = getVal('shockRateIncrease') / 100;
+                const shockRate = annualRate + shockInc;
+                const shockPmt = calculatePayment(principal, shockRate, periodsPerYear, totalPeriods);
                 document.getElementById('shock-results').style.display = 'block';
-                document.getElementById('shockRateDisplay').textContent = (shockRate * 100).toFixed(2);
-                document.getElementById('originalShockPaymentDisplay').textContent = formatCurrency(standardPayment);
-                document.getElementById('shockPaymentDisplay').textContent = formatCurrency(shockPayment);
-                document.getElementById('paymentIncrease').textContent = formatCurrency(shockPayment - standardPayment);
+                setTxt('shockRateDisplay', (shockRate * 100).toFixed(2));
+                setTxt('originalShockPaymentDisplay', formatCurrency(standardPmt));
+                setTxt('shockPaymentDisplay', formatCurrency(shockPmt));
+                setTxt('paymentIncrease', formatCurrency(shockPmt - standardPmt));
             }
         }
 
-        // --- TABLE GENERATOR ---
         function generateAmortizationTable(originalResults, acceleratedResults) {
             const table = document.getElementById('amortizationTable');
-            table.innerHTML = `
-                <thead class="text-xs text-gray-700 bg-gray-50 uppercase tracking-wider">
-                    <tr>
-                        <th rowspan="2" class="py-2 px-1 border-b-2 border-gray-300 border-r">#</th>
-                        <th colspan="4" class="py-2 px-1 border-b-2 border-gray-300 text-center bg-red-50/70 border-r border-red-300">Original Loan</th>
-                        <th colspan="10" class="py-2 px-1 border-b-2 border-gray-300 text-center bg-sky-50/70">Accelerated Scenario</th>
-                    </tr>
-                    <tr class="font-medium">
-                        <th class="py-2 px-1 border-b border-gray-300 text-right bg-red-50/70">Nom. Interest</th>
-                        <th class="py-2 px-1 border-b border-gray-300 text-right bg-red-50/70 text-npv">PV Interest</th>
-                        <th class="py-2 px-1 border-b border-gray-300 text-right bg-red-50/70">P&I Pmt</th>
-                        <th class="py-2 px-1 border-b border-gray-300 text-right bg-red-50/70 border-r border-red-300">Balance</th>
-                        <th class="py-2 px-1 border-b border-gray-300 text-right bg-sky-50/70 text-accent">Home Equity</th>
-                        <th class="py-2 px-1 border-b border-gray-300 text-right bg-sky-50/70 text-accent">Property Val</th>
-                        <th class="py-2 px-1 border-b border-gray-300 text-right bg-sky-50/70">P&I Pmt</th>
-                        <th class="py-2 px-1 border-b border-gray-300 text-right bg-sky-50/70">Tax/Ins/HOA</th>
-                        <th class="py-2 px-1 border-b border-gray-300 text-right bg-sky-50/70">Nom. Interest</th>
-                        <th class="py-2 px-1 border-b border-gray-300 text-right bg-sky-50/70 text-npv">PV Interest</th>
-                        <th class="py-2 px-1 border-b border-gray-300 text-right bg-sky-50/70">PMI</th>
-                        <th class="py-2 px-1 border-b border-gray-300 text-right bg-sky-50/70">Extra</th>
-                        <th class="py-2 px-1 border-b border-gray-300 text-right bg-sky-50/70">Total Pmt</th>
-                        <th class="py-2 px-1 border-b border-gray-300 text-right bg-sky-50/70">Balance</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            `;
-            
+            table.innerHTML = `<thead class="text-xs text-gray-700 bg-gray-50 uppercase tracking-wider"><tr><th rowspan="2" class="py-2 px-1 border-b-2 border-gray-300 border-r">#</th><th colspan="4" class="py-2 px-1 border-b-2 border-gray-300 text-center bg-red-50/70 border-r border-red-300">Original Loan</th><th colspan="10" class="py-2 px-1 border-b-2 border-gray-300 text-center bg-sky-50/70">Accelerated Scenario</th></tr><tr class="font-medium"><th class="py-2 px-1 border-b border-gray-300 text-right bg-red-50/70">Nom. Interest</th><th class="py-2 px-1 border-b border-gray-300 text-right bg-red-50/70 text-npv">PV Interest</th><th class="py-2 px-1 border-b border-gray-300 text-right bg-red-50/70">P&I Pmt</th><th class="py-2 px-1 border-b border-gray-300 text-right bg-red-50/70 border-r border-red-300">Balance</th><th class="py-2 px-1 border-b border-gray-300 text-right bg-sky-50/70 text-accent">Home Equity</th><th class="py-2 px-1 border-b border-gray-300 text-right bg-sky-50/70 text-accent">Property Val</th><th class="py-2 px-1 border-b border-gray-300 text-right bg-sky-50/70">P&I Pmt</th><th class="py-2 px-1 border-b border-gray-300 text-right bg-sky-50/70">Tax/Ins/HOA</th><th class="py-2 px-1 border-b border-gray-300 text-right bg-sky-50/70">Nom. Interest</th><th class="py-2 px-1 border-b border-gray-300 text-right bg-sky-50/70 text-npv">PV Interest</th><th class="py-2 px-1 border-b border-gray-300 text-right bg-sky-50/70">PMI</th><th class="py-2 px-1 border-b border-gray-300 text-right bg-sky-50/70">Extra</th><th class="py-2 px-1 border-b border-gray-300 text-right bg-sky-50/70">Total Pmt</th><th class="py-2 px-1 border-b border-gray-300 text-right bg-sky-50/70">Balance</th></tr></thead><tbody></tbody>`;
             const body = table.querySelector('tbody');
             const maxPeriods = Math.max(originalResults.payoffPeriod, acceleratedResults.payoffPeriod);
-
             let rowsHtml = '';
             for (let i = 0; i < maxPeriods; i++) {
                 const o = originalResults.schedule[i] || {};
                 const a = acceleratedResults.schedule[i] || {};
-                
                 if (!o.balance && !a.balance && i >= originalResults.payoffPeriod && i >= acceleratedResults.payoffPeriod) break;
-
                 const newPNIPayment = (a.pniPrincipal || 0) + (a.interest || 0);
                 const totalNewPayment = newPNIPayment + (a.periodicPITI || 0) + (a.extraPayment || 0);
                 const taxInsHOA = (a.periodicPITI || 0) - (a.pmi || 0);
-
-                rowsHtml += `
-                    <tr class="text-xs hover:bg-gray-50 border-b border-gray-200">
-                        <td class="p-2 border-r border-gray-300 font-semibold text-center">${i + 1}</td>
-                        <td class="p-2 text-right bg-red-50/50">${o.interest ? formatCurrency(o.interest) : '-'}</td>
-                        <td class="p-2 text-right bg-red-50/50 text-npv">${o.pvInterest ? formatCurrency(o.pvInterest) : '-'}</td>
-                        <td class="p-2 text-right bg-red-50/50">${o.principalPaid ? formatCurrency(o.interest + o.principalPaid) : '-'}</td>
-                        <td class="p-2 text-right bg-red-50/50 font-bold border-r border-red-300">${o.balance ? formatCurrency(o.balance) : 'PAID'}</td>
-                        <td class="p-2 text-right bg-sky-50/50 font-bold text-accent">${a.totalEquity ? formatCurrency(a.totalEquity) : 'FULL'}</td>
-                        <td class="p-2 text-right bg-sky-50/50 text-accent">${a.propertyValue ? formatCurrency(a.propertyValue) : 'FINAL'}</td>
-                        <td class="p-2 text-right bg-sky-50/50">${a.interest ? formatCurrency(newPNIPayment) : '-'}</td>
-                        <td class="p-2 text-right bg-sky-50/50">${a.interest ? formatCurrency(taxInsHOA) : '-'}</td>
-                        <td class="p-2 text-right bg-sky-50/50">${a.interest ? formatCurrency(a.interest) : '-'}</td>
-                        <td class="p-2 text-right bg-sky-50/50 text-npv">${a.pvInterest ? formatCurrency(a.pvInterest) : '-'}</td>
-                        <td class="p-2 text-right bg-sky-50/50">${a.pmi > 0.01 ? formatCurrency(a.pmi) : '-'}</td>
-                        <td class="p-2 text-right bg-sky-50/50">${a.extraPayment > 0.01 ? formatCurrency(a.extraPayment) : '-'}</td>
-                        <td class="p-2 text-right bg-sky-50/50 font-bold text-primary">${a.interest ? formatCurrency(totalNewPayment) : '-'}</td>
-                        <td class="p-2 text-right bg-sky-50/50 font-bold">${a.balance ? formatCurrency(a.balance) : 'PAID'}</td>
-                    </tr>`;
+                rowsHtml += `<tr class="text-xs hover:bg-gray-50 border-b border-gray-200"><td class="p-2 border-r border-gray-300 font-semibold text-center">${i+1}</td><td class="p-2 text-right bg-red-50/50">${o.interest?formatCurrency(o.interest):'-'}</td><td class="p-2 text-right bg-red-50/50 text-npv">${o.pvInterest?formatCurrency(o.pvInterest):'-'}</td><td class="p-2 text-right bg-red-50/50">${o.principalPaid?formatCurrency(o.interest+o.principalPaid):'-'}</td><td class="p-2 text-right bg-red-50/50 font-bold border-r border-red-300">${o.balance?formatCurrency(o.balance):'PAID'}</td><td class="p-2 text-right bg-sky-50/50 font-bold text-accent">${a.totalEquity?formatCurrency(a.totalEquity):'FULL'}</td><td class="p-2 text-right bg-sky-50/50 text-accent">${a.propertyValue?formatCurrency(a.propertyValue):'FINAL'}</td><td class="p-2 text-right bg-sky-50/50">${a.interest?formatCurrency(newPNIPayment):'-'}</td><td class="p-2 text-right bg-sky-50/50">${a.interest?formatCurrency(taxInsHOA):'-'}</td><td class="p-2 text-right bg-sky-50/50">${a.interest?formatCurrency(a.interest):'-'}</td><td class="p-2 text-right bg-sky-50/50 text-npv">${a.pvInterest?formatCurrency(a.pvInterest):'-'}</td><td class="p-2 text-right bg-sky-50/50">${a.pmi>0.01?formatCurrency(a.pmi):'-'}</td><td class="p-2 text-right bg-sky-50/50">${a.extraPayment>0.01?formatCurrency(a.extraPayment):'-'}</td><td class="p-2 text-right bg-sky-50/50 font-bold text-primary">${a.interest?formatCurrency(totalNewPayment):'-'}</td><td class="p-2 text-right bg-sky-50/50 font-bold">${a.balance?formatCurrency(a.balance):'PAID'}</td></tr>`;
             }
             body.innerHTML = rowsHtml;
         }
         
-        // --- FORM MANAGEMENT ---
         function resetForm() {
-            document.getElementById('loanAmount').value = "300000";
-            document.getElementById('interestRate').value = "6.5";
-            document.getElementById('loanTerm').value = "30";
-            document.getElementById('initialLTV').value = "90"; 
-            document.getElementById('discountRate').value = "3.0";
-            document.getElementById('appreciationRate').value = "3.5";
-            document.getElementById('annualIncome').value = "120000";
-            document.getElementById('nonMortgageDebt').value = "800";
-            document.getElementById('propertyTax').value = "3600";
-            document.getElementById('insurance').value = "1200";
-            document.getElementById('hoa').value = "0";
-            document.getElementById('pitiEscalationRate').value = "2.0"; 
-            document.getElementById('pmiRate').value = "0.5"; 
-            document.getElementById('extraPayment').value = "100";
-            document.getElementById('lumpSumPayment').value = "5000";
-            document.getElementById('lumpSumPeriod').value = "1"; 
-            document.getElementById('refiPeriod').value = "60"; 
-            document.getElementById('refiRate').value = "5.0"; 
-            document.getElementById('refiTerm').value = "15"; 
-            document.getElementById('refiClosingCosts').value = "5000"; 
-            document.getElementById('shockRateIncrease').value = "1.0";
+            const defaults = { loanAmount: "300000", interestRate: "6.5", loanTerm: "30", initialLTV: "90", discountRate: "3.0", appreciationRate: "3.5", annualIncome: "120000", nonMortgageDebt: "800", propertyTax: "3600", insurance: "1200", hoa: "0", pitiEscalationRate: "2.0", pmiRate: "0.5", extraPayment: "100", lumpSumPayment: "5000", lumpSumPeriod: "1", refiPeriod: "60", refiRate: "5.0", refiTerm: "15", refiClosingCosts: "5000", shockRateIncrease: "1.0" };
+            for (const id in defaults) document.getElementById(id).value = defaults[id];
             document.getElementById('repaymentFrequency').value = "12";
-            
-            handleCalculation(); // Recalculate with default values
+            handleCalculation();
         }
 
-        // --- INITIAL LOAD ---
-        window.onload = function() {
-            handleCalculation();
-        };
+        window.onload = () => handleCalculation();
     </script>
 </body>
 </html>
