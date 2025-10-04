@@ -1,8 +1,22 @@
 /* --- JAVASCRIPT LOGIC --- */
+
+// --- Global Variables & Chart Instance ---
 let mortgageChart = null;
+
+// --- Helper Functions for Formatting ---
 const formatCurrency = (amount) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }).format(amount);
 const formatPercent = (amount) => (amount * 100).toFixed(1) + '%';
 
+// --- Core Financial Calculation Functions ---
+
+/**
+ * Calculates the periodic payment for a fixed-rate loan.
+ * @param {number} principal - The total loan amount.
+ * @param {number} annualRate - The annual interest rate (e.g., 0.065).
+ * @param {number} periodsPerYear - The number of payments per year.
+ * @param {number} totalPeriods - The total number of payments over the loan's life.
+ * @returns {number} The calculated periodic payment.
+ */
 function calculatePayment(principal, annualRate, periodsPerYear, totalPeriods) {
     if (annualRate <= 0 || totalPeriods <= 0) return principal / (totalPeriods > 0 ? totalPeriods : 1);
     const periodicRate = annualRate / periodsPerYear;
@@ -10,6 +24,11 @@ function calculatePayment(principal, annualRate, periodsPerYear, totalPeriods) {
     return isFinite(payment) ? payment : 0;
 }
 
+/**
+ * Generates the full amortization schedule and calculates key financial metrics.
+ * This is the main engine of the calculator.
+ * @returns {object} An object containing the schedule, totals, and other key metrics.
+ */
 function generateAmortization(principal, annualRate, periodsPerYear, totalPeriods, extraPaymentPerPeriod, lumpSumAmount, lumpSumPeriod, initialLTV, pmiRate, refiPeriod, refiRate, refiTerm, refiClosingCosts, pitiEscalationRate, discountRate, appreciationRate) {
     let currentBalance = principal, currentRate = annualRate, totalPeriodsRemaining = totalPeriods;
     const standardPaymentOriginal = calculatePayment(principal, annualRate, periodsPerYear, totalPeriods);
@@ -82,6 +101,7 @@ function generateAmortization(principal, annualRate, periodsPerYear, totalPeriod
     return { schedule: amortizationSchedule, totalInterest: totalInterestPaid, totalPVInterest: totalPVInterestPaid, payoffPeriod, standardPayment: standardPaymentOriginal, firstPeriodPITI: amortizationSchedule.length > 0 ? amortizationSchedule[0].periodicPITI * (12 / periodsPerYear) : standardPaymentOriginal, pmiDropPeriod, finalPropertyValue: currentPropertyValue, finalEquity: Math.max(0, currentPropertyValue) };
 }
 
+// --- DTI Calculation & Rendering ---
 function calculateDTI(totalMonthlyPITI) {
     const annualIncome = parseFloat(document.getElementById('annualIncome').value) || 0;
     const monthlyNonMortgageDebt = parseFloat(document.getElementById('nonMortgageDebt').value) || 0;
@@ -110,6 +130,7 @@ function renderDTI(frontEndDTI, backEndDTI) {
     applyStatus('backEndDTI', 'backEndDTIStatus', getStatus(backEndDTI));
 }
 
+// --- Chart Rendering ---
 function renderChart(acceleratedResults) {
     const ctx = document.getElementById('comparisonChart').getContext('2d');
     if (mortgageChart) mortgageChart.destroy();
@@ -131,6 +152,7 @@ function renderChart(acceleratedResults) {
     });
 }
 
+// --- Input Validation ---
 function validateInputs() {
     const errors = [];
     const fields = [ { id: 'loanAmount', name: 'Loan Principal', min: 1 }, { id: 'interestRate', name: 'Interest Rate', min: 0.1, max: 100 }, { id: 'loanTerm', name: 'Loan Term', min: 1, max: 50 }, { id: 'initialLTV', name: 'Initial LTV', min: 1, max: 100 }, { id: 'annualIncome', name: 'Annual Income', min: 0 }, { id: 'nonMortgageDebt', name: 'Non-Mortgage Debt', min: 0 }, { id: 'appreciationRate', name: 'Appreciation Rate', min: 0, max: 50 }, { id: 'discountRate', name: 'Discount Rate', min: 0, max: 50 }, { id: 'pitiEscalationRate', name: 'PITI Escalation Rate', min: 0, max: 50 }, { id: 'pmiRate', name: 'PMI Rate', min: 0, max: 10 }, { id: 'propertyTax', name: 'Property Tax', min: 0 }, { id: 'insurance', name: 'Home Insurance', min: 0 }, { id: 'hoa', name: 'HOA Dues', min: 0 }, { id: 'extraPayment', name: 'Extra Payment', min: 0 }, { id: 'lumpSumPayment', name: 'Lump Sum Payment', min: 0 } ];
@@ -153,6 +175,7 @@ function validateInputs() {
     return true;
 }
 
+// --- Main Calculation Orchestration ---
 function handleCalculation(isShockTest = false) {
     const calculateButton = document.getElementById('calculateButton');
     calculateButton.disabled = true;
@@ -260,6 +283,7 @@ function generateAmortizationTable(originalResults, acceleratedResults) {
     body.innerHTML = rowsHtml;
 }
 
+// --- Form Reset ---
 function resetForm() {
     const defaults = { loanAmount: "300000", interestRate: "6.5", loanTerm: "30", initialLTV: "90", discountRate: "3.0", appreciationRate: "3.5", annualIncome: "120000", nonMortgageDebt: "800", propertyTax: "3600", insurance: "1200", hoa: "0", pitiEscalationRate: "2.0", pmiRate: "0.5", extraPayment: "100", lumpSumPayment: "5000", lumpSumPeriod: "1", refiPeriod: "60", refiRate: "5.0", refiTerm: "15", refiClosingCosts: "5000", shockRateIncrease: "1.0" };
     for (const id in defaults) document.getElementById(id).value = defaults[id];
@@ -267,7 +291,33 @@ function resetForm() {
     handleCalculation();
 }
 
+// --- Initial Page Load ---
 window.onload = () => {
+    // Run the main calculator function on load
     handleCalculation();
+    
+    // Set the copyright year in the footer
     document.getElementById('copyright-year').textContent = new Date().getFullYear();
+
+    // Automatically load the content guide when the page loads
+    loadGuide();
 };
+
+// --- SEO Content Loader ---
+function loadGuide() {
+    const guideContent = document.getElementById('guide-content');
+    if (!guideContent) return;
+
+    fetch('content-guide.html')
+        .then(response => {
+            if (!response.ok) throw new Error('Network response was not ok');
+            return response.text();
+        })
+        .then(html => {
+            guideContent.innerHTML = html;
+        })
+        .catch(error => {
+            guideContent.innerHTML = '<p class="text-red-500 text-center">Sorry, the guide could not be loaded.</p>';
+            console.error('Error fetching content guide:', error);
+        });
+}
