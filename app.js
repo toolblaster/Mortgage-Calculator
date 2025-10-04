@@ -220,7 +220,7 @@ function calculateMortgage(isShockTest = false) {
     const payoffDate = (periods) => {
         let d = new Date();
         d.setMonth(d.getMonth() + Math.round(periods * (12 / periodsPerYear)));
-        return d.toLocaleString('en-US', { year: 'numeric', month: 'long' });
+        return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
     };
     setTxt('originalPayoffDate', payoffDate(original.payoffPeriod));
     setTxt('newPayoffDate', payoffDate(accelerated.payoffPeriod));
