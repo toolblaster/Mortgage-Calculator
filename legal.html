@@ -4,16 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact & Legal - Strategic Mortgage Planner</title>
-    <meta name="robots" content="noindex, nofollow"> <!-- Prevents search engines from indexing this page -->
-    <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIHJ4PSIyMCIgZmlsbD0iIzFDNzY4RiIvPjxwYXRoIGQ9Ik01MCAyNUwyNSA0NVY3NUg0MS42NjY3VjU4LjMzMzNINTguMzMzM1Y3NUg3NVY0NUw1MCAyNVoiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik00MCA2NUw1MCA1NUw2MCA2NSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm9oubmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNNTAgNTVWNDUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PC9zdmc+">
+    <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIHJ4PSIyMCIgZmlsbD0iIzFDNzY4RiIvPjxwYXRoIGQ9Ik01MCAyNUwyNSA0NVY3NUg0MS42NjY3VjU4LjMzMzNINTguMzMzM1Y3NUg3NVY0NUw1MCAyNVoiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik00MCA2NUw1MCA1NUw2MCA2NSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNNTAgNTVWNDUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaWJkPSJyb3VuZCIvPjwvc3ZnPg==">
+    
+    <!-- Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    
+    <!-- App Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#1C768F', 'accent': '#1e8749'
+                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+
+    <!-- Global Stylesheet -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
     <!-- Global Header -->
-    <header class="bg-white/80 backdrop-blur-lg shadow-sm sticky top-0 z-50 no-print">
+    <header class="bg-white/80 backdrop-blur-lg shadow-sm sticky top-0 z-50">
         <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-center h-14">
                 <a href="/" class="flex items-center space-x-2 text-primary hover:opacity-80 transition-opacity">
@@ -28,48 +44,41 @@
 
     <!-- Main Content Area -->
     <main class="content-wrapper">
-        <div class="legal-container bg-white p-4 md:p-8 rounded-xl shadow-2xl w-full max-w-4xl mx-auto my-8">
-            <div class="text-center border-b pb-4 mb-6">
-                <h1 class="text-2xl md:text-3xl font-extrabold text-primary">Contact & Legal Information</h1>
+        <div class="bg-white p-4 md:p-8 rounded-xl shadow-2xl w-full max-w-4xl mx-auto my-4 prose">
+            <h2 class="text-2xl md:text-3xl font-extrabold text-primary text-center">Contact & Legal Information</h2>
+            
+            <div class="text-center bg-sky-50 p-4 rounded-lg my-6">
+                <h3 class="font-bold text-primary">Contact Us</h3>
+                <p>For any questions, feedback, or inquiries, please reach out to us at:</p>
+                <a href="mailto:vikas@toolblaster.com" class="text-accent font-semibold hover:underline">vikas@toolblaster.com</a>
             </div>
 
-            <div class="mb-8 p-4 bg-sky-50 rounded-lg text-center">
-                <h2 class="font-semibold text-lg text-gray-800">Get in Touch</h2>
-                <p class="text-gray-600 mt-1">For any questions, feedback, or inquiries, please email us at:</p>
-                <a href="mailto:vikas@toolblaster.com" class="text-primary font-bold hover:underline">vikas@toolblaster.com</a>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-gray-700">
-                <div class="prose">
-                    <h2 class="text-xl font-bold text-gray-800 border-b pb-2">Disclaimer</h2>
-                    <p>The information provided by the Strategic Mortgage Planner ("the calculator") is for general informational and illustrative purposes only. All information on the site is provided in good faith, however, we make no representation or warranty of any kind, express or implied, regarding the accuracy, adequacy, validity, reliability, availability, or completeness of any information.</p>
-                    <p>The calculator is not a lender and does not offer credit. The results generated are based on the inputs you provide and are intended to be an estimate. They are not an offer for credit, a credit application, or a guarantee of financing.</p>
-                    <p>Under no circumstance shall we have any liability to you for any loss or damage of any kind incurred as a result of the use of the site or reliance on any information provided. Your use of the site and your reliance on any information is solely at your own risk. We strongly advise you to consult with a qualified financial professional before making any financial decisions.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+                <div>
+                    <h3 class="font-bold text-primary">Disclaimer</h3>
+                    <p>The information and calculations provided by the Strategic Mortgage Planner are for informational and illustrative purposes only. They are not intended to be a substitute for professional financial advice. We do not guarantee the accuracy or applicability of this information to your individual circumstances.</p>
+                    <p>All examples are hypothetical and are for illustrative purposes. We encourage you to seek personalized advice from qualified professionals regarding all personal finance issues.</p>
                 </div>
-                <div class="prose">
-                    <h2 class="text-xl font-bold text-gray-800 border-b pb-2">Privacy Policy</h2>
-                    <p>Your privacy is important to us. It is our policy to respect your privacy regarding any information we may collect from you across our website.</p>
-                    <p><strong>Information We Collect:</strong> We do not collect, save, or store any personal financial information you enter into the calculator. All calculations are performed within your browser, and your data is not transmitted to our servers.</p>
-                    <p><strong>Cookies and Analytics:</strong> We do not use cookies for tracking purposes. We may use anonymous, aggregated analytics to understand how our visitors use the site so we can improve the user experience. This data contains no personally identifiable information.</p>
-                    <p><strong>Third-Party Links:</strong> Our website may link to external sites that are not operated by us. Please be aware that we have no control over the content and practices of these sites, and cannot accept responsibility or liability for their respective privacy policies.</p>
+                <div>
+                    <h3 class="font-bold text-primary">Privacy Policy</h3>
+                    <p>We are committed to protecting your privacy. This website does not collect, store, or share any personal financial data that you enter into the calculator. All calculations are performed within your browser and are not transmitted to our servers.</p>
+                    <p>We may use anonymous analytics cookies to understand how our visitors use the site, but this data is aggregated and cannot be used to identify you personally. Your privacy is paramount.</p>
                 </div>
             </div>
         </div>
     </main>
 
     <!-- Global Footer -->
-    <footer class="bg-gray-800 text-gray-400 text-sm no-print">
+    <footer class="bg-gray-800 text-gray-400 text-sm">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div class="text-center text-xs">
-                <p>&copy; <span id="copyright-year">2025</span> Strategic Mortgage Planner. All Rights Reserved. | <a href="legal.html" class="underline hover:text-white">Contact & Legal</a></p>
+                <p>&copy; <span id="copyright-year-legal">2025</span> Strategic Mortgage Planner. All Rights Reserved. | <a href="legal.html" class="hover:text-white underline">Contact & Legal</a></p>
                  <p class="mt-1"><strong>Disclaimer:</strong> This tool is for informational purposes only. Consult a financial professional before making decisions.</p>
             </div>
         </div>
     </footer>
-
     <script>
-        // Set the copyright year dynamically
-        document.getElementById('copyright-year').textContent = new Date().getFullYear();
+        document.getElementById('copyright-year-legal').textContent = new Date().getFullYear();
     </script>
 </body>
 </html>
