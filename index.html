@@ -7,7 +7,7 @@
 
     <!-- SEO & Social Meta Tags -->
     <meta name="description" content="An advanced mortgage calculator to analyze payoff scenarios, equity growth, Debt-to-Income (DTI), Net Present Value (NPV) of costs, and potential refinance options.">
-    <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIHJ4PSIyMCIgZmlsbD0iIzFDNzY4RiIvPjxwYXRoIGQ9Ik01MCAyNUwyNSA0NVY3NUg0MS42NjY3VjU4LjMzMzNINTguMzMzM1Y3NUg3NVY0NUw1MCAyNVoiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik00MCA2NUw1MCA1NUw2MCA2NSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNNTAgNTVWNDUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PC9zdmc+">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100' height='100' rx='20' fill='%231C768F'/%3E%3Cpath d='M50 25L25 45V75H41.6667V58.3333H58.3333V75H75V45L50 25Z' stroke='white' stroke-width='5' stroke-linejoin='round'/%3E%3Cpath d='M40 65L50 55L60 65' stroke='white' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M50 55V45' stroke='white' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 
     <!-- Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -135,13 +135,24 @@
     </script>
 </head>
 <body>
+    <!-- Reusable SVG Icon Definition -->
+    <svg width="0" height="0" class="absolute">
+      <symbol id="logo-icon" viewBox="0 0 100 100">
+        <rect width="100" height="100" rx="20" fill="#1C768F"/>
+        <path d="M50 25L25 45V75H41.6667V58.3333H58.3333V75H75V45L50 25Z" stroke="white" stroke-width="5" stroke-linejoin="round"/>
+        <path d="M40 65L50 55L60 65" stroke="white" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M50 55V45" stroke="white" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+      </symbol>
+    </svg>
 
     <!-- Global Header -->
     <header class="bg-white/80 backdrop-blur-lg shadow-sm sticky top-0 z-50 no-print">
         <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-center h-14">
                 <a href="/" class="flex items-center space-x-2 text-primary hover:opacity-80 transition-opacity">
-                    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIHJ4PSIyMCIgZmlsbD0iIzFDNzY4RiIvPjxwYXRoIGQ9Ik01MCAyNUwyNSA0NVY3NUg0MS42NjY3VjU4LjMzMzNINTguMzMzM1Y3NUg3NVY0NUw1MCAyNVoiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik00MCA2NUw1MCA1NUw2MCA2NSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNNTAgNTVWNDUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PC9zdmc+" alt="Strategic Mortgage Planner Logo" class="h-6 w-6">
+                    <svg class="h-6 w-6" aria-hidden="true">
+                        <use href="#logo-icon"></use>
+                    </svg>
                     <span class="font-bold text-lg">
                         <span class="border-b-2 border-primary">Strategic</span> Mortgage Planner
                     </span>
@@ -169,20 +180,30 @@
                 
                 <div class="input-column flex flex-col gap-4">
                     
-                    <details open class="bg-white rounded-lg shadow-lg border border-gray-200">
+                    <details open class="bg-white rounded-lg shadow-lg border-2 border-cyan-600">
                         <summary class="p-4 font-bold text-base text-primary border-b border-gray-200 cursor-pointer flex justify-between items-center relative before:content-['+'] open:before:content-['−'] before:absolute before:right-4 before:text-xl">
                             Loan Core Details
                         </summary>
                         <div class="input-section grid grid-cols-1 sm:grid-cols-2 gap-4 p-4">
                             <div class="space-y-1">
-                                <label for="loanAmount" class="block font-medium text-sm text-gray-700">Loan Principal ($/£/€):</label>
+                                <label for="loanAmount" class="block font-medium text-sm text-gray-700">Loan Principal (Amount):</label>
                                 <input type="number" id="loanAmount" value="300000" min="1000" step="1000" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
+                            </div>
+                            <div class="space-y-1">
+                                <label for="currency" class="block font-medium text-sm text-gray-700">Currency:</label>
+                                <select id="currency" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary h-[42px]">
+                                    <option value="USD">USD ($)</option>
+                                    <option value="EUR">EUR (€)</option>
+                                    <option value="GBP">GBP (£)</option>
+                                    <option value="CAD">CAD (C$)</option>
+                                    <option value="AUD">AUD (A$)</option>
+                                </select>
                             </div>
                             <div class="space-y-1">
                                 <label for="initialLTV" class="block font-medium text-sm text-gray-700">
                                     <span class="tooltip-container">Initial LTV (%):
-                                        <span class="tooltip-icon" tabindex="0">?</span>
-                                        <span class="tooltip-text">Loan-to-Value (LTV) is your loan amount divided by the property's value. An LTV over 80% typically requires PMI.</span>
+                                        <span class="tooltip-icon" tabindex="0" aria-label="Loan-to-Value tooltip">?</span>
+                                        <span class="tooltip-text" role="tooltip">Loan-to-Value (LTV) is your loan amount divided by the property's value. An LTV over 80% typically requires PMI.</span>
                                     </span>
                                 </label>
                                 <input type="number" id="initialLTV" value="90" min="5" max="100" step="1" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
@@ -207,24 +228,24 @@
                         </div>
                     </details>
 
-                    <details open class="bg-white rounded-lg shadow-lg border border-gray-200">
+                    <details open class="bg-white rounded-lg shadow-lg border-2 border-cyan-600">
                         <summary class="p-4 font-bold text-base text-dti-safe border-b border-gray-200 cursor-pointer flex justify-between items-center relative before:content-['+'] open:before:content-['−'] before:absolute before:right-4 before:text-xl">
                             Debt-to-Income (DTI) Inputs
                         </summary>
                         <div class="input-section grid grid-cols-1 sm:grid-cols-2 gap-4 p-4">
                             <div class="space-y-1">
-                                <label for="annualIncome" class="block font-medium text-sm text-gray-700">Annual Gross Income ($):</label>
+                                <label for="annualIncome" class="block font-medium text-sm text-gray-700">Annual Gross Income (Amount):</label>
                                 <input type="number" id="annualIncome" value="120000" min="0" step="1000" class="w-full p-2 border border-gray-300 rounded-md focus:ring-dti-safe focus:border-dti-safe">
                             </div>
                             <div class="space-y-1">
-                                <label for="nonMortgageDebt" class="block font-medium text-sm text-gray-700">Monthly Non-Mortgage Debt ($):</label>
+                                <label for="nonMortgageDebt" class="block font-medium text-sm text-gray-700">Monthly Non-Mortgage Debt (Amount):</label>
                                 <input type="number" id="nonMortgageDebt" value="800" min="0" step="50" class="w-full p-2 border border-gray-300 rounded-md focus:ring-dti-safe focus:border-dti-safe">
                                 <p class="text-xs text-gray-600 mt-1">Car, student, CC payments.</p>
                             </div>
                         </div>
                     </details>
 
-                    <details open class="bg-white rounded-lg shadow-lg border border-gray-200">
+                    <details open class="bg-white rounded-lg shadow-lg border-2 border-cyan-600">
                         <summary class="p-4 font-bold text-base text-primary border-b border-gray-200 cursor-pointer flex justify-between items-center relative before:content-['+'] open:before:content-['−'] before:absolute before:right-4 before:text-xl">
                             PITI, Payoff & Economic Inputs
                         </summary>
@@ -236,8 +257,8 @@
                             <div class="space-y-1 col-span-1 sm:col-span-2 bg-npv/10 p-2 rounded-md border border-npv/30">
                                 <label for="discountRate" class="block font-bold text-sm text-npv">
                                      <span class="tooltip-container">Annual Investment/Inflation Rate (%):
-                                        <span class="tooltip-icon" tabindex="0">?</span>
-                                        <span class="tooltip-text">Also called the Discount Rate. Represents the return you could get by investing your money elsewhere (e.g., stock market) or the rate of inflation. Used for NPV.</span>
+                                        <span class="tooltip-icon" tabindex="0" aria-label="Discount Rate tooltip">?</span>
+                                        <span class="tooltip-text" role="tooltip">Also called the Discount Rate. Represents the return you could get by investing your money elsewhere (e.g., stock market) or the rate of inflation. Used for NPV.</span>
                                     </span>
                                 </label>
                                 <input type="number" id="discountRate" value="3.0" min="0" max="20" step="0.1" class="w-full p-2 border border-npv/50 rounded-md focus:ring-npv focus:border-npv">
@@ -245,8 +266,8 @@
                             <div class="space-y-1">
                                 <label for="pitiEscalationRate" class="block font-medium text-sm text-red-700">
                                     <span class="tooltip-container">PITI Escalation Rate (%):
-                                        <span class="tooltip-icon" tabindex="0">?</span>
-                                        <span class="tooltip-text">The estimated annual increase for property taxes and home insurance. Helps model rising costs over time.</span>
+                                        <span class="tooltip-icon" tabindex="0" aria-label="PITI Escalation Rate tooltip">?</span>
+                                        <span class="tooltip-text" role="tooltip">The estimated annual increase for property taxes and home insurance. Helps model rising costs over time.</span>
                                     </span>
                                 </label>
                                 <input type="number" id="pitiEscalationRate" value="2.0" min="0" max="10" step="0.1" class="w-full p-2 border border-red-300 rounded-md focus:ring-red-500 focus:border-red-500">
@@ -256,15 +277,15 @@
                                 <input type="number" id="pmiRate" value="0.5" min="0" max="5" step="0.05" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
                             </div>
                             <div class="space-y-1">
-                                <label for="propertyTax" class="block font-medium text-sm text-gray-700">Annual Property Tax ($):</label>
+                                <label for="propertyTax" class="block font-medium text-sm text-gray-700">Annual Property Tax (Amount):</label>
                                 <input type="number" id="propertyTax" value="3600" min="0" step="10" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
                             </div>
                             <div class="space-y-1">
-                                <label for="insurance" class="block font-medium text-sm text-gray-700">Annual Home Insurance ($):</label>
+                                <label for="insurance" class="block font-medium text-sm text-gray-700">Annual Home Insurance (Amount):</label>
                                 <input type="number" id="insurance" value="1200" min="0" step="10" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
                             </div>
                             <div class="space-y-1">
-                                <label for="hoa" class="block font-medium text-sm text-gray-700">Monthly HOA Dues ($):</label>
+                                <label for="hoa" class="block font-medium text-sm text-gray-700">Monthly HOA Dues (Amount):</label>
                                 <input type="number" id="hoa" value="0" min="0" step="10" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
                             </div>
                             <div class="space-y-1">
@@ -272,7 +293,7 @@
                                 <input type="number" id="extraPayment" value="100" min="0" step="10" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
                             </div>
                             <div class="space-y-1">
-                                <label for="lumpSumPayment" class="block font-medium text-sm text-gray-700">One-Time Lump Sum ($):</label>
+                                <label for="lumpSumPayment" class="block font-medium text-sm text-gray-700">One-Time Lump Sum (Amount):</label>
                                 <input type="number" id="lumpSumPayment" value="5000" min="0" step="500" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
                             </div>
                             <div class="space-y-1">
@@ -282,7 +303,7 @@
                         </div>
                     </details>
 
-                    <details class="bg-white rounded-lg shadow-lg border border-gray-200">
+                    <details class="bg-white rounded-lg shadow-lg border-2 border-cyan-600">
                         <summary class="p-4 font-bold text-base text-primary border-b border-gray-200 cursor-pointer flex justify-between items-center relative before:content-['+'] open:before:content-['−'] before:absolute before:right-4 before:text-xl">
                             Refinance Scenario Modeling
                         </summary>
@@ -292,7 +313,7 @@
                                 <input type="number" id="refiPeriod" value="60" min="1" max="360" step="12" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
                             </div>
                             <div class="space-y-1">
-                                <label for="refiClosingCosts" class="block font-medium text-sm text-red-700">Refi Closing Costs ($):</label>
+                                <label for="refiClosingCosts" class="block font-medium text-sm text-red-700">Refi Closing Costs (Amount):</label>
                                 <input type="number" id="refiClosingCosts" value="5000" min="0" step="100" class="w-full p-2 border border-red-300 rounded-md focus:ring-red-500 focus:border-red-500">
                             </div>
                             <div class="space-y-1">
@@ -306,7 +327,7 @@
                         </div>
                     </details>
 
-                    <details class="bg-white rounded-lg shadow-lg border border-gray-200">
+                    <details class="bg-white rounded-lg shadow-lg border-2 border-cyan-600">
                         <summary class="p-4 font-bold text-base text-primary border-b border-gray-200 cursor-pointer flex justify-between items-center relative before:content-['+'] open:before:content-['−'] before:absolute before:right-4 before:text-xl">
                             Interest Rate Shock Test
                         </summary>
@@ -335,10 +356,10 @@
                 
                 <div class="output-column flex flex-col gap-4">
 
-                    <div id="results" class="p-4 bg-gray-50 rounded-lg shadow-inner border border-gray-200" aria-live="polite">
-                        <div class="flex justify-between items-center mb-2">
+                    <div id="results" class="p-4 bg-gray-50 rounded-lg shadow-inner border border-gray-200 opacity-0" aria-live="polite" aria-atomic="true">
+                        <div class="relative text-center mb-2">
                              <h3 class="text-xl font-bold text-gray-800">Calculation Summary</h3>
-                             <button onclick="window.print()" class="no-print p-2 rounded-md hover:bg-gray-200 transition-colors" aria-label="Print Results" title="Print Results">
+                             <button onclick="window.print()" class="no-print p-2 rounded-md hover:bg-gray-200 transition-colors absolute top-0 right-0" aria-label="Print Results" title="Print Results">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
                                     <path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2H5zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4V3zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2H5zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1z"/>
                                     <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z"/>
@@ -346,7 +367,7 @@
                              </button>
                         </div>
                         
-                        <p class="text-xl py-2 font-bold">Estimated Initial Monthly Payment (PITI + PMI): <span id="totalMonthlyPaymentPITI" class="text-primary"></span></p>
+                        <p class="text-base py-2 font-bold">Estimated Initial Monthly Payment (PITI + PMI): <span id="totalMonthlyPaymentPITI" class="text-primary"></span></p>
                         
                         <p class="text-xs text-red-600 text-center p-2 border-dashed border border-amber-500 bg-amber-50 rounded-md mt-2" id="pmiDropNote" style="display: none;">
                             PMI included until period <span id="pmiDropPeriod" class="font-bold"></span>, when LTV drops to 80%.
@@ -373,11 +394,11 @@
                             <div class="grid grid-cols-2 gap-4 text-center">
                                  <div class="p-2 rounded-lg bg-gray-50 border">
                                     <p class="text-xs font-medium text-gray-600">Total Equity at Payoff</p>
-                                    <p id="finalEquity" class="text-xl font-extrabold text-accent"></p>
+                                    <p id="finalEquity" class="text-xl font-extrabold text-accent" data-value="0"></p>
                                 </div>
                                 <div class="p-2 rounded-lg bg-gray-50 border">
                                     <p class="text-xs font-medium text-gray-600">Final Property Value</p>
-                                    <p id="finalPropertyValue" class="text-xl font-extrabold text-accent"></p>
+                                    <p id="finalPropertyValue" class="text-xl font-extrabold text-accent" data-value="0"></p>
                                 </div>
                             </div>
                         </div>
@@ -391,28 +412,28 @@
                                 <h3 class="text-base font-semibold text-gray-700 mb-1">Original Loan (Standard)</h3>
                                 <p>P&I Payment: <span id="standardPaymentDisplay"></span></p>
                                 <p>Payoff Date: <span id="originalPayoffDate"></span></p>
-                                <p class="mt-2 text-primary font-bold">Total Interest Paid: <span id="totalInterestOriginal"></span></p>
-                                <p class="text-npv font-bold">NPV of Interest Cost: <span id="npvOriginal"></span></p>
+                                <p class="mt-2 text-primary font-bold">Total Interest Paid: <span id="totalInterestOriginal" data-value="0"></span></p>
+                                <p class="text-npv font-bold">NPV of Interest Cost: <span id="npvOriginal" data-value="0"></span></p>
                             </div>
                             <div class="bg-gray-100 p-3 rounded-lg border border-gray-200">
                                 <h3 class="text-base font-semibold text-gray-700 mb-1">Accelerated Scenario</h3>
                                 <p>Accelerated P&I Payment: <span id="acceleratedPaymentDisplay"></span></p>
                                 <p>New Payoff Date: <span id="newPayoffDate" class="text-accent font-bold"></span></p>
-                                <p class="mt-2 text-primary font-bold">Total Interest Paid: <span id="totalInterestNew"></span></p>
-                                <p class="text-npv font-bold">NPV of Interest Cost: <span id="npvNew"></span></p>
+                                <p class="mt-2 text-primary font-bold">Total Interest Paid: <span id="totalInterestNew" data-value="0"></span></p>
+                                <p class="text-npv font-bold">NPV of Interest Cost: <span id="npvNew" data-value="0"></span></p>
                             </div>
                         </div>
                         
                         <p class="text-md mt-4 p-2 bg-accent/10 rounded-lg text-center font-medium">
-                            You saved <span class="text-accent font-extrabold" id="interestSaved"></span> in Nominal Interest and shaved off <span class="text-accent font-extrabold" id="timeSaved"></span> from the loan term!
+                            You saved <span class="text-accent font-extrabold" id="interestSaved" data-value="0"></span> in Nominal Interest and shaved off <span class="text-accent font-extrabold" id="timeSaved"></span> from the loan term!
                         </p>
                         
                         <p class="text-md mt-2 p-2 bg-npv/10 rounded-lg text-center font-medium border-l-4 border-npv">
-                             NPV Savings: <span class="text-npv font-extrabold" id="npvSaved"></span> (The true value saved in today's dollars).
+                             NPV Savings: <span class="text-npv font-extrabold" id="npvSaved" data-value="0"></span> (The true value saved in today's dollars).
                         </p>
                     </div>
                     
-                    <div id="shock-results" class="p-4 bg-red-100 rounded-lg shadow-inner border border-red-300" style="display: none;">
+                    <div id="shock-results" class="p-4 bg-red-100 rounded-lg shadow-inner border border-red-300" style="display: none;" aria-live="assertive" aria-atomic="true">
                         <h3 class="text-lg font-bold text-red-700 mb-2">Interest Rate Shock Test Result</h3>
                         <p class="text-lg">New Rate: <span id="shockRateDisplay" class="text-red-600 font-bold"></span>%</p>
                         <p>Original P&I Payment: <span id="originalShockPaymentDisplay"></span></p>
