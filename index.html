@@ -437,9 +437,9 @@
                     <div class="output-column flex flex-col gap-4">
 
                         <div id="results" class="p-4 bg-gray-50 rounded-lg shadow-inner border border-gray-200 opacity-0" aria-live="polite" aria-atomic="true">
-                            <div class="relative text-center mb-2">
-                                 <h2 class="text-lg sm:text-xl font-bold text-gray-800">Calculation Summary</h2>
-                                 <div class="no-print absolute top-0 right-0 flex space-x-2">
+                            <div class="text-center sm:flex sm:justify-between sm:items-center mb-2">
+                                <h2 class="text-lg sm:text-xl font-bold text-gray-800">Calculation Summary</h2>
+                                <div class="no-print flex justify-center space-x-2 mt-2 sm:mt-0">
                                     <button onclick="generatePDF()" class="p-2 rounded-md hover:bg-gray-200 transition-colors" aria-label="Download PDF Report" title="Download PDF Report">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
                                             <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
@@ -452,7 +452,7 @@
                                             <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z"/>
                                         </svg>
                                     </button>
-                                 </div>
+                                </div>
                             </div>
                             
                             <p class="text-sm sm:text-base py-2 font-bold">Estimated Initial Monthly Payment (PITI + PMI): <span id="totalMonthlyPaymentPITI" class="text-primary"></span></p>
