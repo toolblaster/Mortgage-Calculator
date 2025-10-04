@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact & Legal - Strategic Mortgage Planner</title>
-    <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIHJ4PSIyMCIgZmlsbD0iIzFDNzY4RiIvPjxwYXRoIGQ9Ik01MCAyNUwyNSA0NVY3NUg0MS42NjY3VjU4LjMzMzNINTguMzMzM1Y3NUg3NVY0NUw1MCAyNVoiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik00MCA2NUw1MCA1NUw2MCA2NSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNNTAgNTVWNDUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaWJkPSJyb3VuZCIvPjwvc3ZnPg==">
+    <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIHJ4PSIyMCIgZmlsbD0iIzFDNzY4RiIvPjxwYXRoIGQ9Ik01MCAyNUwyNSA0NVY3NUg0MS42NjY3VjU4LjMzMzNINTguMzMzM1Y3NUg3NVY0NUw1MCAyNVoiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik00MCA2NUw1MCA1NUw2MCA2NSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNNTAgNTVWNDUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PC9zdmc+">
     
     <!-- Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -44,26 +44,81 @@
 
     <!-- Main Content Area -->
     <main class="content-wrapper">
-        <div class="bg-white p-4 md:p-8 rounded-xl shadow-2xl w-full max-w-4xl mx-auto my-4 prose">
+        <div class="bg-white p-4 md:p-8 rounded-xl shadow-2xl w-full max-w-4xl mx-auto my-4">
             <h2 class="text-2xl md:text-3xl font-extrabold text-primary text-center">Contact & Legal Information</h2>
             
-            <div class="text-center bg-sky-50 p-4 rounded-lg my-6">
-                <h3 class="font-bold text-primary">Contact Us</h3>
-                <p>For any questions, feedback, or inquiries, please reach out to us at:</p>
+            <div class="text-center bg-sky-50 p-4 rounded-lg my-6 border border-sky-200">
+                <h3 class="font-bold text-lg text-primary">Contact Us</h3>
+                <p class="text-gray-600">For any questions, feedback, or inquiries, please reach out to us at:</p>
                 <a href="mailto:vikas@toolblaster.com" class="text-accent font-semibold hover:underline">vikas@toolblaster.com</a>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
-                <div>
-                    <h3 class="font-bold text-primary">Disclaimer</h3>
-                    <p>The information and calculations provided by the Strategic Mortgage Planner are for informational and illustrative purposes only. They are not intended to be a substitute for professional financial advice. We do not guarantee the accuracy or applicability of this information to your individual circumstances.</p>
-                    <p>All examples are hypothetical and are for illustrative purposes. We encourage you to seek personalized advice from qualified professionals regarding all personal finance issues.</p>
+            <!-- Redesigned Disclaimer and Privacy Sections -->
+            <div class="space-y-8 mt-10">
+
+                <!-- Disclaimer Section -->
+                <div class="bg-amber-50 border-l-4 border-amber-400 p-6 rounded-lg shadow-md">
+                    <h3 class="font-bold text-xl text-amber-800 mb-4">Disclaimer</h3>
+                    <ul class="space-y-4 text-gray-700">
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-amber-400 text-white flex items-center justify-center mr-4">
+                               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                  <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                               </svg>
+                            </div>
+                            <span>The information and calculations are for <strong>informational and illustrative purposes only</strong> and are not a substitute for professional financial advice.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-amber-400 text-white flex items-center justify-center mr-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                   <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                                </svg>
+                            </div>
+                            <span>We do not guarantee the accuracy or applicability of this information to your <strong>individual circumstances</strong>. All examples are hypothetical.</span>
+                        </li>
+                         <li class="flex items-start">
+                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-amber-400 text-white flex items-center justify-center mr-4">
+                               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                  <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                               </svg>
+                            </div>
+                            <span>We strongly encourage you to <strong>seek personalized advice</strong> from qualified professionals regarding all personal finance issues.</span>
+                        </li>
+                    </ul>
                 </div>
-                <div>
-                    <h3 class="font-bold text-primary">Privacy Policy</h3>
-                    <p>We are committed to protecting your privacy. This website does not collect, store, or share any personal financial data that you enter into the calculator. All calculations are performed within your browser and are not transmitted to our servers.</p>
-                    <p>We may use anonymous analytics cookies to understand how our visitors use the site, but this data is aggregated and cannot be used to identify you personally. Your privacy is paramount.</p>
+
+                <!-- Privacy Policy Section -->
+                <div class="bg-sky-50 border-l-4 border-sky-400 p-6 rounded-lg shadow-md">
+                    <h3 class="font-bold text-xl text-sky-800 mb-4">Privacy Policy</h3>
+                    <ul class="space-y-4 text-gray-700">
+                        <li class="flex items-start">
+                           <div class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-400 text-white flex items-center justify-center mr-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                </svg>
+                            </div>
+                            <span>We are committed to <strong>protecting your privacy</strong>. This website does not collect, store, or share any personal financial data you enter.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-400 text-white flex items-center justify-center mr-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                   <path stroke-linecap="round" stroke-linejoin="round" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                </svg>
+                            </div>
+                            <span>All calculations are <strong>performed within your browser</strong> and are never transmitted to our servers. Your data stays with you.</span>
+                        </li>
+                         <li class="flex items-start">
+                           <div class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-400 text-white flex items-center justify-center mr-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                            </div>
+                            <span>We may use <strong>anonymous analytics</strong> to understand site usage, but this data is aggregated and cannot be used to identify you personally.</span>
+                        </li>
+                    </ul>
                 </div>
+
             </div>
         </div>
     </main>
