@@ -75,25 +75,3 @@ details[open] summary ~ * { animation: sweep .5s ease-in-out; }
     padding-bottom: 0.5rem;
     margin-bottom: 1rem;
 }
-
-/* Social Sharing Section Styles */
-#sharing-section {
-    border-top: 1px solid #e5e7eb;
-    border-bottom: 1px solid #e5e7eb;
-    background-color: #fff;
-}
-.share-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    border-radius: 9999px;
-    color: white;
-    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-    transition: all 0.2s ease-in-out;
-}
-.share-btn:hover {
-    transform: translateY(-2px) scale(1.05);
-    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-}
