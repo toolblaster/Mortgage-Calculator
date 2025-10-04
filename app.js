@@ -2,10 +2,43 @@
 
 // --- Global Variables & Chart Instance ---
 let mortgageChart = null;
+const allInputIds = [ "loanAmount", "interestRate", "loanTerm", "initialLTV", "discountRate", "appreciationRate", "annualIncome", "nonMortgageDebt", "propertyTax", "insurance", "hoa", "pitiEscalationRate", "pmiRate", "extraPayment", "lumpSumPayment", "lumpSumPeriod", "refiPeriod", "refiRate", "refiTerm", "refiClosingCosts", "shockRateIncrease", "repaymentFrequency", "currency" ];
 
-// --- Helper Functions for Formatting ---
-const formatCurrency = (amount) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }).format(amount);
+// --- Helper Functions ---
+const formatCurrency = (amount) => {
+    const currency = document.getElementById('currency').value || 'USD';
+    // Use a specific locale that matches the common format for these currencies
+    const locale = ['EUR', 'GBP'].includes(currency) ? 'de-DE' : 'en-US';
+    return new Intl.NumberFormat(locale, { style: 'currency', currency: currency, minimumFractionDigits: 0 }).format(amount);
+};
 const formatPercent = (amount) => (amount * 100).toFixed(1) + '%';
+
+/**
+ * Animates a numerical value in a DOM element.
+ * @param {HTMLElement} el - The element to update.
+ * @param {number} endValue - The final value to display.
+ * @param {number} duration - Animation duration in milliseconds.
+ */
+function animateValue(el, endValue, duration = 500) {
+    if (!el) return;
+    let startValue = parseFloat(el.dataset.value) || 0;
+    el.dataset.value = endValue; // Store the new value immediately
+    let startTime = null;
+
+    function animation(currentTime) {
+        if (startTime === null) startTime = currentTime;
+        const timeElapsed = currentTime - startTime;
+        const progress = Math.min(timeElapsed / duration, 1);
+        const currentValue = startValue + (endValue - startValue) * progress;
+        el.textContent = formatCurrency(currentValue);
+        if (progress < 1) {
+            requestAnimationFrame(animation);
+        } else {
+            el.textContent = formatCurrency(endValue); // Ensure final value is exact
+        }
+    }
+    requestAnimationFrame(animation);
+}
 
 // --- Core Financial Calculation Functions ---
 
@@ -148,7 +181,7 @@ function renderChart(acceleratedResults) {
                 { label: 'Loan Balance', data: chartData.map(d => d.balance), borderColor: '#1C768F', borderWidth: 3, fill: false, tension: 0.3, pointRadius: 2 }
             ]
         },
-        options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { callback: value => formatCurrency(value).replace('.00', '').replace('$', '') } } }, plugins: { title: { display: true, text: 'Equity Accumulation vs. Debt Payoff', font: { size: 14, weight: '600' } }, tooltip: { mode: 'index', intersect: false, callbacks: { label: c => `${c.dataset.label}: ${formatCurrency(c.parsed.y)}` } } } }
+        options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { callback: value => formatCurrency(value).replace(/[,.€$£]/g, '') } } }, plugins: { title: { display: true, text: 'Equity Accumulation vs. Debt Payoff', font: { size: 14, weight: '600' } }, tooltip: { mode: 'index', intersect: false, callbacks: { label: c => `${c.dataset.label}: ${formatCurrency(c.parsed.y)}` } } } }
     });
 }
 
@@ -181,7 +214,12 @@ function handleCalculation(isShockTest = false) {
     calculateButton.disabled = true;
     calculateButton.textContent = 'Calculating...';
     setTimeout(() => {
-        try { if (validateInputs()) calculateMortgage(isShockTest); } 
+        try { 
+            if (validateInputs()) {
+                calculateMortgage(isShockTest);
+                updateURLWithInputs();
+            }
+        } 
         catch (e) {
             console.error("Calculation Error:", e);
             const errorContainer = document.getElementById('error-messages');
@@ -205,7 +243,9 @@ function calculateMortgage(isShockTest = false) {
     const refiP = getVal('refiPeriod'), refiR = getVal('refiRate'), refiT = getVal('refiTerm'), refiC = getVal('refiClosingCosts');
     const discRate = getVal('discountRate') / 100, apprRate = getVal('appreciationRate') / 100;
     
-    document.getElementById('results').style.opacity = 1;
+    const resultsEl = document.getElementById('results');
+    resultsEl.style.opacity = 1;
+    resultsEl.classList.add('results-enter-active');
     document.getElementById('schedule-wrapper').style.opacity = 1;
     document.getElementById('shock-results').style.display = 'none';
 
@@ -219,8 +259,8 @@ function calculateMortgage(isShockTest = false) {
     renderDTI(calculateDTI(totalPITI).frontEnd, calculateDTI(totalPITI).backEnd);
 
     const setTxt = (id, val) => document.getElementById(id).textContent = val;
-    setTxt('finalEquity', formatCurrency(accelerated.finalEquity));
-    setTxt('finalPropertyValue', formatCurrency(accelerated.finalPropertyValue));
+    animateValue(document.getElementById('finalEquity'), accelerated.finalEquity);
+    animateValue(document.getElementById('finalPropertyValue'), accelerated.finalPropertyValue);
     setTxt('totalMonthlyPaymentPITI', formatCurrency(totalPITI));
     setTxt('standardPaymentDisplay', formatCurrency(standardPmt));
     
@@ -231,10 +271,10 @@ function calculateMortgage(isShockTest = false) {
     } else { pmiNote.style.display = 'none'; }
     
     setTxt('acceleratedPaymentDisplay', formatCurrency(standardPmt + extraP));
-    setTxt('totalInterestOriginal', formatCurrency(original.totalInterest));
-    setTxt('totalInterestNew', formatCurrency(accelerated.totalInterest));
-    setTxt('npvOriginal', formatCurrency(original.totalPVInterest));
-    setTxt('npvNew', formatCurrency(accelerated.totalPVInterest));
+    animateValue(document.getElementById('totalInterestOriginal'), original.totalInterest);
+    animateValue(document.getElementById('totalInterestNew'), accelerated.totalInterest);
+    animateValue(document.getElementById('npvOriginal'), original.totalPVInterest);
+    animateValue(document.getElementById('npvNew'), accelerated.totalPVInterest);
     const iSaved = original.totalInterest - accelerated.totalInterest;
     const npvSaved = original.totalPVInterest - accelerated.totalPVInterest;
     const tSavedPeriods = original.payoffPeriod - accelerated.payoffPeriod;
@@ -247,8 +287,8 @@ function calculateMortgage(isShockTest = false) {
     };
     setTxt('originalPayoffDate', payoffDate(original.payoffPeriod));
     setTxt('newPayoffDate', payoffDate(accelerated.payoffPeriod));
-    setTxt('interestSaved', formatCurrency(iSaved));
-    setTxt('npvSaved', formatCurrency(npvSaved));
+    animateValue(document.getElementById('interestSaved'), iSaved);
+    animateValue(document.getElementById('npvSaved'), npvSaved);
     setTxt('timeSaved', `${tSavedY}y ${tSavedM}m`);
     renderChart(accelerated);
     generateAmortizationTable(original, accelerated);
@@ -288,13 +328,43 @@ function resetForm() {
     const defaults = { loanAmount: "300000", interestRate: "6.5", loanTerm: "30", initialLTV: "90", discountRate: "3.0", appreciationRate: "3.5", annualIncome: "120000", nonMortgageDebt: "800", propertyTax: "3600", insurance: "1200", hoa: "0", pitiEscalationRate: "2.0", pmiRate: "0.5", extraPayment: "100", lumpSumPayment: "5000", lumpSumPeriod: "1", refiPeriod: "60", refiRate: "5.0", refiTerm: "15", refiClosingCosts: "5000", shockRateIncrease: "1.0" };
     for (const id in defaults) document.getElementById(id).value = defaults[id];
     document.getElementById('repaymentFrequency').value = "12";
+    document.getElementById('currency').value = "USD";
+    history.pushState(null, '', window.location.pathname); // Clear URL params on reset
     handleCalculation();
+}
+
+// --- URL State Management ---
+function updateURLWithInputs() {
+    const params = new URLSearchParams();
+    allInputIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) params.set(id, el.value);
+    });
+    // Replace the current history state instead of pushing a new one
+    history.replaceState(null, '', '?' + params.toString());
+}
+
+function populateFormFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    if (params.toString().length === 0) return false;
+    
+    allInputIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el && params.has(id)) {
+            el.value = params.get(id);
+        }
+    });
+    return true;
 }
 
 // --- Initial Page Load ---
 window.onload = () => {
-    // Run the main calculator function on load
-    handleCalculation();
+    // Populate form from URL if params exist, otherwise run with defaults
+    if (!populateFormFromURL()) {
+        resetForm(); // Set defaults if no params
+    } else {
+        handleCalculation(); // Calculate with URL params
+    }
     
     // Set the copyright year in the footer
     document.getElementById('copyright-year').textContent = new Date().getFullYear();
