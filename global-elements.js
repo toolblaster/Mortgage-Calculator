@@ -12,8 +12,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const logoIconPath = '#logo-icon';
 
     const headerHTML = `
-        <header class="bg-white/80 backdrop-blur-lg shadow-sm sticky top-0 z-50 no-print">
-            <nav class="max-w-[1100px] mx-auto px-4 sm:px-6 lg:px-8">
+        <header class="bg-white/80 backdrop-blur-lg shadow-sm fixed w-full top-0 z-50 no-print">
+            <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex items-center justify-between h-12">
                     <a href="${homePath}" class="flex items-center space-x-2 text-primary hover:opacity-80 transition-opacity">
                         <svg class="h-6 w-6" aria-hidden="true">
@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const footerHTML = `
         <footer class="bg-gray-800 text-gray-400 text-sm no-print">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                 <div class="text-center text-xs space-y-1">
                     <p>&copy; <span id="copyright-year"></span> Strategic Mortgage Planner. All Rights Reserved. | <a href="${legalPath}" class="hover:text-white underline">Contact & Legal</a> | <a href="${blogPath}" class="hover:text-white underline">Blog</a></p>
                     <p>A proud part of the <a href="https://toolblaster.com" target="_blank" rel="noopener noreferrer" class="text-white hover:underline font-semibold">toolblaster.com</a> Network</p>
