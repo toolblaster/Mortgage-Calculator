@@ -111,6 +111,13 @@ details[open] summary ~ * { animation: sweep .5s ease-in-out; }
     outline-offset: 1px;
 }
 
+/* Input Error Styling */
+.input-error {
+    border-color: #ef4444 !important; /* red-500 */
+    box-shadow: 0 0 0 1px #ef4444;
+}
+
+
 /* Visual Feedback Animation */
 .flash-highlight {
     animation: flash 1s ease-out;
