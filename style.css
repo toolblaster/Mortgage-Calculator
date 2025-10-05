@@ -6,7 +6,6 @@ body {
     font-family: 'Inter', sans-serif;
     background-color: #f3f4f6;
     scroll-behavior: smooth;
-    padding-top: 48px; /* Height of the h-12 fixed header */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
