@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const logoIconPath = '#logo-icon';
 
     const headerHTML = `
-        <header class="bg-white/80 backdrop-blur-lg shadow-sm fixed w-full top-0 z-50 no-print">
+        <header class="bg-white/80 backdrop-blur-lg shadow-sm no-print">
             <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex items-center justify-between h-12">
                     <a href="${homePath}" class="flex items-center space-x-2 text-primary hover:opacity-80 transition-opacity">
