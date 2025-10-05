@@ -17,12 +17,12 @@ main.content-wrapper {
 /* Page-Specific Calculator Styles */
 
 /* CLS (Cumulative Layout Shift) Improvements */
-#results, #affordability-results, #rent-vs-buy-results {
+#results, #affordability-results, #rent-vs-buy-results, #refinance-results {
     min-height: 400px; /* Reserves space to prevent layout shift when results load */
 }
 
 @media (min-width: 640px) {
-    #results, #affordability-results, #rent-vs-buy-results {
+    #results, #affordability-results, #rent-vs-buy-results, #refinance-results {
         min-height: 500px; 
     }
 }
@@ -38,9 +38,9 @@ details[open] summary ~ * { animation: sweep .5s ease-in-out; }
 .tooltip-text::after { content: ""; position: absolute; top: 100%; left: 50%; margin-left: -5px; border-width: 5px; border-style: solid; border-color: #1f2937 transparent transparent transparent; }
 .tooltip-container:hover .tooltip-text, .tooltip-container:focus-within .tooltip-text { visibility: visible; opacity: 1; }
 
-#chartContainer, #rent-vs-buy-chart-container, #affordability-chart-container { position: relative; height: 250px; width: 100%; }
+#chartContainer, #rent-vs-buy-chart-container, #affordability-chart-container, #refinance-chart-container { position: relative; height: 250px; width: 100%; }
 @media (min-width: 640px) {
-    #chartContainer, #rent-vs-buy-chart-container, #affordability-chart-container {
+    #chartContainer, #rent-vs-buy-chart-container, #affordability-chart-container, #refinance-chart-container {
         height: 320px;
     }
 }
