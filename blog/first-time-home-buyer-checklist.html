@@ -9,10 +9,11 @@
     <meta name="description" content="Our essential 10-step guide for first-time home buyers. Navigate everything from credit scores and mortgage pre-approval to closing day with confidence.">
     <meta name="keywords" content="first-time home buyer, home buying checklist, mortgage pre-approval, credit score for mortgage, down payment, closing costs, home inspection, real estate agent, mortgage types, making an offer on a house">
     <link rel="icon" href="data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100' height='100' rx='20' fill='%231C768F'/%3E%3Cpath d='M50 25L25 45V75H41.6667V58.3333H58.3333V75H75V45L50 25Z' stroke='white' stroke-width='5' stroke-linejoin='round'/%3E%3Cpath d='M40 65L50 55L60 65' stroke='white' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M50 55V45' stroke='white' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
-    <link rel="canonical" href="https://toolblaster.com/mortgage-calculator/blog/first-time-home-buyer-checklist.html" />
+    <link rel="canonical" href="https://mortgageplanner.toolblaster.com/blog/first-time-home-buyer-checklist.html" />
 
     <!-- Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
     
     <!-- App Configuration -->
@@ -90,24 +91,29 @@
                 </div>
             </header>
             
+            <div class="my-8 h-px w-full bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
+            
             <div class="prose prose-sm max-w-none mx-auto">
                 <p>Buying your first home is an exciting milestone, but the process can feel overwhelming. Where do you even begin? This comprehensive checklist breaks down the journey into 10 manageable steps, empowering you to navigate the path to homeownership with confidence. Let's dive in!</p>
 
                 <section class="mt-6 content-section">
                     <h2>Step 1: Strengthen Your Credit Score</h2>
                     <p>Your credit score is a critical factor that lenders use to determine your eligibility for a loan and the interest rate you'll receive. A higher score can save you thousands of dollars over the life of your mortgage.</p>
-                    <ul class="space-y-3 mt-4">
+                     <div class="my-4 p-4 bg-white rounded-lg border shadow-sm max-w-sm mx-auto">
+                        <canvas id="creditScoreChart"></canvas>
+                    </div>
+                    <ul class="space-y-4 mt-4">
                         <li class="flex items-start">
-                            <span class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-100 text-sky-800 flex items-center justify-center mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></span>
-                            <div><h3>Check Your Report</h3><p>Get free copies of your credit reports from all three major bureaus (Equifax, Experian, and TransUnion) and dispute any errors you find.</p></div>
+                           <span class="flex-shrink-0 w-6 h-6 mr-3 text-primary"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></span>
+                            <div><strong>Check Your Report:</strong> Get free copies of your credit reports from all three major bureaus (Equifax, Experian, and TransUnion) and dispute any errors you find.</div>
                         </li>
                         <li class="flex items-start">
-                            <span class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-100 text-sky-800 flex items-center justify-center mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></span>
-                            <div><h3>Pay Bills On Time</h3><p>Payment history is the single most important factor. Set up automatic payments to avoid missing due dates.</p></div>
+                           <span class="flex-shrink-0 w-6 h-6 mr-3 text-primary"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></span>
+                            <div><strong>Pay Bills On Time:</strong> Payment history is the single most important factor. Set up automatic payments to avoid missing due dates.</div>
                         </li>
                         <li class="flex items-start">
-                           <span class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-100 text-sky-800 flex items-center justify-center mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" /></svg></span>
-                            <div><h3>Reduce Credit Card Balances</h3><p>Aim to keep your credit utilization ratio (your balance divided by your limit) below 30%.</p></div>
+                           <span class="flex-shrink-0 w-6 h-6 mr-3 text-primary"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" /></svg></span>
+                            <div><strong>Reduce Credit Card Balances:</strong> Aim to keep your credit utilization ratio (your balance divided by your limit) below 30%.</div>
                         </li>
                     </ul>
                 </section>
@@ -115,14 +121,14 @@
                 <section class="mt-6 content-section">
                     <h2>Step 2: Determine Your Budget & Affordability</h2>
                     <p>Before you start looking at houses, you need a realistic understanding of what you can comfortably afford. This goes beyond the loan amount a bank might offer you.</p>
-                    <ul class="space-y-3 mt-4">
+                    <ul class="space-y-4 mt-4">
                          <li class="flex items-start">
-                            <span class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-100 text-sky-800 flex items-center justify-center mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" /></svg></span>
-                            <div><h3>Analyze Your Debt-to-Income (DTI) Ratio</h3><p>Lenders look closely at your DTI. Use an affordability calculator to see how a mortgage payment fits into your overall financial picture.</p></div>
+                           <span class="flex-shrink-0 w-6 h-6 mr-3 text-primary"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" /></svg></span>
+                            <div><strong>Analyze Your Debt-to-Income (DTI) Ratio:</strong> Lenders look closely at your DTI. Use an affordability calculator to see how a mortgage payment fits into your overall financial picture.</div>
                         </li>
                         <li class="flex items-start">
-                            <span class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-100 text-sky-800 flex items-center justify-center mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3" /></svg></span>
-                            <div><h3>Account for All Costs</h3><p>Remember that your monthly housing cost (PITI) includes Principal, Interest, Taxes, and Insurance—not just the loan payment. Also factor in utilities, maintenance, and potential HOA fees.</p></div>
+                           <span class="flex-shrink-0 w-6 h-6 mr-3 text-primary"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3" /></svg></span>
+                            <div><strong>Account for All Costs:</strong> Remember that your monthly housing cost (PITI) includes Principal, Interest, Taxes, and Insurance—not just the loan payment. Also factor in utilities, maintenance, and potential HOA fees.</div>
                         </li>
                     </ul>
                 </section>
@@ -130,18 +136,21 @@
                 <section class="mt-6 content-section">
                     <h2>Step 3: Save for a Down Payment & Closing Costs</h2>
                      <p>Saving a substantial down payment is a major hurdle, but it's crucial for securing a good loan and reducing your monthly payment.</p>
-                    <ul class="space-y-3 mt-4">
+                     <div class="my-6 p-4 bg-white rounded-lg border shadow-sm">
+                        <canvas id="downPaymentChart"></canvas>
+                    </div>
+                    <ul class="space-y-4 mt-4">
                          <li class="flex items-start">
-                            <span class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-100 text-sky-800 flex items-center justify-center mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941" /></svg></span>
-                            <div><h3>Aim for 20%</h3><p>While not always required, a 20% down payment helps you avoid Private Mortgage Insurance (PMI), an extra monthly fee.</p></div>
+                           <span class="flex-shrink-0 w-6 h-6 mr-3 text-primary"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941" /></svg></span>
+                            <div><strong>Aim for 20%:</strong> While not always required, a 20% down payment helps you avoid Private Mortgage Insurance (PMI), an extra monthly fee.</div>
                         </li>
                         <li class="flex items-start">
-                            <span class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-100 text-sky-800 flex items-center justify-center mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3" /></svg></span>
-                            <div><h3>Explore Low Down Payment Options</h3><p>Look into FHA loans, VA loans (for veterans), and USDA loans, which may require as little as 0-3.5% down.</p></div>
+                           <span class="flex-shrink-0 w-6 h-6 mr-3 text-primary"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3" /></svg></span>
+                            <div><strong>Explore Low Down Payment Options:</strong> Look into FHA loans, VA loans (for veterans), and USDA loans, which may require as little as 0-3.5% down.</div>
                         </li>
                         <li class="flex items-start">
-                            <span class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-100 text-sky-800 flex items-center justify-center mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" /></svg></span>
-                            <div><h3>Don't Forget Closing Costs</h3><p>These are fees for services that complete the real estate transaction. Budget an extra 2-5% of the home's purchase price for them.</p></div>
+                           <span class="flex-shrink-0 w-6 h-6 mr-3 text-primary"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" /></svg></span>
+                            <div><strong>Don't Forget Closing Costs:</strong> These are fees for services that complete the real estate transaction. Budget an extra 2-5% of the home's purchase price for them.</div>
                         </li>
                     </ul>
                 </section>
@@ -149,14 +158,14 @@
                 <section class="mt-6 content-section">
                      <h2>Step 4: Get Mortgage Pre-Approval</h2>
                      <p>A pre-approval letter is a conditional commitment from a lender for a specific loan amount. It shows sellers that you're a serious, qualified buyer.</p>
-                     <ul class="space-y-3 mt-4">
+                     <ul class="space-y-4 mt-4">
                          <li class="flex items-start">
-                            <span class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-100 text-sky-800 flex items-center justify-center mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg></span>
-                            <div><h3>Shop Around</h3><p>Compare offers from multiple lenders (banks, credit unions, mortgage brokers) to find the best interest rate and terms.</p></div>
+                           <span class="flex-shrink-0 w-6 h-6 mr-3 text-primary"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg></span>
+                            <div><strong>Shop Around:</strong> Compare offers from multiple lenders (banks, credit unions, mortgage brokers) to find the best interest rate and terms.</div>
                         </li>
                         <li class="flex items-start">
-                           <span class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-100 text-sky-800 flex items-center justify-center mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12" /></svg></span>
-                            <div><h3>Gather Your Documents</h3><p>You'll need pay stubs, W-2s, tax returns, bank statements, and information on any other debts or assets.</p></div>
+                           <span class="flex-shrink-0 w-6 h-6 mr-3 text-primary"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12" /></svg></span>
+                            <div><strong>Gather Your Documents:</strong> You'll need pay stubs, W-2s, tax returns, bank statements, and information on any other debts or assets.</div>
                         </li>
                      </ul>
                 </section>
@@ -164,14 +173,14 @@
                 <section class="mt-6 content-section">
                     <h2>Step 5: Understand Your Mortgage Options</h2>
                     <p>Not all mortgages are created equal. Understanding the basic types will help you have a more productive conversation with your lender.</p>
-                     <ul class="space-y-3 mt-4">
+                     <ul class="space-y-4 mt-4">
                         <li class="flex items-start">
-                           <span class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-100 text-sky-800 flex items-center justify-center mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" /></svg></span>
-                            <div><h3>Fixed-Rate Mortgage</h3><p>Your interest rate is locked for the entire loan term (e.g., 15 or 30 years). It offers predictable monthly payments, ideal for long-term planning.</p></div>
+                           <span class="flex-shrink-0 w-6 h-6 mr-3 text-primary"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" /></svg></span>
+                            <div><strong>Fixed-Rate Mortgage:</strong> Your interest rate is locked for the entire loan term (e.g., 15 or 30 years). It offers predictable monthly payments, ideal for long-term planning.</div>
                         </li>
                         <li class="flex items-start">
-                           <span class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-100 text-sky-800 flex items-center justify-center mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.042 21.672L13.684 16.6m0 0l-2.51 2.225.569-9.47 5.227 7.917-3.286-.672zm-7.518-.267A8.25 8.25 0 1120.25 10.5M8.288 14.212A5.25 5.25 0 1117.25 10.5" /></svg></span>
-                            <div><h3>Adjustable-Rate Mortgage (ARM)</h3><p>Offers a lower "introductory" rate for a set period, after which it adjusts with the market. It can be riskier but might suit those who plan to sell before the rate changes.</p></div>
+                           <span class="flex-shrink-0 w-6 h-6 mr-3 text-primary"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.042 21.672L13.684 16.6m0 0l-2.51 2.225.569-9.47 5.227 7.917-3.286-.672zm-7.518-.267A8.25 8.25 0 1120.25 10.5M8.288 14.212A5.25 5.25 0 1117.25 10.5" /></svg></span>
+                            <div><strong>Adjustable-Rate Mortgage (ARM):</strong> Offers a lower "introductory" rate for a set period, after which it adjusts with the market. It can be riskier but might suit those who plan to sell before the rate changes.</div>
                         </li>
                     </ul>
                 </section>
@@ -179,14 +188,14 @@
                 <section class="mt-6 content-section">
                     <h2>Step 6: Find an Agent & Start House Hunting</h2>
                     <p>With your pre-approval in hand, the fun begins! A good real estate agent is your most valuable ally in this phase.</p>
-                     <ul class="space-y-3 mt-4">
+                     <ul class="space-y-4 mt-4">
                         <li class="flex items-start">
-                            <span class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-100 text-sky-800 flex items-center justify-center mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg></span>
-                            <div><h3>Find a Great Agent</h3><p>Seek referrals from friends and family. A knowledgeable agent provides market insights, negotiation skills, and guidance through the complex paperwork.</p></div>
+                           <span class="flex-shrink-0 w-6 h-6 mr-3 text-primary"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg></span>
+                            <div><strong>Find a Great Agent:</strong> Seek referrals from friends and family. A knowledgeable agent provides market insights, negotiation skills, and guidance through the complex paperwork.</div>
                         </li>
                         <li class="flex items-start">
-                            <span class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-100 text-sky-800 flex items-center justify-center mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" /></svg></span>
-                            <div><h3>Define Your Needs vs. Wants</h3><p>Be clear about your must-haves (e.g., number of bedrooms, location) versus your nice-to-haves (e.g., a finished basement). This will focus your search.</p></div>
+                           <span class="flex-shrink-0 w-6 h-6 mr-3 text-primary"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" /></svg></span>
+                            <div><strong>Define Your Needs vs. Wants:</strong> Be clear about your must-haves (e.g., number of bedrooms, location) versus your nice-to-haves (e.g., a finished basement). This will focus your search.</div>
                         </li>
                     </ul>
                 </section>
@@ -194,14 +203,14 @@
                 <section class="mt-6 content-section">
                     <h2>Step 7: Make an Offer & Negotiate</h2>
                     <p>Found the one? Your agent will help you craft a competitive offer. This is more than just a price; it includes contingencies and timelines.</p>
-                     <ul class="space-y-3 mt-4">
+                     <ul class="space-y-4 mt-4">
                         <li class="flex items-start">
-                            <span class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-100 text-sky-800 flex items-center justify-center mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m5.231 13.5h-8.01a1.5 1.5 0 01-1.5-1.5V7.5a1.5 1.5 0 011.5-1.5h8.01" /></svg></span>
-                            <div><h3>Craft a Strong Offer</h3><p>Your agent will analyze comparable sales ("comps") to suggest a fair price. A personalized letter to the seller can sometimes make a difference.</p></div>
+                           <span class="flex-shrink-0 w-6 h-6 mr-3 text-primary"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m5.231 13.5h-8.01a1.5 1.5 0 01-1.5-1.5V7.5a1.5 1.5 0 011.5-1.5h8.01" /></svg></span>
+                            <div><strong>Craft a Strong Offer:</strong> Your agent will analyze comparable sales ("comps") to suggest a fair price. A personalized letter to the seller can sometimes make a difference.</div>
                         </li>
                         <li class="flex items-start">
-                            <span class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-100 text-sky-800 flex items-center justify-center mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7.5L7.5 3m0 0L12 7.5M7.5 3v13.5m13.5 0L16.5 21m0 0L12 16.5m4.5 4.5V7.5" /></svg></span>
-                            <div><h3>Prepare to Negotiate</h3><p>Sellers may counter your offer. Be prepared to negotiate on price, closing date, or repairs. This is where your agent's expertise is invaluable.</p></div>
+                           <span class="flex-shrink-0 w-6 h-6 mr-3 text-primary"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7.5L7.5 3m0 0L12 7.5M7.5 3v13.5m13.5 0L16.5 21m0 0L12 16.5m4.5 4.5V7.5" /></svg></span>
+                            <div><strong>Prepare to Negotiate:</strong> Sellers may counter your offer. Be prepared to negotiate on price, closing date, or repairs. This is where your agent's expertise is invaluable.</div>
                         </li>
                     </ul>
                 </section>
@@ -209,14 +218,14 @@
                 <section class="mt-6 content-section">
                     <h2>Step 8: The Critical Duo: Inspection & Appraisal</h2>
                      <p>Once your offer is accepted, you enter the "due diligence" period. These two steps are crucial for protecting your investment.</p>
-                     <ul class="space-y-3 mt-4">
+                     <ul class="space-y-4 mt-4">
                         <li class="flex items-start">
-                            <span class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-100 text-sky-800 flex items-center justify-center mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></span>
-                            <div><h3>The Home Inspection</h3><p>A professional inspector examines the home’s structure, systems (like plumbing and electrical), and overall condition to uncover any potential issues. This allows you to request repairs or even back out of the deal if major problems are found.</p></div>
+                           <span class="flex-shrink-0 w-6 h-6 mr-3 text-primary"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></span>
+                            <div><strong>The Home Inspection:</strong> A professional inspector examines the home’s structure, systems (like plumbing and electrical), and overall condition to uncover any potential issues. This allows you to request repairs or even back out of the deal if major problems are found.</div>
                         </li>
                         <li class="flex items-start">
-                           <span class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-100 text-sky-800 flex items-center justify-center mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg></span>
-                            <div><h3>The Appraisal</h3><p>Your lender will order an appraisal to ensure the home is worth the price you've agreed to pay. This protects the bank from lending more money than the property is worth.</p></div>
+                           <span class="flex-shrink-0 w-6 h-6 mr-3 text-primary"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg></span>
+                            <div><strong>The Appraisal:</strong> Your lender will order an appraisal to ensure the home is worth the price you've agreed to pay. This protects the bank from lending more money than the property is worth.</div>
                         </li>
                      </ul>
                 </section>
@@ -224,14 +233,14 @@
                  <section class="mt-6 content-section">
                     <h2>Step 9: Secure Your Financing</h2>
                     <p>While you were pre-approved, this is the final, formal application process. Your lender will verify all your financial information again.</p>
-                     <ul class="space-y-3 mt-4">
+                     <ul class="space-y-4 mt-4">
                         <li class="flex items-start">
-                           <span class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-100 text-sky-800 flex items-center justify-center mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.57-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.286z" /></svg></span>
-                           <div><h3>Final Underwriting</h3><p>An underwriter performs a final deep dive into your finances. Avoid making any large purchases, opening new credit lines, or changing jobs during this period!</p></div>
+                           <span class="flex-shrink-0 w-6 h-6 mr-3 text-primary"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.57-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.286z" /></svg></span>
+                           <div><strong>Final Underwriting:</strong> An underwriter performs a final deep dive into your finances. Avoid making any large purchases, opening new credit lines, or changing jobs during this period!</div>
                         </li>
                          <li class="flex items-start">
-                            <span class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-100 text-sky-800 flex items-center justify-center mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25" /></svg></span>
-                            <div><h3>Get the "Clear to Close"</h3><p>This is the magic phrase you're waiting for. It means your loan is approved, and you're ready to schedule your closing.</p></div>
+                           <span class="flex-shrink-0 w-6 h-6 mr-3 text-primary"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25" /></svg></span>
+                            <div><strong>Get the "Clear to Close":</strong> This is the magic phrase you're waiting for. It means your loan is approved, and you're ready to schedule your closing.</div>
                         </li>
                      </ul>
                 </section>
@@ -239,10 +248,10 @@
                  <section class="mt-6 content-section">
                     <h2>Step 10: Closing Day: You're a Homeowner!</h2>
                     <p>This is the final step where you sign the paperwork that officially transfers ownership of the home to you.</p>
-                     <ul class="space-y-3 mt-4">
+                     <ul class="space-y-4 mt-4">
                         <li class="flex items-start">
-                           <span class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-100 text-sky-800 flex items-center justify-center mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z" /></svg></span>
-                           <div><h3>Final Walkthrough & Signing</h3><p>You'll do a final walkthrough of the property to ensure it's in the agreed-upon condition. Then, you'll head to the title company or attorney's office to sign a mountain of documents. Finally, you'll receive the keys. Congratulations!</p></div>
+                           <span class="flex-shrink-0 w-6 h-6 mr-3 text-primary"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z" /></svg></span>
+                           <div><strong>Final Walkthrough & Signing:</strong> You'll do a final walkthrough of the property to ensure it's in the agreed-upon condition. Then, you'll head to the title company or attorney's office to sign a mountain of documents. Finally, you'll receive the keys. Congratulations!</div>
                         </li>
                      </ul>
                 </section>
@@ -285,6 +294,7 @@
                         </a>
                     </div>
                 </section>
+                
             </div>
         </article>
     </main>
@@ -322,6 +332,103 @@
 
             const emailShare = document.getElementById('share-email');
             if(emailShare) emailShare.href = `mailto:?subject=${postTitle}&body=Check out this helpful guide: ${postUrl}`;
+
+            // --- Chart Rendering ---
+            const creditScoreCtx = document.getElementById('creditScoreChart');
+            if (creditScoreCtx) {
+                new Chart(creditScoreCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Payment History (35%)', 'Amounts Owed (30%)', 'Credit History Length (15%)', 'Credit Mix (10%)', 'New Credit (10%)'],
+                        datasets: [{
+                            data: [35, 30, 15, 10, 10],
+                            backgroundColor: ['#1C768F', '#25a2c3', '#70cce2', '#a6ddeb', '#d1eaf1'],
+                            borderColor: '#ffffff',
+                            borderWidth: 2,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            title: {
+                                display: true,
+                                text: 'What Makes Up Your Credit Score?',
+                                font: {
+                                    size: 16
+                                }
+                            }
+                        }
+                    },
+                });
+            }
+
+            const downPaymentCtx = document.getElementById('downPaymentChart');
+            if (downPaymentCtx) {
+                new Chart(downPaymentCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['5% Down Payment', '20% Down Payment'],
+                        datasets: [{
+                            label: 'Principal & Interest',
+                            data: [1801, 1517],
+                            backgroundColor: 'rgba(28, 118, 143, 0.8)',
+                            borderColor: 'rgba(28, 118, 143, 1)',
+                            borderWidth: 1
+                        }, {
+                            label: 'PMI (Private Mortgage Insurance)',
+                            data: [119, 0],
+                            backgroundColor: 'rgba(239, 68, 68, 0.8)',
+                            borderColor: 'rgba(239, 68, 68, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                         plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            title: {
+                                display: true,
+                                text: 'Monthly Payment on a $300k Home',
+                                font: {
+                                    size: 16
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        if (context.parsed.y !== null) {
+                                            label += new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(context.parsed.y);
+                                        }
+                                        return label;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                stacked: true,
+                            },
+                            y: {
+                                stacked: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        return '$' + value;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
         });
     </script>
 </body>
