@@ -6,13 +6,12 @@ body {
     font-family: 'Inter', sans-serif;
     background-color: #f3f4f6;
     scroll-behavior: smooth;
+    padding-top: 48px; /* Height of the h-12 fixed header */
 }
 main.content-wrapper {
     flex-grow: 1;
 }
-.container {
-    max-width: 1050px;
-}
+/* Removed custom .container to use Tailwind's max-w classes directly */
 
 /* Page-Specific Calculator Styles */
 details > summary { list-style: none; }
@@ -20,11 +19,11 @@ details > summary::-webkit-details-marker { display: none; }
 details[open] summary ~ * { animation: sweep .5s ease-in-out; }
 @keyframes sweep { 0% { opacity: 0; transform: translateY(-10px) } 100% { opacity: 1; transform: translateY(0) } }
 .tooltip-container { position: relative; display: inline-flex; align-items: center; }
-.tooltip-icon { margin-left: 6px; cursor: help; color: #9ca3af; border: 1px solid #d1d5db; border-radius: 9999px; width: 16px; height: 16px; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; }
+.tooltip-icon { margin-left: 4px; cursor: help; color: #9ca3af; border: 1px solid #d1d5db; border-radius: 9999px; width: 14px; height: 14px; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; }
 .tooltip-text { visibility: hidden; width: 220px; background-color: #1f2937; color: #fff; text-align: center; border-radius: 6px; padding: 8px; position: absolute; z-index: 10; bottom: 125%; left: 50%; margin-left: -110px; opacity: 0; transition: opacity 0.3s; font-size: 12px; font-weight: normal; }
 .tooltip-text::after { content: ""; position: absolute; top: 100%; left: 50%; margin-left: -5px; border-width: 5px; border-style: solid; border-color: #1f2937 transparent transparent transparent; }
 .tooltip-container:hover .tooltip-text, .tooltip-container:focus-within .tooltip-text { visibility: visible; opacity: 1; }
-#chartContainer, #rent-vs-buy-chart-container, #affordability-chart-container { position: relative; height: 400px; width: 100%; }
+#chartContainer, #rent-vs-buy-chart-container, #affordability-chart-container { position: relative; height: 320px; width: 100%; }
 #amortizationTable th, #amortizationTable td { white-space: nowrap; }
 
 /* Tab Styles */
@@ -45,9 +44,8 @@ details[open] summary ~ * { animation: sweep .5s ease-in-out; }
 
 /* --- New Accessibility Focus Styles --- */
 :is(button, a, input, select, [tabindex="0"]):focus-visible {
-    outline: 3px solid #38bdf8; /* sky-400 */
-    outline-offset: 2px;
-    box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.3);
+    outline: 2px solid #38bdf8; /* sky-400 */
+    outline-offset: 1px;
 }
 
 /* --- New Visual Feedback Animation --- */
@@ -62,19 +60,17 @@ details[open] summary ~ * { animation: sweep .5s ease-in-out; }
 
 .results-animate-in { animation: fadeInSlideUp 0.6s ease-out forwards; }
 @keyframes fadeInSlideUp { 0% { opacity: 0; transform: translateY(15px); } 100% { opacity: 1; transform: translateY(0); } }
-@media (min-width: 1024px) { .main-grid-layout { grid-template-columns: 30% 1fr; } }
+@media (min-width: 1024px) { .main-grid-layout { grid-template-columns: 35% 1fr; } }
 @media print { .no-print, #calculateButton, #resetButton, .input-column, header, footer, details > summary, #load-guide-btn, #main-tabs { display: none !important; } .content-wrapper, #results, #schedule-wrapper { box-shadow: none !important; border: none !important; } .main-grid-layout { display: block; } details { open: true !important; } details[open] { page-break-before: always; } .output-column { width: 100%; } #chartContainer { height: 350px !important; } }
 
 /* Styles for Prose on Legal & Content Pages */
 .prose p, .prose ul, .content-section p, .content-section ul {
     margin-bottom: 1em;
     color: #374151;
-    font-size: 0.9rem;
 }
 .prose h2, .prose h3, .content-section h3 {
     margin-bottom: 0.5em;
     color: #111827;
-    font-size: 1.15rem;
     font-weight: 700;
 }
 .prose ul, .content-section ul {
@@ -95,20 +91,20 @@ details[open] summary ~ * { animation: sweep .5s ease-in-out; }
     background-color: #f9fafb;
     border: 1px solid #e5e7eb;
     border-radius: 0.75rem;
-    padding: 1.5rem;
+    padding: 0.75rem; /* Reduced padding */
 }
 
 .sidebar-widget {
     background-color: #f9fafb;
     border: 1px solid #e5e7eb;
     border-radius: 0.75rem;
-    padding: 1.5rem;
+    padding: 0.75rem; /* Reduced padding */
 }
 .sidebar-title {
-    font-size: 1rem;
+    font-size: 0.875rem; /* text-sm */
     font-weight: 700;
     color: #1C768F; /* Primary color */
     border-bottom: 2px solid #1C768F;
     padding-bottom: 0.5rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
 }
