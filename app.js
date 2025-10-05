@@ -481,6 +481,13 @@ TABLE OF CONTENTS
         const errors = [];
         const fields = [ { id: 'loanAmount', name: 'Loan Principal', min: 1 }, { id: 'interestRate', name: 'Interest Rate', min: 0.1, max: 100 }, { id: 'loanTerm', name: 'Loan Term', min: 1, max: 50 }, { id: 'initialLTV', name: 'Initial LTV', min: 1, max: 100 }, { id: 'annualIncome', name: 'Annual Income', min: 0 }, { id: 'nonMortgageDebt', name: 'Non-Mortgage Debt', min: 0 }, { id: 'appreciationRate', name: 'Appreciation Rate', min: 0, max: 50 }, { id: 'discountRate', name: 'Discount Rate', min: 0, max: 50 }, { id: 'pitiEscalationRate', name: 'PITI Escalation Rate', min: 0, max: 50 }, { id: 'pmiRate', name: 'PMI Rate', min: 0, max: 10 }, { id: 'propertyTax', name: 'Property Tax', min: 0 }, { id: 'insurance', name: 'Home Insurance', min: 0 }, { id: 'hoa', name: 'HOA Dues', min: 0 }, { id: 'extraPayment', name: 'Extra Payment', min: 0 }, { id: 'lumpSumPayment', name: 'Lump Sum Payment', min: 0 }, { id: 'annualMaintenance', name: 'Annual Maintenance', min: 0, max: 20 }, { id: 'monthlyUtilities', name: 'Monthly Utilities', min: 0 } ];
         
+        // First, clear all previous error styles
+        fields.forEach(field => {
+            if (DOM[field.id]) {
+                DOM[field.id].classList.remove('input-error');
+            }
+        });
+
         if (currentTab === 'rent-vs-buy') {
             fields.push({ id: 'monthlyRent', name: 'Monthly Rent', min: 1 }, { id: 'rentIncrease', name: 'Rent Increase', min: 0, max: 20 }, { id: 'investmentReturn', name: 'Investment Return', min: 0, max: 30 }, { id: 'closingCosts', name: 'Closing Costs', min: 0 }, { id: 'sellingCosts', name: 'Selling Costs', min: 0, max: 20 });
         } else if (currentTab === 'affordability') {
@@ -491,10 +498,22 @@ TABLE OF CONTENTS
             const el = DOM[field.id];
             if (!el) return;
             const value = parseFloat(el.value);
-            if (isNaN(value)) errors.push(`${field.name} must be a number.`);
-            else {
-                if (field.min !== undefined && value < field.min) errors.push(`${field.name} must be at least ${field.min}.`);
-                if (field.max !== undefined && value > field.max) errors.push(`${field.name} cannot exceed ${field.max}.`);
+            let hasError = false;
+            if (isNaN(value)) {
+                errors.push(`${field.name} must be a number.`);
+                hasError = true;
+            } else {
+                if (field.min !== undefined && value < field.min) {
+                    errors.push(`${field.name} must be at least ${field.min}.`);
+                    hasError = true;
+                }
+                if (field.max !== undefined && value > field.max) {
+                    errors.push(`${field.name} cannot exceed ${field.max}.`);
+                    hasError = true;
+                }
+            }
+            if (hasError) {
+                el.classList.add('input-error');
             }
         });
 
