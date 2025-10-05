@@ -184,6 +184,12 @@
                             Rent vs. Buy
                         </button>
                     </li>
+                    <li class="mr-2 flex-shrink-0" role="presentation">
+                        <button class="inline-block p-3 border-b-2 rounded-t-lg" id="refinance-tab" type="button" role="tab" aria-controls="refinance-content" aria-selected="false">
+                           <svg class="w-4 h-4 inline-block mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M8 5a1 1 0 100 2h5.586l-1.293 1.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L13.586 5H8zM12 15a1 1 0 100-2H6.414l1.293-1.293a1 1 0 10-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L6.414 15H12z"></path></svg>
+                            Refinance
+                        </button>
+                    </li>
                 </ul>
             </div>
 
@@ -643,6 +649,86 @@
                     </div>
                 </div>
             </div>
+            
+            <div id="refinance-content" class="hidden" role="tabpanel" aria-labelledby="refinance-tab">
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mt-3">
+                    <div class="md:col-span-2 relative flex flex-col gap-3">
+                        <details open class="bg-white rounded-lg shadow-md border">
+                             <summary class="p-3 border-b border-gray-200 cursor-pointer flex justify-between items-center relative before:content-['+'] open:before:content-['−'] before:absolute before:right-4 before:text-lg">
+                                <h3 class="text-sm font-bold text-primary">Current Mortgage Details</h3>
+                            </summary>
+                            <div class="p-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div class="space-y-1">
+                                    <label for="originalLoanAmount" class="block font-medium text-xs text-gray-700">Original Loan Amount (<span id="refi-orig-currency"></span>):</label>
+                                    <input type="number" id="originalLoanAmount" value="300000" min="1000" step="1000" class="w-full p-1.5 text-sm border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
+                                </div>
+                                <div class="space-y-1">
+                                    <label for="currentInterestRate" class="block font-medium text-xs text-gray-700">Current Interest Rate (%):</label>
+                                    <input type="number" id="currentInterestRate" value="6.5" min="0.1" max="25" step="0.1" class="w-full p-1.5 text-sm border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
+                                </div>
+                                <div class="space-y-1 sm:col-span-2">
+                                    <label for="loanStartDate" class="block font-medium text-xs text-gray-700">Loan Start Date:</label>
+                                    <input type="month" id="loanStartDate" value="2021-01" class="w-full p-1.5 text-sm border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
+                                </div>
+                            </div>
+                        </details>
+                        <details open class="bg-white rounded-lg shadow-md border">
+                             <summary class="p-3 border-b border-gray-200 cursor-pointer flex justify-between items-center relative before:content-['+'] open:before:content-['−'] before:absolute before:right-4 before:text-lg">
+                                <h3 class="text-sm font-bold text-accent">New Loan Offer</h3>
+                            </summary>
+                            <div class="p-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div class="space-y-1">
+                                    <label for="newInterestRate" class="block font-medium text-xs text-gray-700">New Interest Rate (%):</label>
+                                    <input type="number" id="newInterestRate" value="5.0" min="0.1" max="25" step="0.1" class="w-full p-1.5 text-sm border border-gray-300 rounded-md focus:ring-accent focus:border-accent">
+                                </div>
+                                <div class="space-y-1">
+                                    <label for="newLoanTerm" class="block font-medium text-xs text-gray-700">New Loan Term (Years):</label>
+                                    <input type="number" id="newLoanTerm" value="30" min="5" max="50" class="w-full p-1.5 text-sm border border-gray-300 rounded-md focus:ring-accent focus:border-accent">
+                                </div>
+                                <div class="space-y-1 sm:col-span-2">
+                                    <label for="newClosingCosts" class="block font-medium text-xs text-gray-700">Closing Costs (<span id="refi-costs-currency"></span>):</label>
+                                    <input type="number" id="newClosingCosts" value="5000" min="0" step="100" class="w-full p-1.5 text-sm border border-gray-300 rounded-md focus:ring-accent focus:border-accent">
+                                </div>
+                            </div>
+                        </details>
+                        <!-- Action Buttons for this tab -->
+                        <div class="sticky bottom-0 bg-white/80 backdrop-blur-sm py-3 border-t border-gray-200 no-print">
+                            <div class="flex flex-col sm:flex-row gap-3">
+                                <button class="calculate-button w-full px-4 py-2.5 bg-primary text-white font-semibold rounded-lg shadow-lg hover:bg-sky-700 transition duration-150 text-sm">
+                                    Analyze Refinance
+                                </button>
+                                <button class="reset-button w-full px-4 py-2.5 bg-gray-200 text-gray-700 font-semibold rounded-lg shadow-sm hover:bg-gray-300 transition duration-150 text-sm">
+                                    Reset to Defaults
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="md:col-span-3 flex flex-col gap-3">
+                        <div id="refinance-results" class="p-3 bg-gray-50 rounded-lg shadow-inner border border-gray-200 opacity-0">
+                             <h3 class="text-lg font-bold text-gray-800 text-center mb-3">Refinance Analysis Summary</h3>
+                             <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-center">
+                                <div class="p-3 rounded-lg bg-accent/10 border-2 border-accent/50 shadow">
+                                    <h3 class="text-xs font-medium text-accent">Monthly Savings</h3>
+                                    <p id="refiMonthlySavings" class="text-2xl font-extrabold text-accent"></p>
+                                </div>
+                                <div class="p-3 rounded-lg bg-npv/10 border-2 border-npv/50 shadow">
+                                    <h3 class="text-xs font-medium text-npv">Break-Even Point</h3>
+                                    <p id="refiBreakEven" class="text-2xl font-extrabold text-npv"></p>
+                                </div>
+                                <div class="p-2 rounded-lg bg-gray-100 border md:col-span-2">
+                                    <h3 class="text-xs font-medium text-gray-700">Lifetime Interest Savings</h3>
+                                    <p id="refiLifetimeSavings" class="text-lg font-extrabold text-gray-900"></p>
+                                </div>
+                            </div>
+                            <div id="refinance-chart-container" class="mt-3 bg-white rounded-lg shadow-md p-2">
+                                <canvas id="refinanceChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
         
         <!-- Key Features Section -->
