@@ -15,6 +15,18 @@ main.content-wrapper {
 }
 
 /* Page-Specific Calculator Styles */
+
+/* CLS (Cumulative Layout Shift) Improvements */
+#results, #affordability-results, #rent-vs-buy-results {
+    min-height: 400px; /* Reserves space to prevent layout shift when results load */
+}
+
+@media (min-width: 640px) {
+    #results, #affordability-results, #rent-vs-buy-results {
+        min-height: 500px; 
+    }
+}
+
 details > summary { list-style: none; }
 details > summary::-webkit-details-marker { display: none; }
 details[open] summary ~ * { animation: sweep .5s ease-in-out; }
