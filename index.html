@@ -94,20 +94,6 @@
               "@type": "Answer",
               "text": "Refinancing is often a good idea if you can significantly lower your interest rate (e.g., by at least 0.75-1%) or if you want to shorten your loan term. Our planner's 'Refinance Scenario' section helps you see if the long-term interest savings outweigh the closing costs."
             }
-          },{
-            "@type": "Question",
-            "name": "How does a bi-weekly payment plan help?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "A bi-weekly plan involves making 26 half-payments a year, which equals 13 full monthly payments instead of the standard 12. This extra payment is applied directly to the principal, helping you pay off the loan faster and save a significant amount on interest over the life of the loan."
-            }
-          },{
-            "@type": "Question",
-            "name": "What is PMI and how do I get rid of it?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Private Mortgage Insurance (PMI) is typically required if your down payment is less than 20% of the home's value (an LTV over 80%). You can usually request to have PMI removed once your loan balance drops to 80% of the home's original appraised value. Our calculator projects when you are expected to reach this important milestone."
-            }
           }]
         },
         {
@@ -165,7 +151,7 @@
                     <li class="mr-2" role="presentation">
                         <button class="inline-block p-4 border-b-2 rounded-t-lg" id="rent-vs-buy-tab" type="button" role="tab" aria-controls="rent-vs-buy-content" aria-selected="false">
                             <svg class="w-5 h-5 inline-block mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4 2a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2V4a2 2 0 00-2-2H4zm3 2a1 1 0 011-1h2a1 1 0 110 2H8a1 1 0 01-1-1zm-1 5a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"></path></svg>
-                            Rent vs. Buy Comparison
+                            Rent vs. Buy
                         </button>
                     </li>
                 </ul>
@@ -184,7 +170,7 @@
                                 <h2 class="text-base font-bold text-primary">Your Financials</h2>
                             </summary>
                             <div class="p-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <!-- Re-using annualIncome and nonMortgageDebt -->
+                                <!-- Note: Annual Income & Non-Mortgage Debt are shared with the main calculator -->
                                 <div class="space-y-1">
                                     <label for="downPaymentAmount" class="block font-medium text-sm text-gray-700">Down Payment (<span id="afford-down-payment-currency"></span>):</label>
                                     <input type="number" id="downPaymentAmount" value="60000" min="0" step="1000" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
@@ -206,15 +192,15 @@
                             <h2 class="text-xl sm:text-2xl font-bold text-gray-800 text-center mb-4">Home Affordability Summary</h2>
                              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-center">
                                 <div class="p-4 rounded-lg bg-primary/10 border-2 border-primary/50 shadow">
-                                    <p class="text-sm font-medium text-primary">Max Affordable Home Price</p>
+                                    <h3 class="text-sm font-medium text-primary">Max Affordable Home Price</h3>
                                     <p id="affordableHomePrice" class="text-2xl sm:text-3xl font-extrabold text-primary"></p>
                                 </div>
                                 <div class="p-2 rounded-lg bg-gray-100 border">
-                                    <p class="text-xs font-medium text-gray-600">Max Loan Amount</p>
+                                    <h3 class="text-xs font-medium text-gray-600">Max Loan Amount</h3>
                                     <p id="affordableLoanAmount" class="text-lg sm:text-xl font-extrabold"></p>
                                 </div>
                                 <div class="p-2 rounded-lg bg-gray-100 border">
-                                    <p class="text-xs font-medium text-gray-600">Estimated Monthly PITI</p>
+                                    <h3 class="text-xs font-medium text-gray-600">Estimated Monthly PITI</h3>
                                     <p id="affordablePITI" class="text-lg sm:text-xl font-extrabold"></p>
                                 </div>
                             </div>
@@ -223,6 +209,15 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                 <!-- Action Buttons for this tab -->
+                <div class="flex flex-col sm:flex-row gap-3 md:gap-4 mt-6 no-print">
+                    <button class="calculate-button w-full px-4 py-3 bg-primary text-white font-semibold rounded-lg shadow-xl hover:bg-sky-700 transition duration-150 min-h-11">
+                        Calculate Affordability
+                    </button>
+                    <button class="reset-button w-full px-4 py-3 bg-gray-200 text-gray-700 font-semibold rounded-lg shadow-md hover:bg-gray-300 transition duration-150 min-h-11">
+                        Reset to Defaults
+                    </button>
                 </div>
             </div>
 
@@ -399,7 +394,7 @@
                                     <label for="shockRateIncrease" class="block font-medium text-sm text-gray-700">Model Future Rate Increase by (%):</label>
                                     <div class="flex gap-2 mt-1">
                                         <input type="number" id="shockRateIncrease" value="1.0" min="0.1" max="5" step="0.1" class="flex-grow p-2 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500">
-                                        <button onclick="handleCalculation(true)" class="bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg shadow-md transition duration-150 py-2 px-4 w-1/2">
+                                        <button id="shockTestButton" class="bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg shadow-md transition duration-150 py-2 px-4 w-1/2">
                                             Run Shock Test
                                         </button>
                                     </div>
@@ -414,13 +409,13 @@
                             <div class="text-center sm:flex sm:justify-between sm:items-center mb-2">
                                 <h2 class="text-lg sm:text-xl font-bold text-gray-800">Calculation Summary</h2>
                                 <div class="no-print flex justify-center space-x-2 mt-2 sm:mt-0">
-                                    <button onclick="generatePDF()" class="p-2 rounded-md hover:bg-gray-200 transition-colors" aria-label="Download PDF Report" title="Download PDF Report">
+                                    <button class="pdf-button p-2 rounded-md hover:bg-gray-200 transition-colors" aria-label="Download PDF Report" title="Download PDF Report">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
                                             <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
                                             <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
                                         </svg>
                                     </button>
-                                    <button onclick="window.print()" class="p-2 rounded-md hover:bg-gray-200 transition-colors" aria-label="Print Results" title="Print Results">
+                                    <button class="print-button p-2 rounded-md hover:bg-gray-200 transition-colors" aria-label="Print Results" title="Print Results">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
                                             <path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2H5zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4V3zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2H5zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1z"/>
                                             <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z"/>
@@ -429,7 +424,7 @@
                                 </div>
                             </div>
                             
-                            <p class="text-sm sm:text-base py-2 font-bold">Estimated Initial Monthly Payment (PITI + PMI): <span id="totalMonthlyPaymentPITI" class="text-primary"></span></p>
+                            <h3 class="text-sm sm:text-base py-2 font-bold">Estimated Initial Monthly Payment (PITI + PMI): <span id="totalMonthlyPaymentPITI" class="text-primary"></span></h3>
 
                             <div class="mt-2 p-3 text-center bg-primary/10 rounded-lg border-2 border-primary/50 shadow">
                                 <h3 class="text-sm sm:text-base font-bold text-primary">Total Monthly Cost of Ownership</h3>
@@ -445,12 +440,12 @@
                                 <h3 id="dti-title" class="text-base sm:text-lg font-bold text-gray-800 mb-2 border-b pb-1">Debt-to-Income (DTI) Analysis</h3>
                                 <div class="grid grid-cols-2 gap-4 text-center">
                                     <div class="p-2 rounded-lg bg-gray-50 border">
-                                        <p class="text-xs font-medium text-gray-600">Front-End DTI (Housing)</p>
+                                        <h3 class="text-xs font-medium text-gray-600">Front-End DTI (Housing)</h3>
                                         <p id="frontEndDTI" class="text-lg sm:text-xl font-extrabold"></p>
                                         <p id="frontEndDTIStatus" class="text-xs font-semibold mt-1"></p>
                                     </div>
                                     <div class="p-2 rounded-lg bg-gray-50 border">
-                                        <p class="text-xs font-medium text-gray-600">Back-End DTI (Total Debt)</p>
+                                        <h3 class="text-xs font-medium text-gray-600">Back-End DTI (Total Debt)</h3>
                                         <p id="backEndDTI" class="text-lg sm:text-xl font-extrabold"></p>
                                         <p id="backEndDTIStatus" class="text-xs font-semibold mt-1"></p>
                                     </div>
@@ -461,11 +456,11 @@
                                 <h3 class="text-base sm:text-lg font-bold text-accent mb-2 border-b pb-1">Projected Equity Growth</h3>
                                 <div class="grid grid-cols-2 gap-4 text-center">
                                      <div class="p-2 rounded-lg bg-gray-50 border">
-                                        <p class="text-xs font-medium text-gray-600">Total Equity at Payoff</p>
+                                        <h3 class="text-xs font-medium text-gray-600">Total Equity at Payoff</h3>
                                         <p id="finalEquity" class="text-lg sm:text-xl font-extrabold text-accent" data-value="0"></p>
                                     </div>
                                     <div class="p-2 rounded-lg bg-gray-50 border">
-                                        <p class="text-xs font-medium text-gray-600">Final Property Value</p>
+                                        <h3 class="text-xs font-medium text-gray-600">Final Property Value</h3>
                                         <p id="finalPropertyValue" class="text-lg sm:text-xl font-extrabold text-accent" data-value="0"></p>
                                     </div>
                                 </div>
@@ -521,9 +516,20 @@
                                 </div>
                             </details>
                         </div>
-                        
                     </div>
                 </div>
+                 <!-- Action Buttons for this tab -->
+                <div class="flex flex-col sm:flex-row gap-3 md:gap-4 mt-6 no-print">
+                    <button class="calculate-button w-full px-4 py-3 bg-primary text-white font-semibold rounded-lg shadow-xl hover:bg-sky-700 transition duration-150 min-h-11">
+                        Calculate Scenario
+                    </button>
+                    <button class="reset-button w-full px-4 py-3 bg-gray-200 text-gray-700 font-semibold rounded-lg shadow-md hover:bg-gray-300 transition duration-150 min-h-11">
+                        Reset to Defaults
+                    </button>
+                </div>
+                <button id="saveButton" class="w-full mt-3 px-4 py-3 bg-accent/80 text-white font-semibold rounded-lg shadow-lg hover:bg-accent transition duration-150 min-h-11 no-print">
+                    Save & Share Scenario
+                </button>
             </div>
 
             <div id="rent-vs-buy-content" class="hidden" role="tabpanel" aria-labelledby="rent-vs-buy-tab">
@@ -587,19 +593,16 @@
                         </div>
                     </div>
                 </div>
+                 <!-- Action Buttons for this tab -->
+                <div class="flex flex-col sm:flex-row gap-3 md:gap-4 mt-6 no-print">
+                    <button class="calculate-button w-full px-4 py-3 bg-primary text-white font-semibold rounded-lg shadow-xl hover:bg-sky-700 transition duration-150 min-h-11">
+                        Calculate Comparison
+                    </button>
+                    <button class="reset-button w-full px-4 py-3 bg-gray-200 text-gray-700 font-semibold rounded-lg shadow-md hover:bg-gray-300 transition duration-150 min-h-11">
+                        Reset to Defaults
+                    </button>
+                </div>
             </div>
-
-            <div class="flex flex-col sm:flex-row gap-3 md:gap-4 mt-6 no-print">
-                <button id="calculateButton" onclick="handleCalculation()" class="w-full px-4 py-3 bg-primary text-white font-semibold rounded-lg shadow-xl hover:bg-sky-700 transition duration-150 min-h-11">
-                    Calculate Scenario
-                </button>
-                <button id="resetButton" onclick="resetForm()" class="w-full px-4 py-3 bg-gray-200 text-gray-700 font-semibold rounded-lg shadow-md hover:bg-gray-300 transition duration-150 min-h-11">
-                    Reset to Defaults
-                </button>
-            </div>
-             <button id="saveButton" class="w-full mt-3 px-4 py-3 bg-accent/80 text-white font-semibold rounded-lg shadow-lg hover:bg-accent transition duration-150 min-h-11 no-print">
-                Save & Share Scenario
-            </button>
         </div>
 
         <!-- SEO Content Section -->
