@@ -54,32 +54,6 @@
     </style>
 </head>
 <body class="bg-gray-100">
-    <!-- Reusable SVG Icon Definition -->
-    <svg width="0" height="0" class="absolute">
-      <symbol id="logo-icon" viewBox="0 0 100 100">
-        <rect width="100" height="100" rx="20" fill="#1C768F"/>
-        <path d="M50 25L25 45V75H41.6667V58.3333H58.3333V75H75V45L50 25Z" stroke="white" stroke-width="5" stroke-linejoin='round'/>
-        <path d="M40 65L50 55L60 65" stroke="white" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M50 55V45" stroke="white" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-      </symbol>
-    </svg>
-    
-    <!-- Global Header -->
-    <header class="bg-white/80 backdrop-blur-lg shadow-sm sticky top-0 z-50 no-print">
-        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-center h-14">
-                <a href="../" class="flex items-center space-x-2 text-primary hover:opacity-80 transition-opacity">
-                    <svg class="h-6 w-6" aria-hidden="true">
-                        <use href="#logo-icon"></use>
-                    </svg>
-                    <span class="font-bold text-lg">
-                        <span class="border-b-2 border-primary">Strategic</span> Mortgage Planner
-                    </span>
-                </a>
-            </div>
-        </nav>
-    </header>
-
     <!-- Main Content Area -->
     <main class="content-wrapper">
         <article class="bg-white p-4 md:p-8 rounded-xl shadow-2xl w-full max-w-4xl mx-auto my-4 md:my-8">
@@ -298,21 +272,9 @@
             </div>
         </article>
     </main>
-
-    <!-- Global Footer -->
-    <footer class="bg-gray-800 text-gray-400 text-sm no-print mt-8">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div class="text-center text-xs">
-                <p>&copy; <span id="copyright-year">2025</span> Strategic Mortgage Planner. All Rights Reserved. | <a href="../legal.html" class="hover:text-white underline">Contact & Legal</a></p>
-                <p class="mt-1">A part of <a href="https://toolblaster.com" target="_blank" class="text-white hover:underline font-semibold">toolblaster.com</a> Network</p>
-                 <p class="mt-1"><strong>Disclaimer:</strong> This tool is for informational purposes only. Consult a financial professional before making decisions.</p>
-            </div>
-        </div>
-    </footer>
+    <script src="../global-elements.js" defer></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('copyright-year').textContent = new Date().getFullYear();
-
             // --- Social Sharing Links ---
             const postUrl = encodeURIComponent(window.location.href);
             const postTitle = encodeURIComponent(document.title);
