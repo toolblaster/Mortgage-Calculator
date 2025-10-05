@@ -64,6 +64,12 @@ TABLE OF CONTENTS
         downPaymentAmount: document.getElementById('downPaymentAmount'),
         desiredFrontEndDTI: document.getElementById('desiredFrontEndDTI'),
         desiredBackEndDTI: document.getElementById('desiredBackEndDTI'),
+        originalLoanAmount: document.getElementById('originalLoanAmount'),
+        currentInterestRate: document.getElementById('currentInterestRate'),
+        loanStartDate: document.getElementById('loanStartDate'),
+        newInterestRate: document.getElementById('newInterestRate'),
+        newLoanTerm: document.getElementById('newLoanTerm'),
+        newClosingCosts: document.getElementById('newClosingCosts'),
 
         // Buttons
         calculateButtons: document.querySelectorAll('.calculate-button'),
@@ -75,6 +81,7 @@ TABLE OF CONTENTS
         results: document.getElementById('results'),
         affordabilityResults: document.getElementById('affordability-results'),
         rentVsBuyResults: document.getElementById('rent-vs-buy-results'),
+        refinanceResults: document.getElementById('refinance-results'),
         shockResults: document.getElementById('shock-results'),
         totalMonthlyPaymentPITI: document.getElementById('totalMonthlyPaymentPITI'),
         totalOwnershipCost: document.getElementById('totalOwnershipCost'),
@@ -109,6 +116,9 @@ TABLE OF CONTENTS
         affordableHomePrice: document.getElementById('affordableHomePrice'),
         affordableLoanAmount: document.getElementById('affordableLoanAmount'),
         affordablePITI: document.getElementById('affordablePITI'),
+        refiMonthlySavings: document.getElementById('refiMonthlySavings'),
+        refiBreakEven: document.getElementById('refiBreakEven'),
+        refiLifetimeSavings: document.getElementById('refiLifetimeSavings'),
 
 
         // UI Components
@@ -131,6 +141,7 @@ TABLE OF CONTENTS
     let mortgageChart = null;
     let rentVsBuyChart = null;
     let affordabilityChart = null;
+    let refinanceChart = null;
     let currentResults = null;
     let currentTab = 'mortgage';
 
@@ -155,7 +166,7 @@ TABLE OF CONTENTS
      * @param {number} endValue - The final value to display.
      * @param {number} duration - Animation duration in milliseconds.
      */
-    function animateValue(el, endValue, duration = 500) {
+    function animateValue(el, endValue, duration = 500, isCurrency = true) {
         if (!el) return;
         let startValue = parseFloat(el.dataset.value) || 0;
         el.dataset.value = endValue;
@@ -166,11 +177,11 @@ TABLE OF CONTENTS
             const timeElapsed = currentTime - startTime;
             const progress = Math.min(timeElapsed / duration, 1);
             const currentValue = startValue + (endValue - startValue) * progress;
-            el.textContent = formatCurrency(currentValue);
+            el.textContent = isCurrency ? formatCurrency(currentValue) : currentValue.toFixed(1);
             if (progress < 1) {
                 requestAnimationFrame(animation);
             } else {
-                el.textContent = formatCurrency(endValue);
+                el.textContent = isCurrency ? formatCurrency(endValue) : endValue.toFixed(1);
             }
         }
         requestAnimationFrame(animation);
@@ -201,7 +212,8 @@ TABLE OF CONTENTS
             'mc-util-currency', 'mc-extra-currency', 'mc-lump-currency', 'mc-refi-currency',
             'dti-income-currency', 'dti-debt-currency',
             'afford-down-payment-currency',
-            'rvb-rent-currency', 'rvb-closing-costs-currency'
+            'rvb-rent-currency', 'rvb-closing-costs-currency',
+            'refi-orig-currency', 'refi-costs-currency'
         ];
         symbolSpanIds.forEach(id => {
             const el = document.getElementById(id);
@@ -397,6 +409,63 @@ TABLE OF CONTENTS
         return { homePrice, loanAmount, piti: maxPITI, pi: maxPI, tax: monthlyTax, insurance: monthlyInsurance };
     }
 
+    /**
+     * Calculates refinance savings and break-even point.
+     */
+    function calculateRefinance() {
+        const originalAmount = parseFloat(DOM.originalLoanAmount.value);
+        const currentRate = parseFloat(DOM.currentInterestRate.value) / 100;
+        const startDate = new Date(DOM.loanStartDate.value + '-01T00:00:00');
+        const originalTermYears = parseFloat(DOM.loanTerm.value); // Assume original term from main calc
+        
+        const newRate = parseFloat(DOM.newInterestRate.value) / 100;
+        const newTermYears = parseFloat(DOM.newLoanTerm.value);
+        const closingCosts = parseFloat(DOM.newClosingCosts.value);
+
+        const periodsPerYear = 12;
+        const originalTotalPeriods = originalTermYears * periodsPerYear;
+        const monthsPassed = (new Date().getFullYear() - startDate.getFullYear()) * 12 + (new Date().getMonth() - startDate.getMonth());
+        
+        if (monthsPassed >= originalTotalPeriods || monthsPassed < 0) {
+            return { monthlySavings: 0, breakEvenMonths: Infinity, lifetimeSavings: 0, currentPayment: 0, newPayment: 0, totalOldInterest: 0, totalNewInterest: 0 };
+        }
+
+        const periodicCurrentRate = currentRate / periodsPerYear;
+        const currentPayment = calculatePayment(originalAmount, currentRate, periodsPerYear, originalTotalPeriods);
+        let remainingBalance = originalAmount;
+        for (let i = 0; i < monthsPassed; i++) {
+            const interest = remainingBalance * periodicCurrentRate;
+            remainingBalance -= (currentPayment - interest);
+        }
+
+        const newTotalPeriods = newTermYears * periodsPerYear;
+        const newPayment = calculatePayment(remainingBalance, newRate, periodsPerYear, newTotalPeriods);
+        const monthlySavings = currentPayment - newPayment;
+
+        const breakEvenMonths = monthlySavings > 0 ? closingCosts / monthlySavings : Infinity;
+
+        let remainingOldInterest = 0;
+        let tempBalanceOld = remainingBalance;
+        for (let i = 0; i < (originalTotalPeriods - monthsPassed); i++) {
+            const interest = tempBalanceOld * periodicCurrentRate;
+            remainingOldInterest += interest;
+            tempBalanceOld -= (currentPayment - interest);
+        }
+
+        let totalNewInterest = 0;
+        let tempBalanceNew = remainingBalance;
+        const periodicNewRate = newRate / periodsPerYear;
+        for (let i = 0; i < newTotalPeriods; i++) {
+            const interest = tempBalanceNew * periodicNewRate;
+            totalNewInterest += interest;
+            tempBalanceNew -= (newPayment - interest);
+        }
+
+        const lifetimeSavings = remainingOldInterest - (totalNewInterest + closingCosts);
+        
+        return { monthlySavings, breakEvenMonths, lifetimeSavings, currentPayment, newPayment, totalOldInterest: remainingOldInterest, totalNewInterest: totalNewInterest + closingCosts };
+    }
+
 
     // --- 6. DTI Calculation & Rendering ---
     function calculateDTI(totalMonthlyHousingCost) {
@@ -439,7 +508,7 @@ TABLE OF CONTENTS
             data: {
                 labels: labels,
                 datasets: [
-                    { label: 'Property Value', data: chartData.map(d => d.propertyValue), borderColor: '#1e8749', borderWidth: 3, fill: false, tension: 0.3, pointRadius: 2 },
+                    { label: 'Property Value', data: chartData.map(d => d.propertyValue), borderColor: '#166534', borderWidth: 3, fill: false, tension: 0.3, pointRadius: 2 },
                     { label: 'Total Home Equity', data: chartData.map(d => d.totalEquity), borderColor: '#34d399', backgroundColor: 'rgba(52, 211, 153, 0.1)', borderWidth: 2, fill: 'origin', tension: 0.3, pointRadius: 1 },
                     { label: 'Loan Balance', data: chartData.map(d => d.balance), borderColor: '#1C768F', borderWidth: 3, fill: false, tension: 0.3, pointRadius: 2 }
                 ]
@@ -469,9 +538,25 @@ TABLE OF CONTENTS
             type: 'doughnut',
             data: {
                 labels: ['Principal & Interest', 'Property Tax', 'Home Insurance'],
-                datasets: [{ label: 'Monthly Payment Breakdown', data: [results.pi, results.tax, results.insurance], backgroundColor: ['#1C768F', '#f59e0b', '#10b981'], borderColor: '#ffffff', borderWidth: 2 }]
+                datasets: [{ label: 'Monthly Payment Breakdown', data: [results.pi, results.tax, results.insurance], backgroundColor: ['#1C768F', '#b45309', '#065f46'], borderColor: '#ffffff', borderWidth: 2 }]
             },
             options: { responsive: true, maintainAspectRatio: false, plugins: { title: { display: true, text: 'Estimated Monthly Payment Breakdown' }, legend: { position: 'bottom', }, tooltip: { callbacks: { label: c => `${c.label}: ${formatCurrency(c.raw)}` } } } }
+        });
+    }
+
+    function renderRefinanceChart(results) {
+        const ctx = document.getElementById('refinanceChart').getContext('2d');
+        if (refinanceChart) refinanceChart.destroy();
+        refinanceChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Monthly P&I Payment', 'Total Interest Cost'],
+                datasets: [
+                    { label: 'Current Loan', data: [results.currentPayment, results.totalOldInterest], backgroundColor: '#be123c' },
+                    { label: 'New Loan', data: [results.newPayment, results.totalNewInterest], backgroundColor: '#166534' }
+                ]
+            },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { title: { display: true, text: 'Payment & Total Cost Comparison' }, tooltip: { callbacks: { label: c => `${c.dataset.label}: ${formatCurrency(c.raw)}` } } }, scales: { y: { beginAtZero: true, ticks: { callback: value => formatCurrency(value) } } } }
         });
     }
 
@@ -479,27 +564,28 @@ TABLE OF CONTENTS
     // --- 8. Input Validation ---
     function validateInputs() {
         const errors = [];
-        const fields = [ { id: 'loanAmount', name: 'Loan Principal', min: 1 }, { id: 'interestRate', name: 'Interest Rate', min: 0.1, max: 100 }, { id: 'loanTerm', name: 'Loan Term', min: 1, max: 50 }, { id: 'initialLTV', name: 'Initial LTV', min: 1, max: 100 }, { id: 'annualIncome', name: 'Annual Income', min: 0 }, { id: 'nonMortgageDebt', name: 'Non-Mortgage Debt', min: 0 }, { id: 'appreciationRate', name: 'Appreciation Rate', min: 0, max: 50 }, { id: 'discountRate', name: 'Discount Rate', min: 0, max: 50 }, { id: 'pitiEscalationRate', name: 'PITI Escalation Rate', min: 0, max: 50 }, { id: 'pmiRate', name: 'PMI Rate', min: 0, max: 10 }, { id: 'propertyTax', name: 'Property Tax', min: 0 }, { id: 'insurance', name: 'Home Insurance', min: 0 }, { id: 'hoa', name: 'HOA Dues', min: 0 }, { id: 'extraPayment', name: 'Extra Payment', min: 0 }, { id: 'lumpSumPayment', name: 'Lump Sum Payment', min: 0 }, { id: 'annualMaintenance', name: 'Annual Maintenance', min: 0, max: 20 }, { id: 'monthlyUtilities', name: 'Monthly Utilities', min: 0 } ];
+        let fields = [ { id: 'loanAmount', name: 'Loan Principal', min: 1 }, { id: 'interestRate', name: 'Interest Rate', min: 0.1, max: 100 }, { id: 'loanTerm', name: 'Loan Term', min: 1, max: 50 }, { id: 'initialLTV', name: 'Initial LTV', min: 1, max: 100 }, { id: 'annualIncome', name: 'Annual Income', min: 0 }, { id: 'nonMortgageDebt', name: 'Non-Mortgage Debt', min: 0 }, { id: 'appreciationRate', name: 'Appreciation Rate', min: 0, max: 50 }, { id: 'discountRate', name: 'Discount Rate', min: 0, max: 50 }, { id: 'pitiEscalationRate', name: 'PITI Escalation Rate', min: 0, max: 50 }, { id: 'pmiRate', name: 'PMI Rate', min: 0, max: 10 }, { id: 'propertyTax', name: 'Property Tax', min: 0 }, { id: 'insurance', name: 'Home Insurance', min: 0 }, { id: 'hoa', name: 'HOA Dues', min: 0 }, { id: 'extraPayment', name: 'Extra Payment', min: 0 }, { id: 'lumpSumPayment', name: 'Lump Sum Payment', min: 0 }, { id: 'annualMaintenance', name: 'Annual Maintenance', min: 0, max: 20 }, { id: 'monthlyUtilities', name: 'Monthly Utilities', min: 0 } ];
+        
+        if (currentTab === 'rent-vs-buy') {
+            fields = fields.concat([{ id: 'monthlyRent', name: 'Monthly Rent', min: 1 }, { id: 'rentIncrease', name: 'Rent Increase', min: 0, max: 20 }, { id: 'investmentReturn', name: 'Investment Return', min: 0, max: 30 }, { id: 'closingCosts', name: 'Closing Costs', min: 0 }, { id: 'sellingCosts', name: 'Selling Costs', min: 0, max: 20 }]);
+        } else if (currentTab === 'affordability') {
+            fields = fields.concat([{ id: 'downPaymentAmount', name: 'Down Payment', min: 0 }, { id: 'desiredFrontEndDTI', name: 'Housing DTI', min: 10, max: 50 }, { id: 'desiredBackEndDTI', name: 'Total DTI', min: 10, max: 50 }]);
+        } else if (currentTab === 'refinance') {
+            fields = [{ id: 'originalLoanAmount', name: 'Original Loan Amount', min: 1000 }, { id: 'currentInterestRate', name: 'Current Interest Rate', min: 0.1, max: 25 }, { id: 'newInterestRate', name: 'New Interest Rate', min: 0.1, max: 25 }, { id: 'newLoanTerm', name: 'New Loan Term', min: 5, max: 50 }, { id: 'newClosingCosts', name: 'Closing Costs', min: 0 }];
+        }
         
         // First, clear all previous error styles
-        fields.forEach(field => {
-            if (DOM[field.id]) {
-                DOM[field.id].classList.remove('input-error');
-            }
-        });
-
-        if (currentTab === 'rent-vs-buy') {
-            fields.push({ id: 'monthlyRent', name: 'Monthly Rent', min: 1 }, { id: 'rentIncrease', name: 'Rent Increase', min: 0, max: 20 }, { id: 'investmentReturn', name: 'Investment Return', min: 0, max: 30 }, { id: 'closingCosts', name: 'Closing Costs', min: 0 }, { id: 'sellingCosts', name: 'Selling Costs', min: 0, max: 20 });
-        } else if (currentTab === 'affordability') {
-            fields.push({ id: 'downPaymentAmount', name: 'Down Payment', min: 0 }, { id: 'desiredFrontEndDTI', name: 'Housing DTI', min: 10, max: 50 }, { id: 'desiredBackEndDTI', name: 'Total DTI', min: 10, max: 50 });
-        }
+        allInputIds.forEach(id => { if (DOM[id]) DOM[id].classList.remove('input-error'); });
 
         fields.forEach(field => {
             const el = DOM[field.id];
             if (!el) return;
             const value = parseFloat(el.value);
             let hasError = false;
-            if (isNaN(value)) {
+            if (el.type === 'month' && !el.value) {
+                errors.push('Loan Start Date is required.');
+                hasError = true;
+            } else if (el.type !== 'month' && isNaN(value)) {
                 errors.push(`${field.name} must be a number.`);
                 hasError = true;
             } else {
@@ -542,6 +628,7 @@ TABLE OF CONTENTS
                     if(currentTab === 'mortgage') calculateMortgage(isShockTest);
                     else if (currentTab === 'rent-vs-buy') runRentVsBuyAnalysis();
                     else if (currentTab === 'affordability') runAffordabilityAnalysis();
+                    else if (currentTab === 'refinance') runRefinanceAnalysis();
                     updateURLWithInputs();
                 }
             } 
@@ -552,7 +639,13 @@ TABLE OF CONTENTS
             } finally {
                 if(calculateButton) {
                     calculateButton.disabled = false;
-                    calculateButton.textContent = 'Calculate Scenario';
+                    const buttonTextMap = {
+                        mortgage: 'Calculate Scenario',
+                        affordability: 'Calculate Affordability',
+                        'rent-vs-buy': 'Calculate Comparison',
+                        refinance: 'Analyze Refinance'
+                    };
+                    calculateButton.textContent = buttonTextMap[currentTab];
                 }
             }
         }, 50);
@@ -579,6 +672,23 @@ TABLE OF CONTENTS
         renderAffordabilityChart(results);
         DOM.affordabilityResults.style.opacity = 1;
         DOM.affordabilityResults.classList.add('results-animate-in');
+    }
+    
+    function runRefinanceAnalysis() {
+        const results = calculateRefinance();
+        DOM.refiMonthlySavings.textContent = formatCurrency(results.monthlySavings);
+        if (isFinite(results.breakEvenMonths)) {
+            const years = Math.floor(results.breakEvenMonths / 12);
+            const months = Math.round(results.breakEvenMonths % 12);
+            DOM.refiBreakEven.textContent = `${years}y ${months}m`;
+        } else {
+            DOM.refiBreakEven.textContent = 'N/A';
+        }
+        DOM.refiLifetimeSavings.textContent = formatCurrency(results.lifetimeSavings);
+
+        renderRefinanceChart(results);
+        DOM.refinanceResults.style.opacity = 1;
+        DOM.refinanceResults.classList.add('results-animate-in');
     }
 
     function calculateMortgage(isShockTest = false) {
@@ -656,7 +766,7 @@ TABLE OF CONTENTS
     }
 
     function generateAmortizationTable(originalResults, acceleratedResults) {
-        DOM.amortizationTable.innerHTML = `<thead class="text-xs text-gray-700 bg-gray-50 uppercase tracking-wider"><tr><th rowspan="2" class="py-2 px-1 border-b-2 border-gray-300 border-r">#</th><th colspan="4" class="py-2 px-1 border-b-2 border-gray-300 text-center bg-red-50/70 border-r border-red-300">Original Loan</th><th colspan="10" class="py-2 px-1 border-b-2 border-gray-300 text-center bg-sky-50/70">Accelerated Scenario</th></tr><tr class="font-medium"><th class="py-2 px-1 border-b border-gray-300 text-right bg-red-50/70">Nom. Interest</th><th class="py-2 px-1 border-b border-gray-300 text-right bg-red-50/70 text-npv">PV Interest</th><th class="py-2 px-1 border-b border-gray-300 text-right bg-red-50/70">P&I Pmt</th><th class="py-2 px-1 border-b border-gray-300 text-right bg-red-50/70 border-r border-red-300">Balance</th><th class="py-2 px-1 border-b border-gray-300 text-right bg-sky-50/70 text-accent">Home Equity</th><th class="py-2 px-1 border-b border-gray-300 text-right bg-sky-50/70 text-accent">Property Val</th><th class="py-2 px-1 border-b border-gray-300 text-right bg-sky-50/70">P&I Pmt</th><th class="py-2 px-1 border-b border-gray-300 text-right bg-sky-50/70">Tax/Ins/HOA</th><th class="py-2 px-1 border-b border-gray-300 text-right bg-sky-50/70">Nom. Interest</th><th class="py-2 px-1 border-b border-gray-300 text-right bg-sky-50/70 text-npv">PV Interest</th><th class="py-2 px-1 border-b border-gray-300 text-right bg-sky-50/70">PMI</th><th class="py-2 px-1 border-b border-gray-300 text-right bg-sky-50/70">Extra</th><th class="py-2 px-1 border-b border-gray-300 text-right bg-sky-50/70">Total Pmt</th><th class="py-2 px-1 border-b border-gray-300 text-right bg-sky-50/70">Balance</th></tr></thead><tbody></tbody>`;
+        DOM.amortizationTable.innerHTML = `<thead class="text-xs text-gray-700 bg-gray-50 uppercase tracking-wider"><tr><th rowspan="2" class="py-2 px-1 border-b-2 border-gray-300 border-r">#</th><th colspan="4" class="py-2 px-1 border-b-2 border-gray-300 text-center bg-red-50/70 border-r border-red-300">Original Loan</th><th colspan="10" class="py-2 px-1 border-b-2 border-gray-300 text-center bg-sky-50/70">Accelerated Scenario</th></tr><tr class="font-medium"><th class="py-2 px-1 border-b border-gray-300 text-right bg-red-50/70">Nom. Interest</th><th class="py-2 px-1 border-b border-gray-300 text-right bg-red-50/70 text-npv">PV Interest</th><th class="py-2 px-1 border-b border-gray-300 text-right bg-red-50/70">P&I Pmt</th><th class="py-2 px-1 border-b border-gray-300 text-right bg-red-50/70 border-r border-red-300">Balance</th><th class="py-2 px-1 border-b border-gray-300 text-right bg-sky-50/70 text-accent">Home Equity</th><th class="py-2 px-1 border-b border-gray-300 text-right bg-sky-50/50 text-accent">Property Val</th><th class="py-2 px-1 border-b border-gray-300 text-right bg-sky-50/70">P&I Pmt</th><th class="py-2 px-1 border-b border-gray-300 text-right bg-sky-50/70">Tax/Ins/HOA</th><th class="py-2 px-1 border-b border-gray-300 text-right bg-sky-50/70">Nom. Interest</th><th class="py-2 px-1 border-b border-gray-300 text-right bg-sky-50/70 text-npv">PV Interest</th><th class="py-2 px-1 border-b border-gray-300 text-right bg-sky-50/70">PMI</th><th class="py-2 px-1 border-b border-gray-300 text-right bg-sky-50/70">Extra</th><th class="py-2 px-1 border-b border-gray-300 text-right bg-sky-50/70">Total Pmt</th><th class="py-2 px-1 border-b border-gray-300 text-right bg-sky-50/70">Balance</th></tr></thead><tbody></tbody>`;
         const body = DOM.amortizationTable.querySelector('tbody');
         const maxPeriods = Math.max(originalResults.payoffPeriod, acceleratedResults.payoffPeriod);
         let rowsHtml = '';
@@ -675,7 +785,7 @@ TABLE OF CONTENTS
 
     // --- 10. Form & State Management ---
     function resetForm() {
-        const defaults = { loanAmount: "300000", interestRate: "6.5", loanTerm: "30", initialLTV: "90", discountRate: "3.0", appreciationRate: "3.5", annualIncome: "120000", nonMortgageDebt: "800", propertyTax: "3600", insurance: "1200", hoa: "0", pitiEscalationRate: "2.0", pmiRate: "0.5", extraPayment: "100", lumpSumPayment: "5000", lumpSumPeriod: "1", refiPeriod: "60", refiRate: "5.0", refiTerm: "15", refiClosingCosts: "5000", shockRateIncrease: "1.0", annualMaintenance: "1.0", monthlyUtilities: "300", monthlyRent: "2000", rentIncrease: "3.0", investmentReturn: "7.0", closingCosts: "8000", sellingCosts: "6.0", downPaymentAmount: "60000", desiredFrontEndDTI: "28", desiredBackEndDTI: "36" };
+        const defaults = { loanAmount: "300000", interestRate: "6.5", loanTerm: "30", initialLTV: "90", discountRate: "3.0", appreciationRate: "3.5", annualIncome: "120000", nonMortgageDebt: "800", propertyTax: "3600", insurance: "1200", hoa: "0", pitiEscalationRate: "2.0", pmiRate: "0.5", extraPayment: "100", lumpSumPayment: "5000", lumpSumPeriod: "1", refiPeriod: "60", refiRate: "5.0", refiTerm: "15", refiClosingCosts: "5000", shockRateIncrease: "1.0", annualMaintenance: "1.0", monthlyUtilities: "300", monthlyRent: "2000", rentIncrease: "3.0", investmentReturn: "7.0", closingCosts: "8000", sellingCosts: "6.0", downPaymentAmount: "60000", desiredFrontEndDTI: "28", desiredBackEndDTI: "36", originalLoanAmount: "300000", currentInterestRate: "6.5", loanStartDate: "2021-01", newInterestRate: "5.0", newLoanTerm: "30", newClosingCosts: "5000" };
         for (const id in defaults) {
             const el = DOM[id];
             if (el) el.value = defaults[id];
@@ -797,7 +907,12 @@ TABLE OF CONTENTS
     };
 
     function setupTabs() {
-        const tabs = { 'mortgage': { button: document.getElementById('mortgage-tab'), content: document.getElementById('mortgage-calculator-content') }, 'affordability': { button: document.getElementById('affordability-tab'), content: document.getElementById('affordability-content') }, 'rent-vs-buy': { button: document.getElementById('rent-vs-buy-tab'), content: document.getElementById('rent-vs-buy-content') } };
+        const tabs = { 
+            'mortgage': { button: document.getElementById('mortgage-tab'), content: document.getElementById('mortgage-calculator-content') }, 
+            'affordability': { button: document.getElementById('affordability-tab'), content: document.getElementById('affordability-content') }, 
+            'rent-vs-buy': { button: document.getElementById('rent-vs-buy-tab'), content: document.getElementById('rent-vs-buy-content') },
+            'refinance': { button: document.getElementById('refinance-tab'), content: document.getElementById('refinance-content') } 
+        };
         function switchTab(tab) {
             currentTab = tab;
             for (const key in tabs) {
@@ -809,7 +924,9 @@ TABLE OF CONTENTS
             }
         }
         for (const key in tabs) {
-            tabs[key].button.addEventListener('click', () => switchTab(key));
+            if (tabs[key].button) {
+                tabs[key].button.addEventListener('click', () => switchTab(key));
+            }
         }
         switchTab('mortgage');
     }
