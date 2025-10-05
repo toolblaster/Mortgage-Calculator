@@ -11,7 +11,7 @@ main.content-wrapper {
     flex-grow: 1;
 }
 .container {
-    max-width: 1280px;
+    max-width: 1050px;
 }
 
 /* Page-Specific Calculator Styles */
@@ -43,14 +43,14 @@ details[open] summary ~ * { animation: sweep .5s ease-in-out; }
 }
 
 
-/* --- Accessibility Focus Styles --- */
+/* --- New Accessibility Focus Styles --- */
 :is(button, a, input, select, [tabindex="0"]):focus-visible {
     outline: 3px solid #38bdf8; /* sky-400 */
     outline-offset: 2px;
     box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.3);
 }
 
-/* --- Visual Feedback Animation --- */
+/* --- New Visual Feedback Animation --- */
 .flash-highlight {
     animation: flash 1s ease-out;
 }
@@ -63,7 +63,7 @@ details[open] summary ~ * { animation: sweep .5s ease-in-out; }
 .results-animate-in { animation: fadeInSlideUp 0.6s ease-out forwards; }
 @keyframes fadeInSlideUp { 0% { opacity: 0; transform: translateY(15px); } 100% { opacity: 1; transform: translateY(0); } }
 @media (min-width: 1024px) { .main-grid-layout { grid-template-columns: 30% 1fr; } }
-@media print { .no-print, .input-column, header, footer, details > summary, #load-guide-btn, #main-tabs { display: none !important; } .content-wrapper, #results, #schedule-wrapper { box-shadow: none !important; border: none !important; } .main-grid-layout { display: block; } details { open: true !important; } details[open] { page-break-before: always; } .output-column { width: 100%; } #chartContainer { height: 350px !important; } }
+@media print { .no-print, #calculateButton, #resetButton, .input-column, header, footer, details > summary, #load-guide-btn, #main-tabs { display: none !important; } .content-wrapper, #results, #schedule-wrapper { box-shadow: none !important; border: none !important; } .main-grid-layout { display: block; } details { open: true !important; } details[open] { page-break-before: always; } .output-column { width: 100%; } #chartContainer { height: 350px !important; } }
 
 /* Styles for Prose on Legal & Content Pages */
 .prose p, .prose ul, .content-section p, .content-section ul {
@@ -71,15 +71,12 @@ details[open] summary ~ * { animation: sweep .5s ease-in-out; }
     color: #374151;
     font-size: 0.9rem;
 }
-.prose h1, .prose h2, .prose h3, .content-section h2, .content-section h3 {
+.prose h2, .prose h3, .content-section h3 {
     margin-bottom: 0.5em;
     color: #111827;
+    font-size: 1.15rem;
     font-weight: 700;
 }
-.prose h1 { font-size: 1.5rem; }
-.prose h2, .content-section h2 { font-size: 1.25rem; }
-.prose h3, .content-section h3 { font-size: 1.1rem; }
-
 .prose ul, .content-section ul {
     list-style-position: inside;
     padding-left: 1rem;
