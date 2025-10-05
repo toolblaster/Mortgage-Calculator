@@ -33,34 +33,20 @@
     <!-- Shared Stylesheet (relative path from blog folder) -->
     <link rel="stylesheet" href="../style.css">
     <style>
-        .prose h1 {
-            @apply text-2xl md:text-3xl font-extrabold text-primary;
-        }
-        .prose h2 {
-            @apply text-xl md:text-2xl font-bold text-primary;
-        }
-        .prose h3 {
-            @apply text-lg font-semibold text-gray-800;
-        }
-        .prose {
-            font-family: 'Inter', sans-serif;
-        }
-        .content-section {
-            background-color: #f9fafb;
-            border: 1px solid #e5e7eb;
-            border-radius: 0.75rem;
-            padding: 1.5rem;
-        }
+        .prose h1 { @apply text-2xl sm:text-3xl font-extrabold text-primary; }
+        .prose h2 { @apply text-xl sm:text-2xl font-bold text-primary; }
+        .prose h3 { @apply text-lg font-semibold text-gray-800; }
+        .prose { font-family: 'Inter', sans-serif; }
     </style>
 </head>
 <body class="bg-gray-100">
     <!-- Main Content Area -->
     <main class="content-wrapper">
-        <article class="bg-white p-4 md:p-8 rounded-xl shadow-2xl w-full max-w-4xl mx-auto my-4 md:my-8">
+        <article class="bg-white p-4 sm:p-6 md:p-8 rounded-xl shadow-2xl w-full max-w-4xl mx-auto my-4 md:my-8">
             <!-- Article Header -->
             <header class="text-center mb-8">
-                <h1 class="text-2xl md:text-3xl font-extrabold text-primary">How Much House Can I Afford? <strong>Complete Guide + Free Calculator</strong></h1>
-                <p class="mt-2 text-base md:text-lg text-gray-600">Your journey to homeownership starts with one crucial question. Let's find the real answer.</p>
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-primary">How Much House Can I Afford? <strong>Complete Guide + Free Calculator</strong></h1>
+                <p class="mt-2 text-sm sm:text-base text-gray-600">Your journey to homeownership starts with one crucial question. Let's find the real answer.</p>
                 <div class="mt-4 text-xs text-gray-700">
                     <span>Published By <strong>Vikas Rana</strong></span>
                 </div>
@@ -68,7 +54,7 @@
             
             <div class="my-8 h-px w-full bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
 
-            <div class="prose prose-sm max-w-none mx-auto">
+            <div class="prose prose-sm sm:prose-base max-w-none mx-auto">
                 <!-- Intro -->
                 <p>Buying a home is a huge milestone, but the excitement can quickly turn to confusion. You've heard of getting a <strong>mortgage pre-approval</strong>, but what can you <em>truly</em> afford without stretching your finances too thin? This guide breaks down the essential formula to help you set a realistic <strong>budget for buying a house</strong> and gives you the tools to find your perfect number.</p>
 
@@ -141,7 +127,7 @@
                 <!-- Interactive Section -->
                 <section class="mt-6">
                     <div class="bg-primary/10 p-6 rounded-lg text-center shadow-inner border border-primary/20">
-                        <h2>Find Your Magic Number with Our Home Affordability Calculator</h2>
+                        <h2 class="text-lg sm:text-xl font-bold">Find Your Magic Number with Our Home Affordability Calculator</h2>
                         <p class="mt-2 text-gray-700">Theory is one thing, but seeing your own numbers is another. Our free <strong>home affordability calculator</strong> goes beyond basic estimates. Input your income, debts, and desired DTI to see a realistic home price you can comfortably afford.</p>
                         <a href="../#affordability-tab" class="mt-4 inline-block bg-accent hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-transform transform hover:scale-105">
                             Calculate My Home Affordability
@@ -151,7 +137,7 @@
 
                 <!-- Example Scenarios Section -->
                 <section class="mt-6 content-section">
-                    <h2>Affordability in Action: Case Studies from Around the World</h2>
+                    <h2>Affordability in Action: Case Studies</h2>
                     <p>Budgets can vary wildly based on location and income. Here are a few simplified examples to illustrate how the <strong>income vs house price</strong> balance works in practice.</p>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
                         <div class="border p-4 rounded-lg bg-gray-50">
@@ -206,7 +192,7 @@
                 
                 <!-- Final CTA -->
                 <div class="mt-6 border-t pt-6 text-center">
-                    <p class="text-lg">Once you know what you can afford, the next step is to see how different loan scenarios will affect your monthly budget.</p>
+                    <p class="text-base sm:text-lg">Once you know what you can afford, the next step is to see how different loan scenarios will affect your monthly budget.</p>
                      <a href="../" class="font-bold text-accent hover:underline"><strong>Use our Strategic Mortgage Calculator to find your exact monthly payment.</strong></a>
                 </div>
 
@@ -263,7 +249,7 @@
             if(whatsappShare) whatsappShare.href = `https://api.whatsapp.com/send?text=${postTitle}%20${postUrl}`;
 
             const emailShare = document.getElementById('share-email');
-            if(emailShare) emailShare.href = `mailto:?subject=${postTitle}&body=Check out this helpful guide on home affordability: ${postUrl}`;
+            if(emailShare) emailShare.href = `mailto:?subject=${postTitle}&body=Check out this helpful guide: ${postUrl}`;
 
             // --- Chart Rendering ---
             const dtiCtx = document.getElementById('dtiChart');
@@ -272,28 +258,9 @@
                     type: 'doughnut',
                     data: {
                         labels: ['Total Debts (36%)', 'Remaining Income (64%)'],
-                        datasets: [{
-                            data: [36, 64],
-                            backgroundColor: ['#f59e0b', '#10b981'],
-                            borderColor: '#ffffff',
-                            borderWidth: 2,
-                        }]
+                        datasets: [{ data: [36, 64], backgroundColor: ['#f59e0b', '#10b981'], borderColor: '#ffffff', borderWidth: 2, }]
                     },
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            legend: {
-                                position: 'top',
-                            },
-                            title: {
-                                display: true,
-                                text: 'Example of a Healthy DTI Ratio',
-                                font: {
-                                    size: 16
-                                }
-                            }
-                        }
-                    },
+                    options: { responsive: true, plugins: { legend: { position: 'top' }, title: { display: true, text: 'Example of a Healthy DTI Ratio' } } },
                 });
             }
 
@@ -302,51 +269,18 @@
                 new Chart(costsCtx, {
                     type: 'bar',
                     data: {
-                        labels: ['Principal & Interest', 'Property Taxes', 'Home Insurance', 'Maintenance', 'Utilities'],
+                        labels: ['P&I', 'Taxes', 'Insurance', 'Maintenance', 'Utilities'],
                         datasets: [{
                             label: 'Percentage of Total Monthly Cost',
                             data: [65, 15, 5, 10, 5],
-                            backgroundColor: [
-                                'rgba(28, 118, 143, 0.8)',
-                                'rgba(245, 158, 11, 0.8)',
-                                'rgba(16, 185, 129, 0.8)',
-                                'rgba(107, 114, 128, 0.8)',
-                                'rgba(59, 130, 246, 0.8)'
-                            ],
-                            borderColor: [
-                                'rgba(28, 118, 143, 1)',
-                                'rgba(245, 158, 11, 1)',
-                                'rgba(16, 185, 129, 1)',
-                                'rgba(107, 114, 128, 1)',
-                                'rgba(59, 130, 246, 1)'
-                            ],
+                            backgroundColor: ['rgba(28, 118, 143, 0.8)','rgba(245, 158, 11, 0.8)','rgba(16, 185, 129, 0.8)','rgba(107, 114, 128, 0.8)','rgba(59, 130, 246, 0.8)'],
                             borderWidth: 1
                         }]
                     },
                     options: {
-                        indexAxis: 'y',
-                        responsive: true,
-                         plugins: {
-                            legend: {
-                                display: false
-                            },
-                            title: {
-                                display: true,
-                                text: 'Typical Monthly Homeownership Cost Breakdown',
-                                font: {
-                                    size: 16
-                                }
-                            }
-                        },
-                        scales: {
-                            x: {
-                                ticks: {
-                                    callback: function(value) {
-                                        return value + '%'
-                                    }
-                                }
-                            }
-                        }
+                        indexAxis: 'y', responsive: true,
+                        plugins: { legend: { display: false }, title: { display: true, text: 'Typical Monthly Homeownership Cost Breakdown' } },
+                        scales: { x: { ticks: { callback: function(value) { return value + '%' } } } }
                     }
                 });
             }
