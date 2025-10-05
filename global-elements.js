@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const logoIconPath = '#logo-icon';
 
     const headerHTML = `
-        <header class="bg-white/80 backdrop-blur-lg shadow-sm no-print">
+        <header class="bg-white/80 backdrop-blur-lg shadow-sm no-print sticky md:static top-0 z-40">
             <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex items-center justify-between h-16">
                     <a href="${homePath}" class="flex items-center space-x-3 text-primary hover:opacity-90 transition-opacity">
@@ -24,13 +24,34 @@ document.addEventListener('DOMContentLoaded', function() {
                             <span class="text-gray-600 font-bold">Mortgage Planner</span>
                         </span>
                     </a>
-                    <div class="flex items-center space-x-4">
+                    <!-- Desktop Menu -->
+                    <div class="hidden md:flex items-center space-x-4">
                         <a href="${homePath}" class="text-sm font-semibold text-primary hover:underline">Calculator</a>
                         <a href="${blogPath}" class="text-sm font-semibold text-primary hover:underline">Blog</a>
                         <a href="${legalPath}" class="text-sm font-semibold text-primary hover:underline">Contact & Legal</a>
                     </div>
+                    <!-- Mobile menu button -->
+                    <div class="md:hidden flex items-center">
+                        <button id="mobile-menu-button" type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary" aria-controls="mobile-menu" aria-expanded="false">
+                            <span class="sr-only">Open main menu</span>
+                            <svg id="hamburger-icon" class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
+                            <svg id="close-icon" class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
                 </div>
             </nav>
+            <!-- Mobile menu, show/hide based on menu state. -->
+            <div class="md:hidden hidden" id="mobile-menu">
+                <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                    <a href="${homePath}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50">Calculator</a>
+                    <a href="${blogPath}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50">Blog</a>
+                    <a href="${legalPath}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50">Contact & Legal</a>
+                </div>
+            </div>
         </header>
     `;
 
@@ -70,5 +91,19 @@ document.addEventListener('DOMContentLoaded', function() {
     const copyrightYearEl = document.getElementById('copyright-year');
     if (copyrightYearEl) {
         copyrightYearEl.textContent = new Date().getFullYear();
+    }
+    
+    // Add Mobile Menu Toggle Logic
+    const menuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const hamburger = document.getElementById('hamburger-icon');
+    const close = document.getElementById('close-icon');
+
+    if (menuButton) {
+        menuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            hamburger.classList.toggle('hidden');
+            close.classList.toggle('hidden');
+        });
     }
 });
