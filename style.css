@@ -26,6 +26,12 @@ details[open] summary ~ * { animation: sweep .5s ease-in-out; }
 #chartContainer, #rent-vs-buy-chart-container, #affordability-chart-container { position: relative; height: 320px; width: 100%; }
 #amortizationTable th, #amortizationTable td { white-space: nowrap; }
 
+/* NEW: Amortization Schedule Container Style */
+.schedule-container {
+    max-height: 450px;
+    overflow-y: auto;
+}
+
 /* Tab Styles */
 #main-tabs button {
     border-color: transparent;
@@ -60,7 +66,11 @@ details[open] summary ~ * { animation: sweep .5s ease-in-out; }
 
 .results-animate-in { animation: fadeInSlideUp 0.6s ease-out forwards; }
 @keyframes fadeInSlideUp { 0% { opacity: 0; transform: translateY(15px); } 100% { opacity: 1; transform: translateY(0); } }
-@media (min-width: 1024px) { .main-grid-layout { grid-template-columns: 35% 1fr; } }
+@media (min-width: 1024px) { 
+    .main-grid-layout { 
+        grid-template-columns: 35% 1fr; 
+    }
+}
 @media print { .no-print, #calculateButton, #resetButton, .input-column, header, footer, details > summary, #load-guide-btn, #main-tabs { display: none !important; } .content-wrapper, #results, #schedule-wrapper { box-shadow: none !important; border: none !important; } .main-grid-layout { display: block; } details { open: true !important; } details[open] { page-break-before: always; } .output-column { width: 100%; } #chartContainer { height: 350px !important; } }
 
 /* Styles for Prose on Legal & Content Pages */
