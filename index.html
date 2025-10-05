@@ -22,8 +22,13 @@
             theme: {
                 extend: {
                     colors: {
-                        'primary': '#1C768F', 'accent': '#1e8749', 'npv': '#E86F00',
-                        'dti-safe': '#10b981', 'dti-high': '#f59e0b', 'dti-critical': '#ef4444',
+                        'primary': '#1C768F',
+                        // ACCESSIBILITY UPDATE: Darkened colors for better text contrast
+                        'accent': '#166534',     // Was '#1e8749'
+                        'npv': '#9A3412',        // Was '#E86F00'
+                        'dti-safe': '#065f46',    // Was '#10b981'
+                        'dti-high': '#b45309',    // Was '#f59e0b'
+                        'dti-critical': '#ef4444',
                     },
                     fontFamily: { sans: ['Inter', 'sans-serif'] }
                 }
@@ -143,7 +148,7 @@
                     Our advanced planner helps you see the future of your biggest investment. Analyze <span class="font-bold text-npv">NPV</span>, forecast <span class="font-bold text-accent">equity growth</span>, monitor your <span class="font-bold text-dti-safe">DTI</span>, and model <span class="font-bold text-primary">payoff scenarios</span> to build true wealth.
                 </p>
                 <div class="mt-6">
-                    <a href="#calculator" class="inline-block bg-accent text-white font-semibold py-2.5 px-6 sm:py-3 sm:px-8 rounded-lg shadow-lg hover:bg-green-700 transition-transform transform hover:scale-105 duration-300">
+                    <a href="#calculator" class="inline-block bg-accent text-white font-semibold py-2.5 px-6 sm:py-3 sm:px-8 rounded-lg shadow-lg hover:bg-green-800 transition-transform transform hover:scale-105 duration-300">
                         Start Planning Now
                     </a>
                 </div>
@@ -155,7 +160,7 @@
                 <h2 class="text-base md:text-lg font-extrabold text-primary">
                     Advanced Financial & Mortgage Planner
                 </h2>
-                <p class="text-xs text-gray-700">For Homeowners in the US, UK, Canada & Australia</p>
+                <p class="text-xs text-gray-800">For Homeowners in the US, UK, Canada & Australia</p>
             </div>
 
             <!-- Tab Navigation -->
@@ -228,16 +233,16 @@
                             <h3 class="text-lg font-bold text-gray-800 text-center mb-3">Home Affordability Summary</h3>
                              <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-center">
                                 <div class="p-3 rounded-lg bg-primary/10 border-2 border-primary/50 shadow">
-                                    <h3 class="text-xs font-medium text-primary">Max Affordable Home Price</h3>
+                                    <h3 class="text-xs font-medium text-sky-800">Max Affordable Home Price</h3>
                                     <p id="affordableHomePrice" class="text-2xl font-extrabold text-primary"></p>
                                 </div>
                                 <div class="p-2 rounded-lg bg-gray-100 border">
-                                    <h3 class="text-xs font-medium text-gray-600">Max Loan Amount</h3>
-                                    <p id="affordableLoanAmount" class="text-lg font-extrabold"></p>
+                                    <h3 class="text-xs font-medium text-gray-700">Max Loan Amount</h3>
+                                    <p id="affordableLoanAmount" class="text-lg font-extrabold text-gray-900"></p>
                                 </div>
                                 <div class="p-2 rounded-lg bg-gray-100 border">
-                                    <h3 class="text-xs font-medium text-gray-600">Estimated Monthly PITI</h3>
-                                    <p id="affordablePITI" class="text-lg font-extrabold"></p>
+                                    <h3 class="text-xs font-medium text-gray-700">Estimated Monthly PITI</h3>
+                                    <p id="affordablePITI" class="text-lg font-extrabold text-gray-900"></p>
                                 </div>
                             </div>
                             <div id="affordability-chart-container" class="mt-3 bg-white rounded-lg shadow-md p-2 h-56">
@@ -439,7 +444,8 @@
                                     Reset to Defaults
                                 </button>
                             </div>
-                            <button id="saveButton" class="w-full mt-2 px-4 py-2.5 bg-accent/80 text-white font-semibold rounded-lg shadow-md hover:bg-accent transition duration-150 text-sm no-print">
+                            <!-- ACCESSIBILITY UPDATE: Changed bg-accent/80 to solid bg-accent for better contrast -->
+                            <button id="saveButton" class="w-full mt-2 px-4 py-2.5 bg-accent text-white font-semibold rounded-lg shadow-md hover:bg-green-800 transition duration-150 text-sm no-print">
                                 Save & Share Scenario
                             </button>
                         </div>
@@ -466,12 +472,14 @@
                                 </div>
                             </div>
                             
-                            <h3 class="text-sm py-1 font-bold">Estimated Initial Monthly Payment (PITI + PMI): <span id="totalMonthlyPaymentPITI" class="text-primary"></span></h3>
+                            <h3 class="text-sm py-1 font-bold text-gray-800">Estimated Initial Monthly Payment (PITI + PMI): <span id="totalMonthlyPaymentPITI" class="text-primary"></span></h3>
 
                             <div class="mt-2 p-2 text-center bg-primary/10 rounded-lg border-2 border-primary/50 shadow">
-                                <h3 class="text-sm font-bold text-primary">Total Monthly Cost of Ownership</h3>
+                                <!-- ACCESSIBILITY UPDATE: Changed text-primary to darker text-sky-900 -->
+                                <h3 class="text-sm font-bold text-sky-900">Total Monthly Cost of Ownership</h3>
                                 <p id="totalOwnershipCost" class="text-xl font-extrabold text-primary"></p>
-                                <p class="text-xs text-gray-700">(PITI + Maintenance + Utilities)</p>
+                                <!-- ACCESSIBILITY UPDATE: Changed text-gray-700 to darker text-sky-800 -->
+                                <p class="text-xs text-sky-800">(PITI + Maintenance + Utilities)</p>
                             </div>
                             
                             <p class="text-xs text-red-600 text-center p-1.5 border-dashed border border-amber-500 bg-amber-50 rounded-md mt-2" id="pmiDropNote" style="display: none;">
@@ -619,12 +627,12 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3 text-sm">
                                 <div class="bg-green-50 p-2 rounded-lg border border-green-200">
                                     <h3 class="text-base font-semibold text-green-800 mb-1">Buying Outcome</h3>
-                                    <p class="text-xs">Projected Net Worth:</p>
+                                    <p class="text-xs text-gray-700">Projected Net Worth:</p>
                                     <p id="buyingNetWorth" class="text-xl font-bold text-green-700"></p>
                                 </div>
                                 <div class="bg-blue-50 p-2 rounded-lg border border-blue-200">
                                     <h3 class="text-base font-semibold text-blue-800 mb-1">Renting Outcome</h3>
-                                    <p class="text-xs">Projected Net Worth:</p>
+                                    <p class="text-xs text-gray-700">Projected Net Worth:</p>
                                     <p id="rentingNetWorth" class="text-xl font-bold text-blue-700"></p>
                                 </div>
                             </div>
@@ -725,7 +733,7 @@
     <div id="shareModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
         <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
             <h2 id="modal-title" class="text-xl font-bold text-primary mb-4">Share Your Scenario</h2>
-            <p class="text-sm text-gray-600 mb-2">Copy the link below to save and share your personalized mortgage calculation.</p>
+            <p class="text-sm text-gray-700 mb-2">Copy the link below to save and share your personalized mortgage calculation.</p>
             <div class="flex items-center space-x-2">
                 <input type="text" id="shareUrlInput" readonly class="w-full p-2 border border-gray-300 rounded-md bg-gray-100 focus:outline-none">
                 <button id="copyUrlButton" class="px-4 py-2 bg-primary text-white font-semibold rounded-lg hover:bg-sky-700 transition duration-150">Copy</button>
