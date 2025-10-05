@@ -13,8 +13,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const headerHTML = `
         <header class="bg-white/80 backdrop-blur-lg shadow-sm sticky top-0 z-50 no-print">
-            <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex items-center justify-center h-14">
+            <nav class="max-w-[1100px] mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-12">
                     <a href="${homePath}" class="flex items-center space-x-2 text-primary hover:opacity-80 transition-opacity">
                         <svg class="h-6 w-6" aria-hidden="true">
                             <use href="${logoIconPath}"></use>
@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <span class="border-b-2 border-primary">Strategic</span> Mortgage Planner
                         </span>
                     </a>
+                    <a href="${blogPath}" class="text-sm font-semibold text-primary hover:underline">Blog</a>
                 </div>
             </nav>
         </header>
@@ -30,11 +31,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const footerHTML = `
         <footer class="bg-gray-800 text-gray-400 text-sm no-print">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <div class="text-center text-xs">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                <div class="text-center text-xs space-y-1">
                     <p>&copy; <span id="copyright-year"></span> Strategic Mortgage Planner. All Rights Reserved. | <a href="${legalPath}" class="hover:text-white underline">Contact & Legal</a> | <a href="${blogPath}" class="hover:text-white underline">Blog</a></p>
-                    <p class="mt-1">A proud part of the <a href="https://toolblaster.com" target="_blank" rel="noopener noreferrer" class="text-white hover:underline font-semibold">toolblaster.com</a> Network</p>
-                     <p class="mt-1"><strong>Disclaimer:</strong> This tool is for informational purposes only. Consult a financial professional before making decisions.</p>
+                    <p>A proud part of the <a href="https://toolblaster.com" target="_blank" rel="noopener noreferrer" class="text-white hover:underline font-semibold">toolblaster.com</a> Network</p>
+                     <p><strong>Disclaimer:</strong> This tool is for informational purposes only. Consult a financial professional before making decisions.</p>
                 </div>
             </div>
         </footer>
