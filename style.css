@@ -7,29 +7,72 @@ body {
     background-color: #f3f4f6;
     scroll-behavior: smooth;
     padding-top: 48px; /* Height of the h-12 fixed header */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
+
 main.content-wrapper {
     flex-grow: 1;
 }
-/* Removed custom .container to use Tailwind's max-w classes directly */
 
 /* Page-Specific Calculator Styles */
 details > summary { list-style: none; }
 details > summary::-webkit-details-marker { display: none; }
 details[open] summary ~ * { animation: sweep .5s ease-in-out; }
 @keyframes sweep { 0% { opacity: 0; transform: translateY(-10px) } 100% { opacity: 1; transform: translateY(0) } }
+
 .tooltip-container { position: relative; display: inline-flex; align-items: center; }
 .tooltip-icon { margin-left: 4px; cursor: help; color: #9ca3af; border: 1px solid #d1d5db; border-radius: 9999px; width: 14px; height: 14px; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; }
 .tooltip-text { visibility: hidden; width: 220px; background-color: #1f2937; color: #fff; text-align: center; border-radius: 6px; padding: 8px; position: absolute; z-index: 10; bottom: 125%; left: 50%; margin-left: -110px; opacity: 0; transition: opacity 0.3s; font-size: 12px; font-weight: normal; }
 .tooltip-text::after { content: ""; position: absolute; top: 100%; left: 50%; margin-left: -5px; border-width: 5px; border-style: solid; border-color: #1f2937 transparent transparent transparent; }
 .tooltip-container:hover .tooltip-text, .tooltip-container:focus-within .tooltip-text { visibility: visible; opacity: 1; }
-#chartContainer, #rent-vs-buy-chart-container, #affordability-chart-container { position: relative; height: 320px; width: 100%; }
+
+#chartContainer, #rent-vs-buy-chart-container, #affordability-chart-container { position: relative; height: 250px; width: 100%; }
+@media (min-width: 640px) {
+    #chartContainer, #rent-vs-buy-chart-container, #affordability-chart-container {
+        height: 320px;
+    }
+}
 #amortizationTable th, #amortizationTable td { white-space: nowrap; }
 
-/* NEW: Amortization Schedule Container Style */
+/* Mobile-first adjustments for the main calculator layout */
+.main-grid-layout {
+    display: grid;
+    grid-template-columns: 1fr; /* Mobile: single column is the default */
+    gap: 1rem;
+}
+
+@media (min-width: 768px) { /* Tablet and up */
+    .main-grid-layout {
+        grid-template-columns: repeat(5, minmax(0, 1fr)); /* 5-column grid for layout control */
+    }
+    .input-column {
+        grid-column: span 2 / span 2; /* Takes up 2 of 5 columns */
+    }
+    .output-column {
+        grid-column: span 3 / span 3; /* Takes up 3 of 5 columns */
+    }
+}
+
+/* Amortization Schedule Container Style */
 .schedule-container {
     max-height: 450px;
     overflow-y: auto;
+    position: relative;
+}
+/* Visual cue for horizontally scrolling table on touch devices */
+@media (max-width: 768px) {
+    .schedule-container::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 40px;
+        background: linear-gradient(to right, transparent, #ffffff);
+        pointer-events: none;
+        z-index: 1;
+    }
 }
 
 /* Tab Styles */
@@ -46,15 +89,23 @@ details[open] summary ~ * { animation: sweep .5s ease-in-out; }
     border-color: #d1d5db; /* gray-300 */
     color: #374151; /* gray-700 */
 }
+/* Mobile-friendly scrollable tabs */
+.scrollable-tabs::-webkit-scrollbar {
+    display: none; /* Hide scrollbar for Chrome, Safari and Opera */
+}
+.scrollable-tabs {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
 
 
-/* --- New Accessibility Focus Styles --- */
+/* Accessibility Focus Styles */
 :is(button, a, input, select, [tabindex="0"]):focus-visible {
     outline: 2px solid #38bdf8; /* sky-400 */
     outline-offset: 1px;
 }
 
-/* --- New Visual Feedback Animation --- */
+/* Visual Feedback Animation */
 .flash-highlight {
     animation: flash 1s ease-out;
 }
@@ -66,11 +117,7 @@ details[open] summary ~ * { animation: sweep .5s ease-in-out; }
 
 .results-animate-in { animation: fadeInSlideUp 0.6s ease-out forwards; }
 @keyframes fadeInSlideUp { 0% { opacity: 0; transform: translateY(15px); } 100% { opacity: 1; transform: translateY(0); } }
-@media (min-width: 1024px) { 
-    .main-grid-layout { 
-        grid-template-columns: 35% 1fr; 
-    }
-}
+
 @media print { .no-print, #calculateButton, #resetButton, .input-column, header, footer, details > summary, #load-guide-btn, #main-tabs { display: none !important; } .content-wrapper, #results, #schedule-wrapper { box-shadow: none !important; border: none !important; } .main-grid-layout { display: block; } details { open: true !important; } details[open] { page-break-before: always; } .output-column { width: 100%; } #chartContainer { height: 350px !important; } }
 
 /* Styles for Prose on Legal & Content Pages */
@@ -78,11 +125,12 @@ details[open] summary ~ * { animation: sweep .5s ease-in-out; }
     margin-bottom: 1em;
     color: #374151;
 }
-.prose h2, .prose h3, .content-section h3 {
+.prose h1, .prose h2, .prose h3 {
     margin-bottom: 0.5em;
     color: #111827;
     font-weight: 700;
 }
+
 .prose ul, .content-section ul {
     list-style-position: inside;
     padding-left: 1rem;
@@ -101,14 +149,19 @@ details[open] summary ~ * { animation: sweep .5s ease-in-out; }
     background-color: #f9fafb;
     border: 1px solid #e5e7eb;
     border-radius: 0.75rem;
-    padding: 0.75rem; /* Reduced padding */
+    padding: 1rem;
+}
+@media (min-width: 640px) {
+    .content-section {
+        padding: 1.5rem;
+    }
 }
 
 .sidebar-widget {
     background-color: #f9fafb;
     border: 1px solid #e5e7eb;
     border-radius: 0.75rem;
-    padding: 0.75rem; /* Reduced padding */
+    padding: 1rem;
 }
 .sidebar-title {
     font-size: 0.875rem; /* text-sm */
