@@ -33,33 +33,19 @@
     <!-- Shared Stylesheet (relative path from blog folder) -->
     <link rel="stylesheet" href="../style.css">
     <style>
-        .prose h1 {
-            @apply text-2xl md:text-3xl font-extrabold text-primary;
-        }
-        .prose h2 {
-            @apply text-xl md:text-2xl font-bold text-primary;
-        }
-        .prose h3 {
-            @apply text-lg font-semibold text-gray-800;
-        }
-        .prose {
-            font-family: 'Inter', sans-serif;
-        }
-        .content-section {
-            background-color: #f9fafb;
-            border: 1px solid #e5e7eb;
-            border-radius: 0.75rem;
-            padding: 1.5rem;
-        }
+        .prose h1 { @apply text-2xl sm:text-3xl font-extrabold text-primary; }
+        .prose h2 { @apply text-xl sm:text-2xl font-bold text-primary; }
+        .prose h3 { @apply text-lg font-semibold text-gray-800; }
+        .prose { font-family: 'Inter', sans-serif; }
     </style>
 </head>
 <body class="bg-gray-100">
     <!-- Main Content Area -->
     <main class="content-wrapper">
-        <article class="bg-white p-4 md:p-8 rounded-xl shadow-2xl w-full max-w-4xl mx-auto my-4 md:my-8">
+        <article class="bg-white p-4 sm:p-6 md:p-8 rounded-xl shadow-2xl w-full max-w-4xl mx-auto my-4 md:my-8">
             <header class="text-center mb-8">
-                <h1 class="text-2xl md:text-3xl font-extrabold text-primary">A First-Time Home Buyer's Checklist: <strong>10 Steps to Success</strong></h1>
-                <p class="mt-2 text-base md:text-lg text-gray-600">Your essential roadmap from dreaming of a new home to holding the keys.</p>
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-primary">A First-Time Home Buyer's Checklist: <strong>10 Steps to Success</strong></h1>
+                <p class="mt-2 text-sm sm:text-base text-gray-600">Your essential roadmap from dreaming of a new home to holding the keys.</p>
                  <div class="mt-4 text-xs text-gray-700">
                     <span>Published By <strong>Vikas Rana</strong></span>
                 </div>
@@ -67,7 +53,7 @@
             
             <div class="my-8 h-px w-full bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
             
-            <div class="prose prose-sm max-w-none mx-auto">
+            <div class="prose prose-sm sm:prose-base max-w-none mx-auto">
                 <p>Buying your first home is an exciting milestone, but the process can feel overwhelming. Where do you even begin? This comprehensive checklist breaks down the journey into 10 manageable steps, empowering you to navigate the path to homeownership with confidence. Let's dive in!</p>
 
                 <section class="mt-6 content-section">
@@ -101,7 +87,7 @@
                             <div><strong>Analyze Your Debt-to-Income (DTI) Ratio:</strong> Lenders look closely at your DTI. Use an affordability calculator to see how a mortgage payment fits into your overall financial picture.</div>
                         </li>
                         <li class="flex items-start">
-                           <span class="flex-shrink-0 w-6 h-6 mr-3 text-primary"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3" /></svg></span>
+                           <span class="flex-shrink-0 w-6 h-6 mr-3 text-primary"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25-2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3" /></svg></span>
                             <div><strong>Account for All Costs:</strong> Remember that your monthly housing cost (PITI) includes Principal, Interest, Taxes, and Insurance—not just the loan payment. Also factor in utilities, maintenance, and potential HOA fees.</div>
                         </li>
                     </ul>
@@ -119,7 +105,7 @@
                             <div><strong>Aim for 20%:</strong> While not always required, a 20% down payment helps you avoid Private Mortgage Insurance (PMI), an extra monthly fee.</div>
                         </li>
                         <li class="flex items-start">
-                           <span class="flex-shrink-0 w-6 h-6 mr-3 text-primary"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3" /></svg></span>
+                           <span class="flex-shrink-0 w-6 h-6 mr-3 text-primary"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25-2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3" /></svg></span>
                             <div><strong>Explore Low Down Payment Options:</strong> Look into FHA loans, VA loans (for veterans), and USDA loans, which may require as little as 0-3.5% down.</div>
                         </li>
                         <li class="flex items-start">
@@ -301,29 +287,10 @@
                 new Chart(creditScoreCtx, {
                     type: 'doughnut',
                     data: {
-                        labels: ['Payment History (35%)', 'Amounts Owed (30%)', 'Credit History Length (15%)', 'Credit Mix (10%)', 'New Credit (10%)'],
-                        datasets: [{
-                            data: [35, 30, 15, 10, 10],
-                            backgroundColor: ['#1C768F', '#25a2c3', '#70cce2', '#a6ddeb', '#d1eaf1'],
-                            borderColor: '#ffffff',
-                            borderWidth: 2,
-                        }]
+                        labels: ['Payment History (35%)', 'Amounts Owed (30%)', 'Credit History (15%)', 'Credit Mix (10%)', 'New Credit (10%)'],
+                        datasets: [{ data: [35, 30, 15, 10, 10], backgroundColor: ['#1C768F', '#25a2c3', '#70cce2', '#a6ddeb', '#d1eaf1'], borderWidth: 2, borderColor: '#fff' }]
                     },
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            legend: {
-                                position: 'top',
-                            },
-                            title: {
-                                display: true,
-                                text: 'What Makes Up Your Credit Score?',
-                                font: {
-                                    size: 16
-                                }
-                            }
-                        }
-                    },
+                    options: { responsive: true, plugins: { legend: { position: 'top' }, title: { display: true, text: 'What Makes Up Your Credit Score?' } } },
                 });
             }
 
@@ -333,61 +300,15 @@
                     type: 'bar',
                     data: {
                         labels: ['5% Down Payment', '20% Down Payment'],
-                        datasets: [{
-                            label: 'Principal & Interest',
-                            data: [1801, 1517],
-                            backgroundColor: 'rgba(28, 118, 143, 0.8)',
-                            borderColor: 'rgba(28, 118, 143, 1)',
-                            borderWidth: 1
-                        }, {
-                            label: 'PMI (Private Mortgage Insurance)',
-                            data: [119, 0],
-                            backgroundColor: 'rgba(239, 68, 68, 0.8)',
-                            borderColor: 'rgba(239, 68, 68, 1)',
-                            borderWidth: 1
-                        }]
+                        datasets: [
+                            { label: 'Principal & Interest', data: [1801, 1517], backgroundColor: 'rgba(28, 118, 143, 0.8)' }, 
+                            { label: 'PMI', data: [119, 0], backgroundColor: 'rgba(239, 68, 68, 0.8)' }
+                        ]
                     },
                     options: {
                         responsive: true,
-                         plugins: {
-                            legend: {
-                                position: 'top',
-                            },
-                            title: {
-                                display: true,
-                                text: 'Monthly Payment on a $300k Home',
-                                font: {
-                                    size: 16
-                                }
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        let label = context.dataset.label || '';
-                                        if (label) {
-                                            label += ': ';
-                                        }
-                                        if (context.parsed.y !== null) {
-                                            label += new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(context.parsed.y);
-                                        }
-                                        return label;
-                                    }
-                                }
-                            }
-                        },
-                        scales: {
-                            x: {
-                                stacked: true,
-                            },
-                            y: {
-                                stacked: true,
-                                ticks: {
-                                    callback: function(value) {
-                                        return '$' + value;
-                                    }
-                                }
-                            }
-                        }
+                        plugins: { legend: { position: 'top' }, title: { display: true, text: 'Monthly Payment on a $300k Home' }, tooltip: { callbacks: { label: (c) => `${c.dataset.label}: ${new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(c.parsed.y)}` } } },
+                        scales: { x: { stacked: true }, y: { stacked: true, ticks: { callback: (v) => '$' + v } } }
                     }
                 });
             }
