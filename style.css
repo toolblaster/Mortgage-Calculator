@@ -42,6 +42,10 @@ details[open] summary ~ * { animation: sweep .5s ease-in-out; }
     gap: 1rem;
 }
 
+.output-column {
+    overflow: hidden; /* DEFINITIVE FIX: Prevents the child table from expanding the grid column */
+}
+
 @media (min-width: 768px) { /* Tablet and up */
     .main-grid-layout {
         grid-template-columns: repeat(5, minmax(0, 1fr)); /* 5-column grid for layout control */
@@ -58,8 +62,11 @@ details[open] summary ~ * { animation: sweep .5s ease-in-out; }
 .schedule-container {
     max-height: 450px;
     overflow-y: auto;
+    overflow-x: auto; /* This allows the table inside to scroll horizontally */
+    -webkit-overflow-scrolling: touch; /* Adds momentum scrolling on iOS */
     position: relative;
 }
+
 /* Visual cue for horizontally scrolling table on touch devices */
 @media (max-width: 768px) {
     .schedule-container::after {
@@ -69,7 +76,7 @@ details[open] summary ~ * { animation: sweep .5s ease-in-out; }
         right: 0;
         bottom: 0;
         width: 40px;
-        background: linear-gradient(to right, transparent, #ffffff);
+        background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
         pointer-events: none;
         z-index: 1;
     }
