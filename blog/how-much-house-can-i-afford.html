@@ -9,10 +9,11 @@
     <meta name="description" content="Our complete guide explains the formula for home affordability (income, debt, DTI) and includes a free calculator to find your true budget in the US, UK, and Canada.">
     <meta name="keywords" content="how much house can i afford, home affordability calculator, how much mortgage can I get, income vs house price, debt-to-income ratio, down payment, home loan eligibility, budget for buying a house, mortgage pre-approval">
     <link rel="icon" href="data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100' height='100' rx='20' fill='%231C768F'/%3E%3Cpath d='M50 25L25 45V75H41.6667V58.3333H58.3333V75H75V45L50 25Z' stroke='white' stroke-width='5' stroke-linejoin='round'/%3E%3Cpath d='M40 65L50 55L60 65' stroke='white' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M50 55V45' stroke='white' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
-    <link rel="canonical" href="https://toolblaster.com/mortgage-calculator/blog/how-much-house-can-i-afford.html" />
+    <link rel="canonical" href="https://mortgageplanner.toolblaster.com/blog/how-much-house-can-i-afford.html" />
 
     <!-- Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
     
     <!-- App Configuration -->
@@ -90,56 +91,64 @@
                     <span>Published By <strong>Vikas Rana</strong></span>
                 </div>
             </header>
+            
+            <div class="my-8 h-px w-full bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
 
             <div class="prose prose-sm max-w-none mx-auto">
                 <!-- Intro -->
-                <p>Buying a home is a huge milestone, but the excitement can quickly turn to confusion when it comes to the budget. You've heard of pre-approvals and online estimators, but what can you <em>truly</em> afford without stretching your finances too thin? This guide breaks down the essential formula for home affordability and gives you the tools to find your perfect number.</p>
+                <p>Buying a home is a huge milestone, but the excitement can quickly turn to confusion. You've heard of getting a <strong>mortgage pre-approval</strong>, but what can you <em>truly</em> afford without stretching your finances too thin? This guide breaks down the essential formula to help you set a realistic <strong>budget for buying a house</strong> and gives you the tools to find your perfect number.</p>
 
                 <!-- Affordability Formula Section -->
                 <section class="mt-6 content-section">
                     <h2>The Core Affordability Formula: 4 Keys to Your Budget</h2>
-                    <p>At its heart, home affordability isn't a mystery. It's a calculation based on four key financial pillars. Understanding each one is the first step to gaining control over your home search.</p>
+                    <p>At its heart, knowing <strong>how much mortgage can I get</strong> isn't a mystery. It's a calculation based on four key financial pillars. Understanding the balance of <strong>income vs house price</strong> is the first step to gaining control over your home search.</p>
                     <ul class="space-y-4 mt-4">
                         <li class="flex items-start">
                             <div class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-100 text-sky-800 flex items-center justify-center mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" /></svg></div>
-                            <div><h3>Your Income</h3><p>This is the foundation. Lenders look at your gross (pre-tax) monthly income to determine the baseline for what you can borrow.</p></div>
+                            <div><h3>Your Income</h3><p>This is the foundation. Lenders look at your gross (pre-tax) monthly income to determine the baseline for your borrowing power.</p></div>
                         </li>
                         <li class="flex items-start">
                              <div class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-100 text-sky-800 flex items-center justify-center mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg></div>
-                            <div><h3>Your Monthly Debts</h3><p>This includes car payments, student loans, credit card debt, and any other fixed monthly obligations. The lower your existing debt, the more you can allocate to a mortgage.</p></div>
+                            <div><h3>Your Monthly Debts</h3><p>This includes car payments, student loans, and credit card debt. A crucial part of this is your <strong>debt-to-income ratio</strong>, which heavily influences your final loan amount.</p></div>
                         </li>
                         <li class="flex items-start">
                             <div class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-100 text-sky-800 flex items-center justify-center mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg></div>
-                            <div><h3>The Interest Rate & Term</h3><p>The current mortgage rates and the length of your loan (e.g., 15 or 30 years) directly impact the size of your monthly payment and, therefore, how much you can afford to borrow overall.</p></div>
+                            <div><h3>The Interest Rate & Term</h3><p>The current mortgage rates and the length of your loan (e.g., 15 or 30 years) directly impact the size of your monthly payment and how much you can afford to borrow.</p></div>
                         </li>
                     </ul>
                 </section>
 
                 <!-- Factors Affecting It Section -->
                 <section class="mt-6 content-section">
-                    <h2>Key Factors That Influence Your Buying Power</h2>
-                    <p>Beyond the basic formula, several other critical elements determine your final home loan eligibility and affordability.</p>
+                    <h2>Key Factors That Influence Your Home Loan Eligibility</h2>
+                    <p>Beyond the basic formula, several other critical elements determine your final <strong>home loan eligibility</strong> and overall buying power.</p>
                      <ul class="space-y-4 mt-4">
                         <li class="flex items-start">
                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-100 text-sky-800 flex items-center justify-center mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v.01M12 6v.01M12 18v-2m0-2v-2m0-2v-2m0-2V7m0 0V6" /></svg></div>
-                            <div><h3>Down Payment</h3><p>The amount you pay upfront. A larger down payment (ideally 20% or more) reduces your loan amount, lowers your monthly payment, and helps you avoid Private Mortgage Insurance (PMI).</p></div>
+                            <div><h3>Down Payment</h3><p>The amount you pay upfront. A larger <strong>down payment</strong> (ideally 20% or more) reduces your loan amount, lowers your monthly payment, and helps you avoid Private Mortgage Insurance (PMI).</p></div>
                         </li>
                         <li class="flex items-start">
                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-100 text-sky-800 flex items-center justify-center mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></div>
-                            <div><h3>Credit Score</h3><p>A higher credit score signals to lenders that you are a reliable borrower, unlocking better interest rates. Even a small rate reduction can save you tens of thousands over the life of the loan.</p></div>
+                            <div><h3>Credit Score</h3><p>A higher credit score signals reliability to lenders, unlocking better interest rates. This is a vital step for a strong <strong>mortgage pre-approval</strong>, potentially saving you tens of thousands.</p></div>
                         </li>
                         <li class="flex items-start">
                             <div class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-100 text-sky-800 flex items-center justify-center mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" /></svg></div>
-                            <div><h3>Debt-to-Income (DTI) Ratio</h3><p>This is the most critical factor. It's your total monthly debts divided by your gross monthly income. Most lenders prefer a total DTI of 36% or less, though some may go up to 43%.</p></div>
+                            <div><h3>Debt-to-Income (DTI) Ratio</h3><p>This is the most critical factor. The <strong>debt-to-income ratio</strong> is your total monthly debts divided by your gross monthly income. Most lenders prefer a total DTI of 36% or less, though some may go up to 43%.</p></div>
                         </li>
                     </ul>
+                     <div class="my-4 p-4 bg-white rounded-lg border shadow-sm max-w-sm mx-auto">
+                        <canvas id="dtiChart"></canvas>
+                    </div>
                 </section>
                 
                 <!-- Hidden Costs Section -->
                 <section class="mt-6 content-section">
                     <h2>Beyond the Sticker Price: Uncovering Hidden Costs</h2>
-                    <p>Your mortgage is just one piece of the puzzle. Being a homeowner comes with ongoing expenses that every first-time buyer should anticipate. Don't let these catch you by surprise!</p>
-                     <ul class="space-y-4 mt-4">
+                    <p>Your mortgage is just one piece of the puzzle. Being a homeowner comes with ongoing expenses that every first-time buyer should anticipate when planning their <strong>budget for buying a house</strong>.</p>
+                     <div class="my-6 p-4 bg-white rounded-lg border shadow-sm">
+                        <canvas id="costsChart"></canvas>
+                    </div>
+                    <ul class="space-y-4 mt-4">
                         <li class="flex items-start">
                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-100 text-sky-800 flex items-center justify-center mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25-2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3" /></svg></div>
                             <div><h3>Closing Costs</h3><p>These are fees for services that complete the real estate transaction, like appraisals and title searches. Budget an extra 2-5% of the home's purchase price for them.</p></div>
@@ -158,8 +167,8 @@
                 <!-- Interactive Section -->
                 <section class="mt-6">
                     <div class="bg-primary/10 p-6 rounded-lg text-center shadow-inner border border-primary/20">
-                        <h2>Find Your Magic Number: The Interactive Affordability Calculator</h2>
-                        <p class="mt-2 text-gray-700">Theory is one thing, but seeing your own numbers is another. Our free calculator goes beyond basic estimates. Input your income, debts, and desired DTI to see a realistic home price you can comfortably afford.</p>
+                        <h2>Find Your Magic Number with Our Home Affordability Calculator</h2>
+                        <p class="mt-2 text-gray-700">Theory is one thing, but seeing your own numbers is another. Our free <strong>home affordability calculator</strong> goes beyond basic estimates. Input your income, debts, and desired DTI to see a realistic home price you can comfortably afford.</p>
                         <a href="../#affordability-tab" class="mt-4 inline-block bg-accent hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-transform transform hover:scale-105">
                             Calculate My Home Affordability
                         </a>
@@ -169,7 +178,7 @@
                 <!-- Example Scenarios Section -->
                 <section class="mt-6 content-section">
                     <h2>Affordability in Action: Case Studies from Around the World</h2>
-                    <p>Budgets can vary wildly based on location and income. Here are a few simplified examples to illustrate how affordability works in practice.</p>
+                    <p>Budgets can vary wildly based on location and income. Here are a few simplified examples to illustrate how the <strong>income vs house price</strong> balance works in practice.</p>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
                         <div class="border p-4 rounded-lg bg-gray-50">
                             <h3>USA Example</h3>
@@ -193,7 +202,7 @@
                 <!-- The Human Side Section -->
                 <section class="mt-6 content-section">
                     <h2>It's Not Just Numbers: The Human Side of Affordability</h2>
-                    <p>A calculator can tell you what you <em>can</em> borrow, but only you can decide what you're <em>comfortable</em> paying. Your lifestyle and future goals are just as important as your DTI ratio.</p>
+                    <p>A calculator can tell you what you <em>can</em> borrow, but only you can decide what you're <em>comfortable</em> paying. Your lifestyle and future goals are just as important as your <strong>debt-to-income ratio</strong> when creating a <strong>budget for buying a house</strong>.</p>
                      <ul class="space-y-4 mt-4">
                         <li class="flex items-start">
                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-100 text-sky-800 flex items-center justify-center mr-4"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></div>
@@ -213,11 +222,11 @@
                 <!-- Tips Section -->
                 <section class="mt-6 content-section">
                     <h2>3 Tips to Increase Your Buying Power</h2>
-                    <p>If your affordability number is lower than you'd like, don't despair. You have the power to change it. Here are three effective strategies:</p>
+                    <p>If your affordability number is lower than you'd like, don't despair. You have the power to improve your <strong>home loan eligibility</strong>. Here are three effective strategies:</p>
                     <ul class="space-y-2 mt-4">
-                        <li><strong>1. Reduce Your DTI:</strong> Pay down high-interest debt like credit cards and personal loans. This single action can significantly boost your home loan eligibility.</li>
+                        <li><strong>1. Reduce Your DTI:</strong> Pay down high-interest debt like credit cards. This single action can significantly boost your chances for <strong>mortgage pre-approval</strong>.</li>
                         <li><strong>2. Improve Your Credit Score:</strong> Make all payments on time and keep your credit utilization low. A better score means a lower interest rate.</li>
-                        <li><strong>3. Increase Your Down Payment:</strong> Continue saving aggressively. A larger down payment reduces the amount you need to borrow and demonstrates financial stability to lenders.</li>
+                        <li><strong>3. Increase Your Down Payment:</strong> Continue saving aggressively. A larger <strong>down payment</strong> reduces the amount you need to borrow and demonstrates financial stability to lenders.</li>
                     </ul>
                 </section>
                 
@@ -293,6 +302,92 @@
 
             const emailShare = document.getElementById('share-email');
             if(emailShare) emailShare.href = `mailto:?subject=${postTitle}&body=Check out this helpful guide on home affordability: ${postUrl}`;
+
+            // --- Chart Rendering ---
+            const dtiCtx = document.getElementById('dtiChart');
+            if (dtiCtx) {
+                new Chart(dtiCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Total Debts (36%)', 'Remaining Income (64%)'],
+                        datasets: [{
+                            data: [36, 64],
+                            backgroundColor: ['#f59e0b', '#10b981'],
+                            borderColor: '#ffffff',
+                            borderWidth: 2,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            title: {
+                                display: true,
+                                text: 'Example of a Healthy DTI Ratio',
+                                font: {
+                                    size: 16
+                                }
+                            }
+                        }
+                    },
+                });
+            }
+
+            const costsCtx = document.getElementById('costsChart');
+            if (costsCtx) {
+                new Chart(costsCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Principal & Interest', 'Property Taxes', 'Home Insurance', 'Maintenance', 'Utilities'],
+                        datasets: [{
+                            label: 'Percentage of Total Monthly Cost',
+                            data: [65, 15, 5, 10, 5],
+                            backgroundColor: [
+                                'rgba(28, 118, 143, 0.8)',
+                                'rgba(245, 158, 11, 0.8)',
+                                'rgba(16, 185, 129, 0.8)',
+                                'rgba(107, 114, 128, 0.8)',
+                                'rgba(59, 130, 246, 0.8)'
+                            ],
+                            borderColor: [
+                                'rgba(28, 118, 143, 1)',
+                                'rgba(245, 158, 11, 1)',
+                                'rgba(16, 185, 129, 1)',
+                                'rgba(107, 114, 128, 1)',
+                                'rgba(59, 130, 246, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                         plugins: {
+                            legend: {
+                                display: false
+                            },
+                            title: {
+                                display: true,
+                                text: 'Typical Monthly Homeownership Cost Breakdown',
+                                font: {
+                                    size: 16
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                ticks: {
+                                    callback: function(value) {
+                                        return value + '%'
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
         });
     </script>
 </body>
