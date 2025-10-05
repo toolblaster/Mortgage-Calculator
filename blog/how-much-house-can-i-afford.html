@@ -54,7 +54,7 @@
             
             <div class="my-8 h-px w-full bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
 
-            <div class="prose prose-xs sm:prose-sm max-w-none mx-auto">
+            <div class="prose prose-sm sm:prose-base max-w-none mx-auto">
                 <!-- Intro -->
                 <p>Buying a home is a huge milestone, but the excitement can quickly turn to confusion. You've heard of getting a <strong>mortgage pre-approval</strong>, but what can you <em>truly</em> afford without stretching your finances too thin? This guide breaks down the essential formula to help you set a realistic <strong>budget for buying a house</strong> and gives you the tools to find your perfect number.</p>
 
@@ -223,17 +223,6 @@
                         </div>
                     </div>
                 </section>
-
-                <!-- Related Articles Section -->
-                <section class="mt-8 pt-6 border-t">
-                    <h2 class="text-center text-lg font-bold text-gray-800 mb-4">Read More Articles</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
-                         <a href="how-much-house-can-i-afford.html" class="text-sm font-semibold text-primary hover:underline">How Much House Can I Afford? Complete Guide + Free Calculator</a>
-                         <!-- Placeholder for second article -->
-                         <!-- Placeholder for third article -->
-                    </div>
-                </section>
-                
             </div>
         </article>
     </main>
@@ -261,33 +250,35 @@
             if(emailShare) emailShare.href = `mailto:?subject=${postTitle}&body=Check out this helpful guide: ${postUrl}`;
 
             // --- Chart Rendering ---
-            const creditScoreCtx = document.getElementById('creditScoreChart');
-            if (creditScoreCtx) {
-                new Chart(creditScoreCtx, {
+            const dtiCtx = document.getElementById('dtiChart');
+            if (dtiCtx) {
+                new Chart(dtiCtx, {
                     type: 'doughnut',
                     data: {
-                        labels: ['Payment History (35%)', 'Amounts Owed (30%)', 'Credit History (15%)', 'Credit Mix (10%)', 'New Credit (10%)'],
-                        datasets: [{ data: [35, 30, 15, 10, 10], backgroundColor: ['#1C768F', '#25a2c3', '#70cce2', '#a6ddeb', '#d1eaf1'], borderWidth: 2, borderColor: '#fff' }]
+                        labels: ['Total Debts (36%)', 'Remaining Income (64%)'],
+                        datasets: [{ data: [36, 64], backgroundColor: ['#f59e0b', '#10b981'], borderColor: '#ffffff', borderWidth: 2, }]
                     },
-                    options: { responsive: true, plugins: { legend: { position: 'top' }, title: { display: true, text: 'What Makes Up Your Credit Score?' } } },
+                    options: { responsive: true, plugins: { legend: { position: 'top' }, title: { display: true, text: 'Example of a Healthy DTI Ratio' } } },
                 });
             }
 
-            const downPaymentCtx = document.getElementById('downPaymentChart');
-            if (downPaymentCtx) {
-                new Chart(downPaymentCtx, {
+            const costsCtx = document.getElementById('costsChart');
+            if (costsCtx) {
+                new Chart(costsCtx, {
                     type: 'bar',
                     data: {
-                        labels: ['5% Down Payment', '20% Down Payment'],
-                        datasets: [
-                            { label: 'Principal & Interest', data: [1801, 1517], backgroundColor: 'rgba(28, 118, 143, 0.8)' }, 
-                            { label: 'PMI', data: [119, 0], backgroundColor: 'rgba(239, 68, 68, 0.8)' }
-                        ]
+                        labels: ['P&I', 'Taxes', 'Insurance', 'Maintenance', 'Utilities'],
+                        datasets: [{
+                            label: 'Percentage of Total Monthly Cost',
+                            data: [65, 15, 5, 10, 5],
+                            backgroundColor: ['rgba(28, 118, 143, 0.8)','rgba(245, 158, 11, 0.8)','rgba(16, 185, 129, 0.8)','rgba(107, 114, 128, 0.8)','rgba(59, 130, 246, 0.8)'],
+                            borderWidth: 1
+                        }]
                     },
                     options: {
-                        responsive: true,
-                        plugins: { legend: { position: 'top' }, title: { display: true, text: 'Monthly Payment on a $300k Home' }, tooltip: { callbacks: { label: (c) => `${c.dataset.label}: ${new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(c.parsed.y)}` } } },
-                        scales: { x: { stacked: true }, y: { stacked: true, ticks: { callback: (v) => '$' + v } } }
+                        indexAxis: 'y', responsive: true,
+                        plugins: { legend: { display: false }, title: { display: true, text: 'Typical Monthly Homeownership Cost Breakdown' } },
+                        scales: { x: { ticks: { callback: function(value) { return value + '%' } } } }
                     }
                 });
             }
