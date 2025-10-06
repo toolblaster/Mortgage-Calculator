@@ -66,6 +66,7 @@ Strategic Mortgage Planner - Application Logic
     // --- Global State & Chart Instances ---
     let mortgageChart = null, rentVsBuyChart = null, affordabilityChart = null, refinanceChart = null;
     let currentResults = null, currentTab = 'mortgage';
+    let tabs = {}; // Globally scoped tabs object
 
     // --- Helper Functions ---
     const formatCurrency = (amount) => {
@@ -221,9 +222,7 @@ Strategic Mortgage Planner - Application Logic
         return { schedule: loanState.amortizationSchedule, totalInterest: loanState.totalInterestPaid, totalPVInterest: loanState.totalPVInterestPaid, payoffPeriod: loanState.payoffPeriod, standardPayment: standardPaymentOriginal, firstPeriodPITI: loanState.amortizationSchedule.length > 0 ? loanState.amortizationSchedule[0].periodicPITI * (12 / periodsPerYear) : standardPaymentOriginal, pmiDropPeriod: loanState.pmiDropPeriod, finalPropertyValue: loanState.currentPropertyValue, finalEquity: Math.max(0, loanState.currentPropertyValue) };
     }
 
-
     function calculateRentVsBuy() {
-        // ... (This function is already quite focused and doesn't need major refactoring)
         const loanAmount = parseFloat(DOM.loanAmount.value); const initialLTV = parseFloat(DOM.initialLTV.value);
         const homePrice = loanAmount / (initialLTV / 100); const downPayment = homePrice - loanAmount;
         const closingCosts = parseFloat(DOM.closingCosts.value); const sellingCostsRate = parseFloat(DOM.sellingCosts.value) / 100;
@@ -255,7 +254,6 @@ Strategic Mortgage Planner - Application Logic
     }
 
     function calculateAffordability() {
-        // ... (This function is already quite focused)
         const annualIncome = parseFloat(DOM.annualIncome.value); const monthlyDebts = parseFloat(DOM.nonMortgageDebt.value);
         const downPayment = parseFloat(DOM.downPaymentAmount.value); const frontEndDTI = parseFloat(DOM.desiredFrontEndDTI.value) / 100;
         const backEndDTI = parseFloat(DOM.desiredBackEndDTI.value) / 100; const annualRate = parseFloat(DOM.interestRate.value) / 100;
@@ -271,7 +269,6 @@ Strategic Mortgage Planner - Application Logic
     }
 
     function calculateRefinance() {
-        // ... (This function is already quite focused)
         const originalAmount = parseFloat(DOM.originalLoanAmount.value); const currentRate = parseFloat(DOM.currentInterestRate.value) / 100;
         const startDate = new Date(DOM.loanStartDate.value + '-01T00:00:00'); const originalTermYears = parseFloat(DOM.loanTerm.value);
         const newRate = parseFloat(DOM.newInterestRate.value) / 100; const newTermYears = parseFloat(DOM.newLoanTerm.value);
@@ -367,8 +364,6 @@ Strategic Mortgage Planner - Application Logic
         });
     }
 
-    // --- The rest of the functions (validation, orchestration, UI management) remain largely the same ---
-    
     // --- Input Validation ---
     function validateInputs() {
         const errors = [];
@@ -598,39 +593,81 @@ Strategic Mortgage Planner - Application Logic
         return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
     };
 
-    function setupTabs() {
-        const tabs = { 'mortgage': { button: document.getElementById('mortgage-tab'), content: document.getElementById('mortgage-calculator-content') }, 'affordability': { button: document.getElementById('affordability-tab'), content: document.getElementById('affordability-content') }, 'rent-vs-buy': { button: document.getElementById('rent-vs-buy-tab'), content: document.getElementById('rent-vs-buy-content') }, 'refinance': { button: document.getElementById('refinance-tab'), content: document.getElementById('refinance-content') } };
-        function switchTab(tab) {
-            currentTab = tab;
-            for (const key in tabs) {
-                if (key === tab) { tabs[key].button.classList.add('active'); tabs[key].button.setAttribute('aria-selected', 'true'); tabs[key].content.classList.remove('hidden'); } 
-                else { tabs[key].button.classList.remove('active'); tabs[key].button.setAttribute('aria-selected', 'false'); tabs[key].content.classList.add('hidden'); }
+    function switchTab(tab) {
+        currentTab = tab;
+        for (const key in tabs) {
+            if (tabs[key].button && tabs[key].content) {
+                const isActive = key === tab;
+                tabs[key].button.classList.toggle('active', isActive);
+                tabs[key].button.setAttribute('aria-selected', isActive);
+                tabs[key].content.classList.toggle('hidden', !isActive);
             }
         }
-        for (const key in tabs) { if (tabs[key].button) tabs[key].button.addEventListener('click', () => switchTab(key)); }
-        switchTab('mortgage');
+        // Update URL hash without adding to history
+        if(history.replaceState) {
+            history.replaceState(null, null, `#${tab}-tab`);
+        }
+    }
+
+    function setupTabs() {
+        tabs = { 
+            'mortgage': { button: document.getElementById('mortgage-tab'), content: document.getElementById('mortgage-calculator-content') }, 
+            'affordability': { button: document.getElementById('affordability-tab'), content: document.getElementById('affordability-content') }, 
+            'rent-vs-buy': { button: document.getElementById('rent-vs-buy-tab'), content: document.getElementById('rent-vs-buy-content') },
+            'refinance': { button: document.getElementById('refinance-tab'), content: document.getElementById('refinance-content') } 
+        };
+        for (const key in tabs) {
+            if (tabs[key].button) {
+                tabs[key].button.addEventListener('click', () => switchTab(key));
+            }
+        }
     }
 
     function init() {
-        setupTabs(); setupModal();
+        setupTabs();
+        setupModal();
+        
         DOM.currency.addEventListener('change', updateCurrencySymbols);
         DOM.calculateButtons.forEach(btn => btn.addEventListener('click', () => handleCalculation(false)));
         DOM.resetButtons.forEach(btn => btn.addEventListener('click', resetForm));
         if(DOM.shockTestButton) DOM.shockTestButton.addEventListener('click', () => handleCalculation(true));
+        
         document.querySelector('.print-button').addEventListener('click', () => window.print());
         document.querySelector('.pdf-button').addEventListener('click', generatePDF);
+        
         loadGuide();
-        if (!populateFormFromURL()) resetForm();
-        else handleCalculation();
+
+        const urlPopulated = populateFormFromURL();
+        
+        // Handle initial tab state from URL hash or default
+        const hash = window.location.hash.substring(1);
+        const tabKeyFromHash = hash.replace('-tab', '');
+        
+        if (tabs[tabKeyFromHash]) {
+            switchTab(tabKeyFromHash);
+        } else {
+            switchTab('mortgage'); // Default to mortgage tab
+        }
+
+        if (!urlPopulated) {
+            resetForm(); // Reset form only if not populated from URL
+        } else {
+            handleCalculation(); // Calculate if populated from URL
+        }
         updateCurrencySymbols();
+        
         const backToTopButton = document.getElementById('back-to-top');
-        window.addEventListener('scroll', () => { if (window.pageYOffset > 300) backToTopButton.classList.remove('hidden'); else backToTopButton.classList.add('hidden'); });
-        backToTopButton.addEventListener('click', () => { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) backToTopButton.classList.remove('hidden');
+            else backToTopButton.classList.add('hidden');
+        });
+        backToTopButton.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        
         const darkModeToggle = document.createElement('button');
         darkModeToggle.textContent = 'Toggle Dark Mode';
         darkModeToggle.classList.add('dark-mode-toggle');
         document.body.appendChild(darkModeToggle);
-        darkModeToggle.addEventListener('click', () => { document.body.classList.toggle('dark-mode'); });
+        darkModeToggle.addEventListener('click', () => document.body.classList.toggle('dark-mode'));
     }
     
     function loadGuide() {
