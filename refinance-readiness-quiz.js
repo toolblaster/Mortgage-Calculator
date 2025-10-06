@@ -5,17 +5,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const progressText = document.getElementById('progress-text');
     
     const questions = {
-        '1': document.getElementById('question-1'),
-        '2': document.getElementById('question-2'),
-        '3': document.getElementById('question-3'),
-        '4': document.getElementById('question-4'),
-        '5': document.getElementById('question-5'),
-        '6': document.getElementById('question-6'),
-        '7': document.getElementById('question-7'),
-        '8': document.getElementById('question-8'),
-        '9': document.getElementById('question-9'),
-        '10': document.getElementById('question-10'),
-        '11': document.getElementById('question-11'),
+        '1': document.getElementById('question-1'), '2': document.getElementById('question-2'), '3': document.getElementById('question-3'),
+        '4': document.getElementById('question-4'), '5': document.getElementById('question-5'), '6': document.getElementById('question-6'),
+        '7': document.getElementById('question-7'), '8': document.getElementById('question-8'), '9': document.getElementById('question-9'),
+        '10': document.getElementById('question-10'), '11': document.getElementById('question-11'),
     };
 
     const userAnswers = {};
@@ -37,20 +30,13 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function resetQuiz() {
-        // Clear answers
         Object.keys(userAnswers).forEach(key => delete userAnswers[key]);
-
-        // Un-select and re-enable all buttons
         document.querySelectorAll('.quiz-option').forEach(button => {
             button.classList.remove('selected');
             button.disabled = false;
         });
-
-        // Show quiz and hide results
         resultsContainer.classList.add('hidden');
         quizContainer.classList.remove('hidden');
-
-        // Restart quiz
         showQuestion('1');
     }
 
@@ -60,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
         progressText.textContent = 'Recommendation Complete!';
         progressBar.style.width = `100%`;
         
-        const { goal, current_rate, loan_type, credit, dti, stay_plan, equity, loan_age, closing_cost_tolerance, income_stability, other_goals } = userAnswers;
+        const { goal, credit } = userAnswers;
         const goalText = goal.replace(/_/g, ' ');
 
         let title = "Here's Your Personalized Recommendation";
@@ -68,10 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let content = '';
         let cta = `<a href="/#refinance-tab" class="inline-block w-full sm:w-auto bg-accent text-white font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-green-800 transition-transform transform hover:scale-105">Analyze My Refinance &rarr;</a>`;
         
-        let score = 0;
-        let advicePoints = [];
-
-        // --- Scoring Logic & Conditional Handling ---
+        // --- Special Case Handling ---
         if (goal === 'unsure') {
             title = "Let's Figure Out Your Budget!";
             subtitle = "It's smart to start by understanding your financial picture. Here's our recommendation:";
@@ -83,47 +66,49 @@ document.addEventListener('DOMContentLoaded', function() {
              content = `<p>With a credit score that needs improvement, the best first step is to focus on strengthening your financial profile. This will put you in a much stronger position to get the best rates in the future.</p><h3 class="font-bold mt-4">Recommended Actions:</h3><ul class="list-disc list-inside space-y-2 pl-4"><li>Review your credit report for any errors.</li><li>Focus on making all payments on time.</li><li>Work on paying down high-interest credit card balances.</li></ul>`;
              cta = `<a href="/#mortgage-tab" class="inline-block w-full sm:w-auto bg-primary text-white font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-sky-700 transition-transform transform hover:scale-105">Explore Scenarios &rarr;</a>`;
         } else {
-            // --- New, more advanced scoring logic ---
-            if (current_rate === 'higher') score += 3;
-            if (loan_type === 'arm' || goal === 'rate_switch') score += 2;
-            if (credit === 'excellent') score += 3;
-            if (credit === 'good') score += 2;
-            if (dti === 'low_dti') score += 2;
-            if (dti === 'medium_dti') score += 1;
-            if (stay_plan === 'long_term') score += 2;
-            if (equity === 'high_equity') score += 1;
-            if (loan_age === '2_5_years') score += 1;
-            if (loan_age === '5_10_years') score += 2;
-            if (loan_age === 'over_10_years') score += 3;
-            if (income_stability === 'stable_increasing') score += 2;
-            if (income_stability === 'stable') score += 1;
-            if (other_goals === 'no') score += 1;
+            // --- Weighted Scoring Logic ---
+            const weights = {
+                current_rate: { higher: 5, similar: 0, unsure_rate: 1 },
+                loan_type: { fixed: 0, arm: 3, other: 1 },
+                credit: { excellent: 4, good: 2, fair: 0 },
+                dti: { low_dti: 3, medium_dti: 1, high_dti: -1 },
+                stay_plan: { long_term: 3, short_term: -3, unsure_stay: 0 },
+                equity: { high_equity: 2, low_equity: 0, unsure_equity: 0 },
+                loan_age: { under_2_years: -2, '2_5_years': 1, '5_10_years': 3, over_10_years: 4 },
+                income_stability: { stable_increasing: 2, stable: 1, uncertain: 0 },
+                other_goals: { no: 1, yes: 0 }
+            };
 
-            // --- New, more detailed advice points ---
-            if (loan_type === 'arm' || goal === 'rate_switch') {
-                advicePoints.push(`<p class="mt-4 p-3 bg-blue-50 border-l-4 border-blue-400 rounded-r-lg"><strong>Priority Insight:</strong> Switching from an Adjustable-Rate Mortgage (ARM) to a stable, fixed-rate loan is a powerful strategy to protect yourself from future interest rate hikes. This is a very strong reason to refinance.</p>`);
-            }
-            if (income_stability === 'uncertain') {
-                 advicePoints.push(`<p class="mt-4 p-3 bg-yellow-50 border-l-4 border-yellow-400 rounded-r-lg"><strong>Income Note:</strong> With a variable income, locking in the lowest possible fixed monthly payment through refinancing could provide valuable financial stability and peace of mind.</p>`);
-            }
-            if (loan_age === 'under_2_years' && stay_plan !== 'long_term') {
-                advicePoints.push(`<p class="mt-4 p-3 bg-red-50 border-l-4 border-red-400 rounded-r-lg"><strong>Critical Consideration:</strong> Your loan is very new. It is crucial that the interest rate savings are significant enough to overcome the closing costs within your short-term plan to stay in the home. The break-even point will be the most important number for you.</p>`);
-            }
-             if (dti === 'high_dti') {
-                advicePoints.push(`<p class="mt-4 p-3 bg-yellow-50 border-l-4 border-yellow-400 rounded-r-lg"><strong>DTI Consideration:</strong> Lenders look closely at your Debt-to-Income ratio. Since yours is on the higher side, it's crucial to use the calculator to see how a new payment would fit into your budget. Paying down other debts could strengthen your application.</p>`);
-            }
-            if (goal === 'cash_out' && equity !== 'high_equity') {
-                advicePoints.push(`<p class="mt-4 p-3 bg-yellow-50 border-l-4 border-yellow-400 rounded-r-lg"><strong>Heads-up:</strong> A 'cash-out' refinance usually requires significant equity (more than 20%). You may need to wait until you've built more equity in your home.</p>`);
-            }
-            if (stay_plan === 'short_term') {
-                 advicePoints.push(`<p class="mt-4 p-3 bg-yellow-50 border-l-4 border-yellow-400 rounded-r-lg"><strong>Important Note:</strong> Since you plan to stay for less than 5 years, pay close attention to the 'break-even point' in our calculator. You need to ensure your monthly savings will cover the closing costs before you move.</p>`);
+            let score = 0;
+            for (const key in userAnswers) {
+                const answer = userAnswers[key];
+                if (weights[key] && weights[key][answer] !== undefined) {
+                    score += weights[key][answer];
+                }
             }
 
+            // --- Dynamic Advice Points ---
+            let advicePoints = [];
+            const addAdvice = (condition, message, type = 'note') => {
+                if (condition) {
+                    const colors = { note: 'blue', warning: 'yellow', critical: 'red' };
+                    advicePoints.push(`<p class="mt-4 p-3 bg-${colors[type]}-50 border-l-4 border-${colors[type]}-400 rounded-r-lg">${message}</p>`);
+                }
+            };
+            
+            addAdvice(userAnswers.loan_type === 'arm' || goal === 'rate_switch', "<strong>Priority Insight:</strong> Switching from an ARM to a stable, fixed-rate loan is a powerful strategy to protect yourself from future rate hikes. This is a very strong reason to refinance.");
+            addAdvice(userAnswers.income_stability === 'uncertain', "<strong>Income Note:</strong> With a variable income, locking in the lowest possible fixed payment could provide valuable financial stability.", 'warning');
+            addAdvice(userAnswers.loan_age === 'under_2_years' && userAnswers.stay_plan !== 'long_term', "<strong>Critical Consideration:</strong> Your loan is very new. It's crucial that interest savings are significant enough to overcome closing costs quickly. The break-even point is the most important number for you.", 'critical');
+            addAdvice(userAnswers.dti === 'high_dti', "<strong>DTI Consideration:</strong> Lenders look closely at your DTI ratio. Since yours is on the higher side, it's crucial to see how a new payment fits your budget. Paying down other debts could strengthen your application.", 'warning');
+            addAdvice(goal === 'cash_out' && userAnswers.equity !== 'high_equity', "<strong>Heads-up:</strong> A 'cash-out' refinance usually requires significant equity (more than 20%). You may need to wait until you've built more equity in your home.", 'warning');
+            addAdvice(userAnswers.stay_plan === 'short_term', "<strong>Important Note:</strong> Since you plan to stay for less than 5 years, pay close attention to the 'break-even point' in our calculator. You need to ensure your monthly savings will cover the closing costs before you move.", 'warning');
+
+            // --- Final Recommendation Based on Score ---
             if (score >= 12) {
                 title = `Your Path to '${goalText}' is Clear! 🎉`;
                 subtitle = "Multiple factors align in your favor, making refinancing a very strong option to consider."
                 content = `<p>Your goal to <strong>'${goalText}'</strong> combined with your strong financial profile makes you an ideal candidate. The next step is to run the exact numbers.</p>`
-            } else if (score >= 7) {
+            } else if (score >= 6) {
                 title = `Refinancing for '${goalText}' Looks Promising! 👍`;
                 subtitle = "You have good reasons to refinance, but be sure to weigh the pros and cons carefully."
                 content = `<p>Your goal to <strong>'${goalText}'</strong> is a good reason to explore refinancing. Our calculator will help you see if the benefits outweigh the costs.</p>`
@@ -145,53 +130,34 @@ document.addEventListener('DOMContentLoaded', function() {
             content += advicePoints.join('');
         }
 
-        // Inject content into results page
         document.getElementById('results-title').textContent = title;
         document.getElementById('results-subtitle').textContent = subtitle;
         document.getElementById('results-content').innerHTML = content;
         document.getElementById('results-cta').innerHTML = cta;
         
-        // --- Setup Social Sharing Links ---
         const pageUrl = encodeURIComponent(window.location.href);
         const pageTitle = encodeURIComponent("I just took the Refinance Readiness Quiz - see if you should refinance!");
         const pageSource = encodeURIComponent("Strategic Mortgage Planner");
 
-        const twitter = document.getElementById('share-twitter-quiz');
-        if(twitter) twitter.href = `https://twitter.com/intent/tweet?url=${pageUrl}&text=${pageTitle}`;
-        
-        const facebook = document.getElementById('share-facebook-quiz');
-        if(facebook) facebook.href = `https://www.facebook.com/sharer/sharer.php?u=${pageUrl}`;
-
-        const linkedin = document.getElementById('share-linkedin-quiz');
-        if(linkedin) linkedin.href = `https://www.linkedin.com/shareArticle?mini=true&url=${pageUrl}&title=${pageTitle}&source=${pageSource}`;
-        
-        const whatsapp = document.getElementById('share-whatsapp-quiz');
-        if(whatsapp) whatsapp.href = `https://api.whatsapp.com/send?text=${pageTitle}%20${pageUrl}`;
-
-        const email = document.getElementById('share-email-quiz');
-        if(email) email.href = `mailto:?subject=${pageTitle}&body=Check out this helpful quiz: ${pageUrl}`;
+        document.getElementById('share-twitter-quiz').href = `https://twitter.com/intent/tweet?url=${pageUrl}&text=${pageTitle}`;
+        document.getElementById('share-facebook-quiz').href = `https://www.facebook.com/sharer/sharer.php?u=${pageUrl}`;
+        document.getElementById('share-linkedin-quiz').href = `https://www.linkedin.com/shareArticle?mini=true&url=${pageUrl}&title=${pageTitle}&source=${pageSource}`;
+        document.getElementById('share-whatsapp-quiz').href = `https://api.whatsapp.com/send?text=${pageTitle}%20${pageUrl}`;
+        document.getElementById('share-email-quiz').href = `mailto:?subject=${pageTitle}&body=Check out this helpful quiz: ${pageUrl}`;
     }
 
     quizContainer.addEventListener('click', function(e) {
         const button = e.target.closest('.quiz-option');
         if (!button) return;
 
-        // Disable all buttons in the current card to prevent double-clicking
         const allOptionsInCard = button.closest('.quiz-card').querySelectorAll('.quiz-option');
         allOptionsInCard.forEach(opt => opt.disabled = true);
-        
-        // Add visual feedback
         button.classList.add('selected');
 
         const currentCard = button.closest('.quiz-card');
-        const questionId = currentCard.id.split('-')[1];
         const nextQuestion = button.dataset.next;
-        const answerValue = button.dataset.value;
+        userAnswers[currentCard.dataset.key] = button.dataset.value;
 
-        // Store answer
-        userAnswers[currentCard.dataset.key] = answerValue;
-
-        // Add a delay for a smoother feel
         setTimeout(() => {
             if (nextQuestion === 'results') {
                 showResults();
@@ -201,9 +167,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 400);
     });
 
-    // Event listener for the retake button
     document.getElementById('retake-quiz-button').addEventListener('click', resetQuiz);
-
-    // Start the quiz
     showQuestion('1');
 });
