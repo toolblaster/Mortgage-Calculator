@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mortgage Amortization Explained — See How Your Payments Really Work</title>
+
+    <!-- Primary Meta Tags -->
+    <meta name="description" content="Ever wondered where your mortgage payments really go? Our guide explains amortization, principal vs. interest, and how to use our calculator to pay off your loan faster.">
+    <meta name="keywords" content="amortization schedule, principal vs interest, loan payoff calculator, equity build-up, mortgage repayment breakdown, extra payment calculator, home loan interest">
+    <meta name="author" content="Vikas Rana">
+    <link rel="canonical" href="https://mortgageplanner.toolblaster.com/blog/mortgage-amortization-explained.html" />
+
+    <!-- Open Graph / Facebook Meta Tags -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://mortgageplanner.toolblaster.com/blog/mortgage-amortization-explained.html">
+    <meta property="og:title" content="Mortgage Amortization Explained — See How Your Payments Really Work">
+    <meta property="og:description" content="Our guide explains amortization, principal vs. interest, and how to use our calculator to pay off your loan faster.">
+    <meta property="og:site_name" content="Strategic Mortgage Planner">
+
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Mortgage Amortization Explained — See How Your Payments Really Work">
+    <meta name="twitter:description" content="Our guide explains amortization, principal vs. interest, and how to use our calculator to pay off your loan faster.">
+    
+    <link rel="icon" href="data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100' height='100' rx='20' fill='%231C768F'/%3E%3Cpath d='M50 25L25 45V75H41.6667V58.3333H58.3333V75H75V45L50 25Z' stroke='white' stroke-width='5' stroke-linejoin='round'/%3E%3Cpath d='M40 65L50 55L60 65' stroke='white' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M50 55V45' stroke='white' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+
+    <!-- Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- App Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#1C768F', 'accent': '#1e8749'
+                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+
+    <!-- Shared Stylesheet (relative path from blog folder) -->
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .prose h1 { @apply text-xl sm:text-2xl font-extrabold text-primary; }
+        .prose h2 { @apply text-3xl font-black text-primary; }
+        .prose h3 { @apply text-base font-medium text-gray-800; }
+    </style>
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Article",
+          "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https://mortgageplanner.toolblaster.com/blog/mortgage-amortization-explained.html"
+          },
+          "headline": "Mortgage Amortization Explained — See How Your Payments Really Work",
+          "description": "Ever wondered where your mortgage payments really go? Our guide explains amortization, principal vs. interest, and how to use our calculator to pay off your loan faster.",
+          "author": {
+            "@type": "Person",
+            "name": "Vikas Rana"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "Strategic Mortgage Planner",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://mortgageplanner.toolblaster.com/favicon.ico"
+            }
+          },
+          "datePublished": "2025-10-06",
+          "dateModified": "2025-10-06"
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [{
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://mortgageplanner.toolblaster.com/"
+          },{
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Blog",
+            "item": "https://mortgageplanner.toolblaster.com/blog/"
+          },{
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Mortgage Amortization Explained"
+          }]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Why is so much of my payment going to interest at the beginning?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Mortgage loans are typically 'front-loaded' with interest. Because the principal balance is at its highest at the start of the loan, the amount of interest you owe per month is also at its peak. As you pay down the principal, the interest portion of your payment decreases, and the principal portion increases."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How do extra payments help me pay off my mortgage faster?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "When you make an extra payment and specify that it should go toward the principal, you are directly reducing the loan balance. This means that in the following month, the interest is calculated on a smaller amount, leading to less interest paid over the life of the loan and a faster payoff date."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Do bi-weekly payments really make a difference?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes, they can. By paying half your mortgage every two weeks, you end up making 26 half-payments, which equals 13 full monthly payments in a year instead of 12. That one extra payment goes directly to the principal and can shave several years off your loan."
+              }
+            },
+             {
+              "@type": "Question",
+              "name": "Is the amortization schedule different for a 15-year vs. a 30-year mortgage?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Absolutely. A 15-year mortgage has higher monthly payments, but you build equity much faster because a larger portion of each payment goes to the principal from the very beginning. A 30-year loan has lower payments, but you'll pay significantly more interest over the life of the loan."
+              }
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+<body class="bg-gray-100">
+    <!-- Main Content Area -->
+    <main class="content-wrapper">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-4 md:my-8">
+            <div class="relative max-w-4xl mx-auto">
+                <!-- Main Article Content -->
+                <article class="bg-white p-4 sm:p-6 md:p-8 rounded-xl shadow-2xl">
+                    <!-- Article Header -->
+                    <header class="text-center mb-8">
+                        <h1 class="text-2xl sm:text-3xl font-extrabold text-primary">Mortgage Amortization Explained — See How Your Payments Really Work</h1>
+                        <p class="mt-2 text-sm sm:text-base text-gray-800">Ever wondered where your mortgage payment really goes each month? Let's demystify the process.</p>
+                        <div class="mt-4 text-xs text-gray-800">
+                            <span>Published By <strong>Vikas Rana</strong></span>
+                        </div>
+                    </header>
+                    
+                    <div class="my-8 h-px w-full bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
+
+                    <div class="prose prose-xs max-w-none">
+                        <!-- Intro -->
+                        <p>You make your mortgage payment every month like clockwork, but have you ever stopped to think about what's happening behind the scenes? A large portion of that payment isn't actually reducing your loan; it's going straight to interest. Understanding this process, known as <strong class="font-bold">amortization</strong>, is the key to mastering your mortgage and building equity faster. This guide will break down the concept and show you how to take control of your <strong class="font-bold">loan payoff</strong> timeline.</p>
+
+                        <!-- The Amortization Concept -->
+                        <section class="mt-6 content-section">
+                            <h2>What Exactly is an Amortization Schedule?</h2>
+                            <p>An <strong class="font-bold">amortization schedule</strong> is a complete table of your loan payments, showing the specific <strong class="font-bold">mortgage repayment breakdown</strong> for every single month. It reveals how your payment is split between:</p>
+                             <ul class="space-y-4 mt-4">
+                                <li class="flex items-start">
+                                    <span class="flex-shrink-0 w-6 h-6 mr-3 text-primary"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941" /></svg></span>
+                                    <div><strong class="font-semibold">Principal:</strong> The actual amount you borrowed to buy your home. Paying this down builds your equity.</div>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="flex-shrink-0 w-6 h-6 mr-3 text-red-600"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5 19L19 5M6.375 6.375a2.625 2.625 0 11-3.712 3.712A2.625 2.625 0 016.375 6.375zM17.625 17.625a2.625 2.625 0 11-3.712 3.712 2.625 2.625 0 013.712-3.712z" /></svg></span>
+                                    <div><strong class="font-semibold">Interest:</strong> The cost of borrowing money from the lender. This is where the bank makes its profit.</div>
+                                </li>
+                            </ul>
+                            <div class="my-4 p-4 bg-white rounded-lg border shadow-sm">
+                                <div class="relative h-64 sm:h-80">
+                                    <canvas id="amortizationConceptChart"></canvas>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Principal vs Interest Breakdown -->
+                        <section class="mt-6 content-section">
+                            <h2>Principal vs. Interest: A Tilting Scale</h2>
+                            <p>The magic of amortization is how the split between principal and interest changes over time. It’s like a seesaw that slowly tilts in your favor.</p>
+                             <ul class="space-y-4 mt-4">
+                                <li class="flex items-start">
+                                   <span class="flex-shrink-0 w-6 h-6 mr-3 text-red-600"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3" /></svg></span>
+                                    <div><strong class="font-semibold">Early Years: Interest Dominates.</strong> Because your loan balance is at its highest, the interest portion of your payment is also at its peak. A large chunk of your money pays the lender.</div>
+                                </li>
+                                <li class="flex items-start">
+                                     <span class="flex-shrink-0 w-6 h-6 mr-3 text-primary"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7.5L7.5 3m0 0L12 7.5M7.5 3v13.5" /></svg></span>
+                                    <div><strong class="font-semibold">The Pivot: Principal Fights Back.</strong> With each payment, you chip away a tiny piece of principal. As the balance shrinks, the interest calculated on it also gets smaller.</div>
+                                </li>
+                                <li class="flex items-start">
+                                     <span class="flex-shrink-0 w-6 h-6 mr-3 text-green-600"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18" /></svg></span>
+                                    <div><strong class="font-semibold">Later Years: Equity Builds Fast.</strong> Toward the end of your loan, the seesaw has tilted completely. Almost your entire payment goes toward principal, rapidly increasing your home equity.</div>
+                                </li>
+                            </ul>
+                             <p class="mt-4 font-semibold text-center">For example, on a $300,000 loan at 6.5%:</p>
+                             <ul class="space-y-2 mt-2">
+                                <li><strong>Payment #1:</strong> ~$1,625 goes to interest, only ~$271 to principal.</li>
+                                <li><strong>Payment #240 (Year 20):</strong> ~$800 goes to interest, and ~$1,096 goes to principal!</li>
+                             </ul>
+                        </section>
+                        
+                        <!-- Interactive Graph CTA -->
+                        <section class="mt-6">
+                            <div class="bg-primary/10 p-6 rounded-lg text-center shadow-inner border border-primary/20">
+                                <h2 class="text-lg sm:text-xl font-bold">See Your Own Amortization Timeline</h2>
+                                <p class="mt-2 text-gray-900">The best way to understand this is to see it with your own numbers. Our calculator generates a full, interactive <strong class="font-bold">amortization schedule</strong> chart that visualizes your <strong class="font-bold">equity build-up</strong> and loan balance over time.</p>
+                                <a href="../#mortgage-tab" class="mt-4 inline-block bg-accent hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-transform transform hover:scale-105">
+                                    View My Amortization Chart
+                                </a>
+                            </div>
+                        </section>
+
+                        <!-- How to Pay Off Early -->
+                        <section class="mt-6 content-section">
+                            <h2>The Secret Weapon: How to Pay Your Mortgage Off Early</h2>
+                            <p>Understanding amortization reveals a powerful secret: small extra payments made to your principal can have a massive impact. Because these payments bypass the interest calculation for that month and directly reduce the loan balance, they save you future interest and shorten your loan term dramatically.</p>
+                             <ul class="space-y-4 mt-4">
+                                <li class="flex items-start">
+                                   <span class="flex-shrink-0 w-6 h-6 mr-3 text-primary"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></span>
+                                    <div><strong>Example:</strong> Adding just $100 extra per month to that $300,000 loan could help you pay it off over 4 years earlier and save over $55,000 in interest!</div>
+                                </li>
+                                <li class="flex items-start">
+                                   <span class="flex-shrink-0 w-6 h-6 mr-3 text-primary"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></span>
+                                    <div><strong>How to Do It:</strong> Use our <strong class="font-bold">extra payment calculator</strong> feature. Simply enter an extra monthly amount or a one-time lump sum to instantly see the impact on your <strong class="font-bold">loan payoff</strong> date and total interest saved.</div>
+                                </li>
+                            </ul>
+                        </section>
+
+                        <!-- NEW SECTION: When NOT to pay extra -->
+                        <section class="mt-6 content-section">
+                            <h2>When NOT to Make Extra Payments: The Power of Opportunity Cost</h2>
+                            <p>While paying off your mortgage early sounds great, it's not always the smartest financial move. This is due to a concept called <strong class="font-bold">opportunity cost</strong>—the potential return you miss out on by putting your money in one place (your mortgage) instead of another. Here's when you might reconsider making extra payments:</p>
+                             <ul class="space-y-4 mt-4">
+                                <li class="flex items-start">
+                                   <span class="flex-shrink-0 w-6 h-6 mr-3 text-accent"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941" /></svg></span>
+                                    <div><strong class="font-semibold">Your Mortgage Rate is Low.</strong> If your mortgage rate is low (e.g., 3-4%), you could potentially earn a much higher return by investing your extra cash in the stock market, which has historically averaged 7-10% annually.</div>
+                                </li>
+                                <li class="flex items-start">
+                                   <span class="flex-shrink-0 w-6 h-6 mr-3 text-red-600"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" /></svg></span>
+                                    <div><strong class="font-semibold">You Have High-Interest Debt.</strong> If you have credit card debt at 20% interest, every extra dollar should go there first. The guaranteed 20% "return" from paying that off is unbeatable.</div>
+                                </li>
+                                <li class="flex items-start">
+                                   <span class="flex-shrink-0 w-6 h-6 mr-3 text-primary"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg></span>
+                                    <div><strong class="font-semibold">You Lack an Emergency Fund.</strong> Before paying extra on a mortgage, ensure you have 3-6 months of living expenses saved in an accessible account. Home equity is not liquid cash you can use for sudden job loss or medical bills.</div>
+                                </li>
+                            </ul>
+                        </section>
+
+                        <!-- FAQ SECTION -->
+                        <section class="mt-6 content-section">
+                            <h2>Frequently Asked Questions (FAQ)</h2>
+                            <div class="space-y-4 mt-4">
+                                <div class="flex items-start">
+                                    <span class="flex-shrink-0 flex items-center justify-center h-6 w-6 mr-3 rounded-full bg-primary text-white font-bold text-xs">1</span>
+                                    <div>
+                                        <h3 class="font-semibold text-gray-800">Why is so much of my payment going to interest at the beginning?</h3>
+                                        <p class="text-xs text-gray-700 mt-1">Mortgage loans are typically 'front-loaded' with interest. Because the principal balance is at its highest at the start of the loan, the amount of interest you owe per month is also at its peak. As you pay down the principal, the interest portion of your payment decreases, and the principal portion increases.</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <span class="flex-shrink-0 flex items-center justify-center h-6 w-6 mr-3 rounded-full bg-primary text-white font-bold text-xs">2</span>
+                                    <div>
+                                        <h3 class="font-semibold text-gray-800">How do extra payments help me pay off my mortgage faster?</h3>
+                                        <p class="text-xs text-gray-700 mt-1">When you make an extra payment and specify that it should go toward the principal, you are directly reducing the loan balance. This means that in the following month, the interest is calculated on a smaller amount, leading to less interest paid over the life of the loan and a faster payoff date.</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <span class="flex-shrink-0 flex items-center justify-center h-6 w-6 mr-3 rounded-full bg-primary text-white font-bold text-xs">3</span>
+                                    <div>
+                                        <h3 class="font-semibold text-gray-800">Do bi-weekly payments really make a difference?</h3>
+                                        <p class="text-xs text-gray-700 mt-1">Yes, they can. By paying half your mortgage every two weeks, you end up making 26 half-payments, which equals 13 full monthly payments in a year instead of 12. That one extra payment goes directly to the principal and can shave several years off your loan.</p>
+                                    </div>
+                                </div>
+                                 <div class="flex items-start">
+                                    <span class="flex-shrink-0 flex items-center justify-center h-6 w-6 mr-3 rounded-full bg-primary text-white font-bold text-xs">4</span>
+                                    <div>
+                                        <h3 class="font-semibold text-gray-800">Is the amortization schedule different for a 15-year vs. a 30-year mortgage?</h3>
+                                        <p class="text-xs text-gray-700 mt-1">Absolutely. A 15-year mortgage has higher monthly payments, but you build equity much faster because a larger portion of each payment goes to the principal from the very beginning. A 30-year loan has lower payments, but you'll pay significantly more interest over the life of the loan.</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <span class="flex-shrink-0 flex items-center justify-center h-6 w-6 mr-3 rounded-full bg-primary text-white font-bold text-xs">5</span>
+                                    <div>
+                                        <h3 class="font-semibold text-gray-800">Can my amortization schedule change?</h3>
+                                        <p class="text-xs text-gray-700 mt-1">Yes. If you have an Adjustable-Rate Mortgage (ARM), your schedule will change when your interest rate adjusts. It will also change if you refinance your loan into a new one, which creates a brand new amortization schedule.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Share Section -->
+                        <section class="bg-white border-t pt-6 mt-6">
+                            <div class="max-w-7xl mx-auto">
+                                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 text-center">
+                                    <h3 class="text-sm font-semibold text-gray-800">Found this guide helpful? Share it:</h3>
+                                    <div class="flex items-center gap-3">
+                                        <a id="share-twitter" href="#" target="_blank" rel="noopener noreferrer" title="Share on Twitter" class="p-2 bg-[#1DA1F2] text-white rounded-full hover:bg-[#0c85d0] transition-colors shadow-md"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.223.085a4.93 4.93 0 004.6 3.419A9.9 9.9 0 010 17.54a13.94 13.94 0 007.547 2.21c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg></a>
+                                        <a id="share-facebook" href="#" target="_blank" rel="noopener noreferrer" title="Share on Facebook" class="p-2 bg-[#1877F2] text-white rounded-full hover:bg-[#166fe5] transition-colors shadow-md"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clip-rule="evenodd"/></svg></a>
+                                        <a id="share-linkedin" href="#" target="_blank" rel="noopener noreferrer" title="Share on LinkedIn" class="p-2 bg-[#0077B5] text-white rounded-full hover:bg-[#006097] transition-colors shadow-md"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg></a>
+                                        <a id="share-whatsapp" href="#" target="_blank" rel="noopener noreferrer" title="Share on WhatsApp" class="p-2 bg-[#25D366] text-white rounded-full hover:bg-[#1ebe59] transition-colors shadow-md"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.31-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/></svg></a>
+                                        <a id="share-email" href="#" title="Share via Email" class="p-2 bg-gray-600 text-white rounded-full hover:bg-gray-700 transition-colors shadow-md"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path></svg></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </article>
+
+                <!-- Desktop Sidebar -->
+                <aside class="hidden lg:block absolute top-0 left-full ml-8 w-72">
+                    <div class="sticky top-24">
+                        <div class="bg-gray-50 p-4 rounded-lg border">
+                             <h3 class="font-bold text-lg text-primary border-b-2 border-primary pb-2 mb-4">Related Articles</h3>
+                             <ul class="space-y-4">
+                                <li><a href="how-much-house-can-i-afford.html" class="font-semibold text-primary hover:underline group"><span class="block text-sm">How Much House Can I Afford?</span><span class="block text-xs text-gray-500 group-hover:text-accent">Our complete guide to find your budget.</span></a></li>
+                                <li><a href="first-time-home-buyer-checklist.html" class="font-semibold text-primary hover:underline group"><span class="block text-sm">First-Time Home Buyer's Checklist</span><span class="block text-xs text-gray-500 group-hover:text-accent">Your essential 10-step guide.</span></a></li>
+                                <li><a href="fixed-vs-variable-mortgage-guide.html" class="font-semibold text-primary hover:underline group"><span class="block text-sm">Fixed vs. Variable Mortgage Guide</span><span class="block text-xs text-gray-500 group-hover:text-accent">Break down the pros and cons.</span></a></li>
+                             </ul>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+
+        <!-- Mobile Related Articles Banner -->
+        <div id="mobile-related-articles" class="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg transform translate-y-full transition-transform duration-300 ease-in-out z-40">
+            <div class="flex justify-between items-center mb-3">
+                 <h3 class="font-bold text-md text-primary">Related Articles</h3>
+                 <button id="close-mobile-sidebar" class="text-gray-500 hover:text-gray-800 text-2xl font-bold">&times;</button>
+            </div>
+             <ul class="space-y-3">
+                 <li><a href="how-much-house-can-i-afford.html" class="font-semibold text-primary hover:underline group"><span class="block text-sm">How Much House Can I Afford?</span></a></li>
+                 <li><a href="first-time-home-buyer-checklist.html" class="font-semibold text-primary hover:underline group"><span class="block text-sm">First-Time Home Buyer's Checklist</span></a></li>
+                 <li><a href="fixed-vs-variable-mortgage-guide.html" class="font-semibold text-primary hover:underline group"><span class="block text-sm">Fixed vs. Variable Mortgage Guide</span></a></li>
+             </ul>
+        </div>
+    </main>
+    <script src="../global-elements.js" defer></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- Social Sharing Links ---
+            const postUrl = encodeURIComponent(window.location.href);
+            const postTitle = encodeURIComponent(document.title);
+            document.getElementById('share-twitter').href = `https://twitter.com/intent/tweet?url=${postUrl}&text=${postTitle}`;
+            document.getElementById('share-facebook').href = `https://www.facebook.com/sharer/sharer.php?u=${postUrl}`;
+            document.getElementById('share-linkedin').href = `https://www.linkedin.com/shareArticle?mini=true&url=${postUrl}&title=${postTitle}`;
+            document.getElementById('share-whatsapp').href = `https://api.whatsapp.com/send?text=${postTitle}%20${postUrl}`;
+            document.getElementById('share-email').href = `mailto:?subject=${postTitle}&body=Check out this helpful guide: ${postUrl}`;
+
+            // --- Chart Rendering ---
+            const ctx = document.getElementById('amortizationConceptChart');
+            if (ctx) {
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Year 1', 'Year 5', 'Year 10', 'Year 15', 'Year 20', 'Year 25', 'Year 30'],
+                        datasets: [{
+                            label: 'Interest Portion',
+                            data: [19500, 18500, 16000, 13000, 9000, 4500, 500],
+                            borderColor: 'rgba(239, 68, 68, 0.8)',
+                            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                            fill: 'origin',
+                            tension: 0.4,
+                        }, {
+                            label: 'Principal Portion',
+                            data: [3200, 4200, 6700, 9700, 13700, 18200, 22200],
+                            borderColor: 'rgba(22, 163, 74, 0.8)',
+                            backgroundColor: 'rgba(22, 163, 74, 0.1)',
+                            fill: 'origin',
+                            tension: 0.4,
+                        }]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        plugins: { title: { display: true, text: 'How Your Payment Changes Over a 30-Year Loan' }, tooltip: { mode: 'index', intersect: false } },
+                        scales: { x: { stacked: true }, y: { stacked: true, beginAtZero: true, ticks: { callback: (value) => '$' + (value/1000) + 'k' } } }
+                    },
+                });
+            }
+
+            // --- Mobile Related Articles Logic ---
+            const mobileSidebar = document.getElementById('mobile-related-articles');
+            const closeButton = document.getElementById('close-mobile-sidebar');
+            let sidebarShown = false;
+            if (mobileSidebar && closeButton) {
+                const showSidebar = () => { if (!sidebarShown) { mobileSidebar.classList.remove('translate-y-full'); sidebarShown = true; } };
+                const hideSidebar = () => { mobileSidebar.classList.add('translate-y-full'); sidebarShown = false; };
+                closeButton.addEventListener('click', hideSidebar);
+                window.addEventListener('scroll', () => { if (!sidebarShown && (window.innerHeight + window.scrollY) >= document.body.offsetHeight - 200) { showSidebar(); } }, { passive: true });
+            }
+        });
+    </script>
+</body>
+</html>
