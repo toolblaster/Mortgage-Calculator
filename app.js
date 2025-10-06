@@ -160,6 +160,76 @@ Strategic Mortgage Planner - Application Logic
         return { pmiPayment, pmiDropPeriod, isPMIActive: state.isPMIActive };
     }
 
+    // --- New Core Financial Calculation Helpers (Refactored) ---
+    function applyPaymentsForPeriod(state, params) {
+        const { extraPaymentPerPeriod, lumpSumAmount, lumpSumPeriod, periodsPerYear } = params;
+        const { currentBalance, standardPayment, period, currentRate } = state;
+
+        const interest = currentBalance * (currentRate / periodsPerYear);
+
+        let pniPayment = standardPayment;
+        // Handle final payment when balance is less than a standard payment
+        if (currentBalance < standardPayment) {
+            pniPayment = currentBalance + interest;
+        } else if (pniPayment <= interest) {
+            // Ensure payment covers at least interest to prevent infinite loops
+            pniPayment = interest + 1; 
+        }
+        
+        let principalFromPni = pniPayment - interest;
+        
+        let extraPrincipal = extraPaymentPerPeriod;
+        if (lumpSumAmount > 0 && period === lumpSumPeriod) {
+            extraPrincipal += lumpSumAmount;
+        }
+
+        let totalPrincipalPaid = principalFromPni + extraPrincipal;
+        
+        // Final check to ensure we don't overpay
+        if (currentBalance < totalPrincipalPaid) {
+            totalPrincipalPaid = currentBalance;
+            // Recalculate how much of the final payment was from the standard P&I portion
+            principalFromPni = Math.max(0, totalPrincipalPaid - extraPrincipal);
+        }
+
+        return {
+            interest: Math.max(0, interest),
+            principalFromPni: Math.max(0, principalFromPni),
+            extraPrincipal,
+            totalPrincipalPaid: Math.max(0, totalPrincipalPaid)
+        };
+    }
+    
+    function createScheduleEntry(state, paymentDetails, pmiPayment, periodicDiscountRate, periodsPerYear) {
+        const { period, currentPropertyValue, currentBalance, currentAnnualTax, currentAnnualInsurance, currentMonthlyHoa, currentRate } = state;
+        const { interest, principalFromPni, extraPrincipal, totalPrincipalPaid } = paymentDetails;
+
+        const pvInterest = interest / Math.pow(1 + periodicDiscountRate, period);
+        const newBalance = Math.max(0, currentBalance - totalPrincipalPaid);
+        const totalEquity = Math.max(0, currentPropertyValue - newBalance);
+        
+        const periodicPITI = (currentAnnualTax / periodsPerYear) + (currentAnnualInsurance / periodsPerYear) + currentMonthlyHoa + pmiPayment;
+
+        return {
+            entry: {
+                period,
+                interest: Math.max(0, interest),
+                principalPaid: Math.max(0, totalPrincipalPaid),
+                balance: newBalance,
+                propertyValue: currentPropertyValue,
+                totalEquity,
+                pniPrincipal: Math.max(0, principalFromPni),
+                extraPayment: extraPrincipal,
+                pmi: pmiPayment,
+                rate: currentRate * 100,
+                periodicPITI: periodicPITI,
+                pvInterest
+            },
+            newBalance,
+            pvInterest
+        };
+    }
+
     function generateAmortization(params) {
         const { principal, annualRate, periodsPerYear, totalPeriods, extraPaymentPerPeriod, lumpSumAmount, lumpSumPeriod, initialLTV, pmiRate, refiPeriod, refiRate, refiTerm, refiClosingCosts, pitiEscalationRate, discountRate, appreciationRate } = params;
         
@@ -185,34 +255,19 @@ Strategic Mortgage Planner - Application Logic
             loanState = handleAnnualUpdates(period, periodsPerYear, escalationFactor, periodicAppreciationRate, loanState);
             loanState = handleRefinancing(period, refiPeriod, refiClosingCosts, refiRate, refiTerm, periodsPerYear, loanState);
 
-            const periodicRate = loanState.currentRate / periodsPerYear;
-            let interest = loanState.currentBalance * periodicRate;
-            let calculatedPayment = loanState.standardPayment;
-            if (loanState.currentBalance < calculatedPayment) calculatedPayment = loanState.currentBalance + interest;
-            else if (calculatedPayment <= interest) calculatedPayment = interest + 1;
-            let principalPayment = calculatedPayment - interest;
+            const paymentDetails = applyPaymentsForPeriod(loanState, params);
             
-            let extraPrincipal = extraPaymentPerPeriod;
-            if (lumpSumAmount > 0 && period === lumpSumPeriod) extraPrincipal += lumpSumAmount;
-            let totalPrincipalPaid = principalPayment + extraPrincipal;
-            if (loanState.currentBalance < totalPrincipalPaid) {
-                totalPrincipalPaid = loanState.currentBalance;
-                principalPayment = Math.max(0, totalPrincipalPaid - extraPrincipal);
-            }
-            loanState.currentBalance -= totalPrincipalPaid;
-
-            loanState.totalInterestPaid += interest;
-            const pvInterest = interest / Math.pow(1 + periodicDiscountRate, period);
-            loanState.totalPVInterestPaid += pvInterest;
+            loanState.totalInterestPaid += paymentDetails.interest;
             
             const pmiResult = calculatePmiForPeriod(loanState, pmiRate, periodsPerYear, pmiStopThreshold);
             loanState.isPMIActive = pmiResult.isPMIActive;
             loanState.pmiDropPeriod = pmiResult.pmiDropPeriod || loanState.pmiDropPeriod;
             
-            const periodicPITI = (loanState.currentAnnualTax / periodsPerYear) + (loanState.currentAnnualInsurance / periodsPerYear) + loanState.currentMonthlyHoa + pmiResult.pmiPayment;
-            const currentEquity = Math.max(0, loanState.currentPropertyValue - loanState.currentBalance);
+            const scheduleUpdate = createScheduleEntry(loanState, paymentDetails, pmiResult.pmiPayment, periodicDiscountRate, periodsPerYear);
             
-            loanState.amortizationSchedule.push({ period, interest: Math.max(0, interest), principalPaid: Math.max(0, totalPrincipalPaid), balance: Math.max(0, loanState.currentBalance), propertyValue: loanState.currentPropertyValue, totalEquity: currentEquity, pniPrincipal: Math.max(0, principalPayment), extraPayment: extraPrincipal, pmi: pmiResult.pmiPayment, rate: loanState.currentRate * 100, periodicPITI: periodicPITI, pvInterest: pvInterest });
+            loanState.currentBalance = scheduleUpdate.newBalance;
+            loanState.totalPVInterestPaid += scheduleUpdate.pvInterest;
+            loanState.amortizationSchedule.push(scheduleUpdate.entry);
             
             if (loanState.currentBalance <= 0) {
                 loanState.payoffPeriod = period;
