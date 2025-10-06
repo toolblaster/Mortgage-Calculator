@@ -186,7 +186,7 @@
 <body class="bg-gray-100">
     <!-- Main Content Area -->
     <main class="content-wrapper">
-        <div class="w-full max-w-5xl mx-auto my-4 md:my-8 px-4 space-y-8">
+        <div class="w-full max-w-5xl mx-auto my-4 md:my-6 px-4 space-y-6">
             <div class="bg-white p-4 sm:p-5 rounded-xl shadow-2xl">
                 <!-- Header -->
                 <header class="text-center mb-4 pb-3 border-b">
@@ -194,19 +194,19 @@
                     <p class="mt-1 text-sm text-gray-700">Unlock the value in your home. Compare your options to see which is best for you.</p>
                 </header>
                 
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-6 gap-y-4">
                     <!-- Input Section -->
                     <div class="space-y-3">
                         <details open class="bg-gray-50 p-3 rounded-lg border">
                             <summary class="font-bold text-base text-primary cursor-pointer">Your Home & Mortgage</summary>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
                                 <div>
-                                    <label for="homeValue" class="block font-medium text-sm text-gray-700">Current Home Value ($):</label>
-                                    <input type="number" id="homeValue" value="450000" class="w-full mt-1 p-2 text-base border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
+                                    <label for="homeValue" class="block font-medium text-xs sm:text-sm text-gray-700">Current Home Value ($):</label>
+                                    <input type="number" id="homeValue" value="450000" class="w-full mt-1 p-2 text-sm sm:text-base border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
                                 </div>
                                 <div>
-                                    <label for="mortgageBalance" class="block font-medium text-sm text-gray-700">Mortgage Balance ($):</label>
-                                    <input type="number" id="mortgageBalance" value="250000" class="w-full mt-1 p-2 text-base border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
+                                    <label for="mortgageBalance" class="block font-medium text-xs sm:text-sm text-gray-700">Mortgage Balance ($):</label>
+                                    <input type="number" id="mortgageBalance" value="250000" class="w-full mt-1 p-2 text-sm sm:text-base border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
                                 </div>
                             </div>
                         </details>
@@ -215,39 +215,39 @@
                             <summary class="font-bold text-base text-primary cursor-pointer">Option 1: HELOC Scenario</summary>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
                                 <div>
-                                    <label for="ltvRatio" class="block font-medium text-sm text-gray-700">
+                                    <label for="ltvRatio" class="block font-medium text-xs sm:text-sm text-gray-700">
                                         <span class="tooltip-container">Lender's LTV Ratio (%):
                                             <span class="tooltip-icon" tabindex="0" aria-label="Loan-to-Value tooltip">?</span>
                                             <span class="tooltip-text" role="tooltip">The maximum Loan-to-Value ratio the lender will allow for a HELOC, typically 80% or 85%.</span>
                                         </span>
                                     </label>
-                                    <input type="number" id="ltvRatio" value="85" class="w-full mt-1 p-2 text-base border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
+                                    <input type="number" id="ltvRatio" value="85" class="w-full mt-1 p-2 text-sm sm:text-base border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
                                 </div>
                                 <div>
-                                    <label for="helocTerm" class="block font-medium text-sm text-gray-700">Repayment Term (Years):</label>
-                                    <input type="number" id="helocTerm" value="15" class="w-full mt-1 p-2 text-base border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
+                                    <label for="helocTerm" class="block font-medium text-xs sm:text-sm text-gray-700">Repayment Term (Years):</label>
+                                    <input type="number" id="helocTerm" value="15" class="w-full mt-1 p-2 text-sm sm:text-base border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
                                 </div>
                             </div>
                             <div class="mt-3">
-                                <label for="helocRateSlider" class="block font-medium text-sm text-gray-700">Estimated HELOC Rate: <span id="helocRateValue" class="font-bold text-primary">8.5%</span></label>
+                                <label for="helocRateSlider" class="block font-medium text-xs sm:text-sm text-gray-700">Estimated HELOC Rate: <span id="helocRateValue" class="font-bold text-primary">8.5%</span></label>
                                 <input type="range" id="helocRateSlider" min="3" max="15" value="8.5" step="0.1" class="w-full mt-2 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-slider">
                             </div>
                         </details>
                         
                         <details open class="bg-gray-50 p-3 rounded-lg border">
-                            <summary class="font-bold text-base text-primary cursor-pointer">Option 2: Cash-Out Refinance Scenario</summary>
+                            <summary class="font-bold text-base text-primary cursor-pointer">Option 2: Cash-Out Refinance</summary>
                              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
                                  <div>
-                                    <label for="refiTerm" class="block font-medium text-sm text-gray-700">New Mortgage Term (Years):</label>
-                                    <input type="number" id="refiTerm" value="30" class="w-full mt-1 p-2 text-base border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
+                                    <label for="refiTerm" class="block font-medium text-xs sm:text-sm text-gray-700">New Mortgage Term (Years):</label>
+                                    <input type="number" id="refiTerm" value="30" class="w-full mt-1 p-2 text-sm sm:text-base border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
                                 </div>
                                 <div>
-                                    <label for="refiClosingCosts" class="block font-medium text-sm text-gray-700">Closing Costs ($):</label>
-                                    <input type="number" id="refiClosingCosts" value="5000" class="w-full mt-1 p-2 text-base border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
+                                    <label for="refiClosingCosts" class="block font-medium text-xs sm:text-sm text-gray-700">Closing Costs ($):</label>
+                                    <input type="number" id="refiClosingCosts" value="5000" class="w-full mt-1 p-2 text-sm sm:text-base border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
                                 </div>
                             </div>
                             <div class="mt-3">
-                                <label for="refiRateSlider" class="block font-medium text-sm text-gray-700">New Mortgage Rate: <span id="refiRateValue" class="font-bold text-primary">6.5%</span></label>
+                                <label for="refiRateSlider" class="block font-medium text-xs sm:text-sm text-gray-700">New Mortgage Rate: <span id="refiRateValue" class="font-bold text-primary">6.5%</span></label>
                                 <input type="range" id="refiRateSlider" min="3" max="15" value="6.5" step="0.1" class="w-full mt-2 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-slider">
                             </div>
                         </details>
@@ -264,8 +264,8 @@
                     </div>
 
                     <!-- Results Section -->
-                    <div id="equityResults" class="space-y-4">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-center">
+                    <div id="equityResults" class="space-y-3">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-center">
                             <div class="p-3 rounded-lg bg-accent/10 border-2 border-accent/50 shadow">
                                 <h2 class="text-sm font-bold text-accent">Total Cash Available</h2>
                                 <p id="availableEquity" class="text-2xl font-extrabold text-accent" data-value="0">$0</p>
@@ -277,7 +277,7 @@
                         </div>
                         
                         <!-- Comparison Cards -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <!-- HELOC Results -->
                             <div class="p-3 bg-gray-50 rounded-lg shadow-inner border border-gray-200 space-y-2">
                                 <h3 class="font-bold text-primary text-center">HELOC Results</h3>
@@ -325,7 +325,7 @@
             </div>
 
             <!-- Share Section -->
-            <div class="bg-white p-4 sm:p-6 rounded-xl shadow-2xl">
+            <div class="bg-white p-4 sm:p-5 rounded-xl shadow-2xl">
                 <div class="flex flex-col sm:flex-row items-center justify-center gap-4 text-center">
                     <h3 class="text-base font-semibold text-gray-800">Share This Calculator:</h3>
                     <div class="flex items-center gap-3">
@@ -404,36 +404,36 @@
                 </section>
 
                 <!-- FAQ Section (Redesigned) -->
-                <section class="bg-sky-50 p-6 rounded-lg border-2 border-sky-200 shadow-inner">
+                <section class="py-6">
                     <h3 class="text-xl font-bold text-primary mb-4 text-center">Frequently Asked Questions</h3>
-                    <div class="space-y-3" id="faq-accordion">
+                    <div class="max-w-3xl mx-auto border-t border-b border-gray-200 divide-y divide-gray-200" id="faq-accordion">
                         <!-- FAQ Item 1 -->
-                        <div class="faq-item bg-white border border-gray-200 rounded-lg shadow-sm">
-                            <button class="faq-question w-full flex justify-between items-center text-left text-gray-800 font-semibold p-4 hover:bg-gray-50 transition">
-                                <span>Which is better: a HELOC or a cash-out refinance?</span>
+                        <div class="faq-item">
+                            <button class="faq-question w-full flex justify-between items-center text-left text-gray-800 font-semibold p-5 hover:bg-gray-50 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">
+                                <span class="text-base">Which is better: a HELOC or a cash-out refinance?</span>
                                 <svg class="faq-chevron w-5 h-5 transform transition-transform text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
                             </button>
-                            <div class="faq-answer px-4 pb-4 text-gray-600 text-sm">
+                            <div class="faq-answer px-5 pb-5 text-gray-600 text-sm">
                                 <p>It depends on your goals. A <strong>HELOC</strong> is great for flexibility and smaller, ongoing projects, as you only borrow what you need. A <strong>cash-out refinance</strong> is often better for large, one-time expenses and if you can also lower the interest rate on your primary mortgage at the same time.</p>
                             </div>
                         </div>
                         <!-- FAQ Item 2 -->
-                         <div class="faq-item bg-white border border-gray-200 rounded-lg shadow-sm">
-                            <button class="faq-question w-full flex justify-between items-center text-left text-gray-800 font-semibold p-4 hover:bg-gray-50 transition">
-                                <span>How is a HELOC different from a home equity loan?</span>
+                         <div class="faq-item">
+                            <button class="faq-question w-full flex justify-between items-center text-left text-gray-800 font-semibold p-5 hover:bg-gray-50 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">
+                                <span class="text-base">How is a HELOC different from a home equity loan?</span>
                                  <svg class="faq-chevron w-5 h-5 transform transition-transform text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
                             </button>
-                            <div class="faq-answer px-4 pb-4 text-gray-600 text-sm">
+                            <div class="faq-answer px-5 pb-5 text-gray-600 text-sm">
                                 <p>A <strong>HELOC</strong> is a revolving line of credit you can draw from as needed, similar to a credit card. A traditional <strong>home equity loan</strong> gives you a one-time lump sum payment that you pay back in fixed installments. A HELOC offers more flexibility.</p>
                             </div>
                         </div>
                         <!-- FAQ Item 3 -->
-                         <div class="faq-item bg-white border border-gray-200 rounded-lg shadow-sm">
-                            <button class="faq-question w-full flex justify-between items-center text-left text-gray-800 font-semibold p-4 hover:bg-gray-50 transition">
-                                <span>What are the risks of a cash-out refinance?</span>
+                         <div class="faq-item">
+                            <button class="faq-question w-full flex justify-between items-center text-left text-gray-800 font-semibold p-5 hover:bg-gray-50 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">
+                                <span class="text-base">What are the risks of a cash-out refinance?</span>
                                  <svg class="faq-chevron w-5 h-5 transform transition-transform text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
                             </button>
-                            <div class="faq-answer px-4 pb-4 text-gray-600 text-sm">
+                            <div class="faq-answer px-5 pb-5 text-gray-600 text-sm">
                                <p>The main risks include potentially extending your loan term (resetting the clock on your mortgage) and paying closing costs, which can be several thousand dollars. It's crucial that the benefit of the cash out or a lower interest rate outweighs these costs.</p>
                             </div>
                         </div>
