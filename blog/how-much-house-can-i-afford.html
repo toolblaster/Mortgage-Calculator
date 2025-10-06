@@ -34,12 +34,9 @@
     <link rel="stylesheet" href="../style.css">
     <style>
         .prose h1 { @apply text-xl sm:text-2xl font-extrabold text-primary; }
-        .prose h2 { @apply text-lg sm:text-xl font-extrabold text-primary; }
+        .prose h2 { @apply text-2xl sm:text-3xl font-black text-primary; }
         .prose h3 { @apply text-base font-medium text-gray-800; }
-        .prose { font-family: 'Inter', sans-serif; }
-        .prose p, .prose li, .prose div, .prose span {
-            @apply text-xs leading-snug;
-        }
+        /* The prose-xs class on the parent div will handle font sizing and spacing for a more compact view. */
     </style>
 </head>
 <body class="bg-gray-100">
@@ -57,7 +54,7 @@
             
             <div class="my-8 h-px w-full bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
 
-            <div class="prose max-w-none mx-auto">
+            <div class="prose prose-xs max-w-none mx-auto">
                 <!-- Intro -->
                 <p>Buying a home is a huge milestone, but the excitement can quickly turn to confusion. You've heard of getting a <strong>mortgage pre-approval</strong>, but what can you <em>truly</em> afford without stretching your finances too thin? This guide breaks down the essential formula to help you set a realistic <strong>budget for buying a house</strong> and gives you the tools to find your perfect number.</p>
 
@@ -192,6 +189,54 @@
                         <li><strong>3. Increase Your Down Payment:</strong> Continue saving aggressively. A larger <strong>down payment</strong> reduces the amount you need to borrow and demonstrates financial stability to lenders.</li>
                     </ul>
                 </section>
+
+                <!-- HOW-TO SECTION -->
+                <section class="mt-6 content-section">
+                    <h2>How to Find Your Affordability Number in 3 Steps</h2>
+                    <p>Using our tools and this guide, you can quickly get a clear picture of your home-buying budget.</p>
+                    <ul class="space-y-4 mt-4">
+                        <li class="flex items-start">
+                            <span class="flex-shrink-0 flex items-center justify-center h-6 w-6 mr-3 rounded-full bg-primary text-white font-bold text-xs">1</span>
+                            <div><strong>Gather Your Financials:</strong> Collect your gross monthly income (before taxes) and a list of all your monthly debt payments (car loans, student loans, credit card minimums).</div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="flex-shrink-0 flex items-center justify-center h-6 w-6 mr-3 rounded-full bg-primary text-white font-bold text-xs">2</span>
+                            <div><strong>Use the Affordability Calculator:</strong> Navigate to our <a href="../#affordability-tab" class="font-bold text-accent hover:underline">Affordability Calculator</a>. Enter your income, debts, and your estimated down payment. Adjust the DTI percentages to see different scenarios.</div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="flex-shrink-0 flex items-center justify-center h-6 w-6 mr-3 rounded-full bg-primary text-white font-bold text-xs">3</span>
+                            <div><strong>Analyze the Results:</strong> The calculator will provide a maximum affordable home price. Remember to consider the hidden costs mentioned in this guide to ensure the final monthly payment fits comfortably within your lifestyle.</div>
+                        </li>
+                    </ul>
+                </section>
+
+                <!-- FAQ SECTION -->
+                <section class="mt-6 content-section">
+                    <h2>Frequently Asked Questions (FAQ)</h2>
+                    <div class="space-y-4 mt-4">
+                        <div class="flex items-start">
+                            <span class="flex-shrink-0 flex items-center justify-center h-6 w-6 mr-3 rounded-full bg-primary text-white font-bold text-xs">1</span>
+                            <div>
+                                <h3 class="font-semibold">What is a good DTI ratio for a mortgage?</h3>
+                                <p>Most lenders prefer a back-end DTI (all your debts) of 43% or less, but a DTI under 36% is considered ideal and will give you the best chance of approval and a good interest rate.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <span class="flex-shrink-0 flex items-center justify-center h-6 w-6 mr-3 rounded-full bg-primary text-white font-bold text-xs">2</span>
+                            <div>
+                                <h3 class="font-semibold">Does mortgage pre-approval affect my credit score?</h3>
+                                <p>Yes, getting pre-approved typically involves a "hard inquiry" on your credit report, which can cause a small, temporary dip in your score. However, multiple inquiries from mortgage lenders within a short period (usually 14-45 days) are often treated as a single inquiry to allow you to shop for the best rates.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <span class="flex-shrink-0 flex items-center justify-center h-6 w-6 mr-3 rounded-full bg-primary text-white font-bold text-xs">3</span>
+                            <div>
+                                <h3 class="font-semibold">Should I buy a house at the maximum price I can afford?</h3>
+                                <p>Not necessarily. The maximum pre-approval amount is what a lender thinks you can handle, but it doesn't account for your personal spending habits, savings goals, or lifestyle. It's often wiser to buy a home below your maximum budget to avoid being "house poor."</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
                 
                 <!-- Final CTA -->
                 <div class="mt-6 border-t pt-6 text-center">
@@ -226,6 +271,16 @@
                         </div>
                     </div>
                 </section>
+                
+                 <!-- Related Articles Section -->
+                <section class="mt-8 pt-6 border-t">
+                    <h3 class="text-center text-lg font-bold text-gray-800 mb-4">Read More Articles</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-center">
+                         <a href="first-time-home-buyer-checklist.html" class="text-sm font-semibold text-primary hover:underline">A First-Time Home Buyer's Checklist</a>
+                         <a href="fixed-vs-variable-mortgage-guide.html" class="text-sm font-semibold text-primary hover:underline">Fixed vs. Variable Mortgage: Which to Choose?</a>
+                    </div>
+                </section>
+
             </div>
         </article>
     </main>
