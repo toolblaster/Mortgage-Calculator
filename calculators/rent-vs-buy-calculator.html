@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rent vs. Buy Calculator - Is It Better to Rent or Buy?</title>
+    
+    <!-- SEO & Social Meta Tags -->
+    <meta name="description" content="Use our free rent vs. buy calculator to compare the long-term financial costs and benefits of renting versus buying a home, helping you make a smarter decision.">
+    <meta name="keywords" content="rent vs buy calculator, is it better to rent or buy, cost of renting vs buying, homeownership costs, wealth building real estate">
+    <link rel="canonical" href="https://mortgageplanner.toolblaster.com/calculators/rent-vs-buy-calculator.html" />
+    <meta property="og:url" content="https://mortgageplanner.toolblaster.com/calculators/rent-vs-buy-calculator.html">
+    <meta property="og:title" content="Rent vs. Buy Calculator - Is It Better to Rent or Buy?">
+    <meta property="og:description" content="Use our free rent vs. buy calculator to compare the long-term financial costs and benefits of renting versus buying a home.">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Rent vs. Buy Calculator - Is It Better to Rent or Buy?">
+    <meta name="twitter:description" content="Use our free rent vs. buy calculator to compare the long-term financial costs and benefits of renting versus buying a home.">
+
+    <!-- Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    
+    <!-- App Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#1C768F', 'accent': '#1e8749'
+                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="../style.css">
+
+     <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+            "@type": "WebApplication",
+            "name": "Rent vs. Buy Calculator",
+            "description": "A free tool to compare the long-term financial outcomes of renting versus buying a home.",
+            "applicationCategory": "FinanceApplication",
+            "operatingSystem": "Any (Web Application)",
+            "offers": {
+                "@type": "Offer",
+                "price": "0"
+            }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [{
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://mortgageplanner.toolblaster.com/"
+          },{
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Calculators",
+            "item": "https://mortgageplanner.toolblaster.com/calculators/"
+          },{
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Rent vs. Buy Calculator"
+          }]
+        },
+        {
+            "@type": "FAQPage",
+            "mainEntity": [
+                {
+                    "@type": "Question",
+                    "name": "What is the '5-year rule' for buying a home?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "The 5-year rule is a common guideline suggesting that you should plan to stay in a home for at least five years to make buying financially worthwhile. This is because it often takes that long for your home's appreciation and equity build-up to offset the high upfront closing costs of buying and the eventual costs of selling."
+                    }
+                },
+                {
+                    "@type": "Question",
+                    "name": "What is 'opportunity cost' in the rent vs. buy debate?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "Opportunity cost is the potential gain you miss out on when you choose one option over another. In this context, it refers to the money you could have earned by investing your down payment, closing costs, and extra monthly housing expenses in the stock market instead of putting it into a house. Our calculator helps model this potential growth."
+                    }
+                }
+            ]
+        }
+      ]
+    }
+    </script>
+</head>
+<body class="bg-gray-100">
+    <main class="content-wrapper">
+        <div class="bg-white p-4 sm:p-6 md:p-8 rounded-xl shadow-2xl w-full max-w-4xl mx-auto my-4 md:my-8" id="rent-vs-buy-calculator-container">
+            <header class="text-center mb-6">
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-primary">Rent vs. Buy Calculator</h1>
+                <p class="mt-2 text-sm text-gray-700">Compare the long-term financial outcomes of renting and buying.</p>
+            </header>
+
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
+                <!-- Inputs -->
+                <div class="md:col-span-2 flex flex-col gap-4">
+                    <h2 class="font-bold text-lg text-primary border-b pb-1">Buying Scenario</h2>
+                    <input type="number" id="loanAmount" value="300000" class="hidden">
+                    <input type="number" id="initialLTV" value="80" class="hidden">
+                    <input type="number" id="pitiEscalationRate" value="2" class="hidden">
+                    <input type="number" id="discountRate" value="3" class="hidden">
+                    <input type="number" id="pmiRate" value="0.5" class="hidden">
+                    
+                     <div class="space-y-1">
+                        <label for="homePrice" class="block font-medium text-xs text-gray-700">Home Purchase Price</label>
+                        <input type="number" id="homePrice" value="375000" class="w-full p-2 text-sm border border-gray-300 rounded-md">
+                    </div>
+                     <div class="space-y-1">
+                        <label for="downPaymentRvB" class="block font-medium text-xs text-gray-700">Down Payment</label>
+                        <input type="number" id="downPaymentRvB" value="75000" class="w-full p-2 text-sm border border-gray-300 rounded-md">
+                    </div>
+                    <div class="space-y-1">
+                        <label for="interestRate" class="block font-medium text-xs text-gray-700">Interest Rate (%)</label>
+                        <input type="number" id="interestRate" value="6.5" class="w-full p-2 text-sm border border-gray-300 rounded-md">
+                    </div>
+                     <div class="space-y-1">
+                        <label for="loanTerm" class="block font-medium text-xs text-gray-700">Comparison Term (Years)</label>
+                        <input type="number" id="loanTerm" value="30" class="w-full p-2 text-sm border border-gray-300 rounded-md">
+                    </div>
+                     <div class="space-y-1">
+                        <label for="propertyTax" class="block font-medium text-xs text-gray-700">Annual Property Tax</label>
+                        <input type="number" id="propertyTax" value="3600" class="w-full p-2 text-sm border border-gray-300 rounded-md">
+                    </div>
+                     <div class="space-y-1">
+                        <label for="insurance" class="block font-medium text-xs text-gray-700">Annual Home Insurance</label>
+                        <input type="number" id="insurance" value="1200" class="w-full p-2 text-sm border border-gray-300 rounded-md">
+                    </div>
+                     <div class="space-y-1">
+                        <label for="annualMaintenance" class="block font-medium text-xs text-gray-700">Annual Maintenance (% of Home Price)</label>
+                        <input type="number" id="annualMaintenance" value="1" class="w-full p-2 text-sm border border-gray-300 rounded-md">
+                    </div>
+                    <div class="space-y-1">
+                        <label for="appreciationRate" class="block font-medium text-xs text-gray-700">Home Appreciation Rate (% per year)</label>
+                        <input type="number" id="appreciationRate" value="3.5" class="w-full p-2 text-sm border border-gray-300 rounded-md">
+                    </div>
+
+                    <h2 class="font-bold text-lg text-primary border-b pb-1 mt-4">Renting Scenario</h2>
+                     <div class="space-y-1">
+                        <label for="monthlyRent" class="block font-medium text-xs text-gray-700">Equivalent Monthly Rent</label>
+                        <input type="number" id="monthlyRent" value="2000" class="w-full p-2 text-sm border border-gray-300 rounded-md">
+                    </div>
+                     <div class="space-y-1">
+                        <label for="rentIncrease" class="block font-medium text-xs text-gray-700">Annual Rent Increase (%)</label>
+                        <input type="number" id="rentIncrease" value="3" class="w-full p-2 text-sm border border-gray-300 rounded-md">
+                    </div>
+
+                     <h2 class="font-bold text-lg text-primary border-b pb-1 mt-4">Investment Assumptions</h2>
+                     <div class="space-y-1">
+                        <label for="investmentReturn" class="block font-medium text-xs text-gray-700">Annual Investment Return (%)</label>
+                        <input type="number" id="investmentReturn" value="7" class="w-full p-2 text-sm border border-gray-300 rounded-md">
+                    </div>
+                     <div class="space-y-1">
+                        <label for="sellingCosts" class="block font-medium text-xs text-gray-700">Home Selling Costs (% of Price)</label>
+                        <input type="number" id="sellingCosts" value="6" class="w-full p-2 text-sm border border-gray-300 rounded-md">
+                    </div>
+                    
+                    <button id="calculate-rent-vs-buy" class="w-full mt-4 px-4 py-3 bg-primary text-white font-semibold rounded-lg shadow-lg hover:bg-sky-700 transition duration-150">Compare</button>
+                </div>
+                <!-- Results -->
+                <div id="rent-vs-buy-results" class="md:col-span-3 p-4 bg-gray-50 rounded-lg shadow-inner border">
+                    <h2 class="text-lg font-bold text-gray-800 text-center mb-4">Rent vs. Buy: Net Worth Projection</h2>
+                    <div class="relative h-80"><canvas id="rentVsBuyChart"></canvas></div>
+                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 text-center">
+                        <div class="p-3 rounded-lg bg-accent/10 border-2 border-accent/50">
+                            <h3 class="text-xs font-medium text-accent">Buying Net Worth</h3>
+                            <p id="buyingNetWorth" class="text-2xl font-extrabold text-accent">$0</p>
+                        </div>
+                        <div class="p-3 rounded-lg bg-primary/10 border-2 border-primary/50">
+                            <h3 class="text-xs font-medium text-primary">Renting Net Worth</h3>
+                            <p id="rentingNetWorth" class="text-2xl font-extrabold text-primary">$0</p>
+                        </div>
+                    </div>
+                    <div id="rent-vs-buy-conclusion" class="mt-4 text-center font-semibold text-lg"></div>
+                </div>
+            </div>
+
+            <!-- SEO Content Section -->
+            <section class="mt-8 pt-6 border-t prose prose-sm max-w-none">
+                <h2 class="text-2xl font-black text-primary">Is It Better to Rent or Buy? A Financial Breakdown</h2>
+                <p>The "rent vs. buy" debate is one of the biggest financial decisions you'll ever make. There's no single right answer—it depends entirely on your financial situation, lifestyle, and how long you plan to stay in one place. This guide helps you understand the numbers behind the choice.</p>
+                
+                <div class="content-section">
+                    <h3>The Case for Buying: Building Wealth</h3>
+                     <ul class="space-y-4 mt-4">
+                        <li class="flex items-start">
+                            <span class="flex-shrink-0 w-6 h-6 mr-3 text-accent"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941" /></svg></span>
+                            <div><strong>Building Equity:</strong> Every mortgage payment is like a forced savings plan. A portion goes toward your principal, increasing your ownership stake (equity) in a valuable asset.</div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="flex-shrink-0 w-6 h-6 mr-3 text-accent"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" /></svg></span>
+                            <div><strong>Stable Payments:</strong> With a fixed-rate mortgage, your principal and interest payment never changes, protecting you from rising rent prices.</div>
+                        </li>
+                    </ul>
+                </div>
+                 <div class="content-section mt-4">
+                    <h3>The Case for Renting: Flexibility and Investment Opportunity</h3>
+                     <ul class="space-y-4 mt-4">
+                        <li class="flex items-start">
+                           <span class="flex-shrink-0 w-6 h-6 mr-3 text-primary"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0012 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18" /></svg></span>
+                            <div><strong>Flexibility:</strong> Renting makes it easy to move for a new job or life change without the hassle of selling a property.</div>
+                        </li>
+                        <li class="flex items-start">
+                             <span class="flex-shrink-0 w-6 h-6 mr-3 text-primary"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM18 15.75l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 20l-1.035.259a3.375 3.375 0 00-2.456 2.456L18 23.75l-.259-1.035a3.375 3.375 0 00-2.456-2.456L14.25 20l1.035-.259a3.375 3.375 0 002.456-2.456L18 15.75z" /></svg></span>
+                            <div><strong>Opportunity Cost:</strong> By renting, you can invest the money you would have used for a down payment and maintenance. Our calculator models this, showing how that investment could grow over time.</div>
+                        </li>
+                    </ul>
+                </div>
+                 <div class="content-section mt-4">
+                    <h3>Frequently Asked Questions</h3>
+                    <div class="space-y-4 mt-2">
+                         <div class="flex items-start">
+                            <span class="flex-shrink-0 flex items-center justify-center h-6 w-6 mr-3 rounded-full bg-primary text-white font-bold text-xs">1</span>
+                            <div>
+                                <h3 class="font-semibold text-gray-800">What is the "5-year rule" for buying a home?</h3>
+                                <p class="text-xs text-gray-700 mt-1">The 5-year rule is a common guideline suggesting that you should plan to stay in a home for at least five years to make buying financially worthwhile. This is because it often takes that long for your home's appreciation and equity build-up to offset the high upfront closing costs of buying and the eventual costs of selling.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <span class="flex-shrink-0 flex items-center justify-center h-6 w-6 mr-3 rounded-full bg-primary text-white font-bold text-xs">2</span>
+                            <div>
+                                <h3 class="font-semibold text-gray-800">What is 'opportunity cost' in the rent vs. buy debate?</h3>
+                                <p class="text-xs text-gray-700 mt-1">Opportunity cost is the potential gain you miss out on when you choose one option over another. In this context, it refers to the money you could have earned by investing your down payment, closing costs, and extra monthly housing expenses in the stock market instead of putting it into a house. Our calculator helps model this potential growth.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+    <script src="calculator-logic.js" defer></script>
+    <script src="../global-elements.js" defer></script>
+</body>
+</html>

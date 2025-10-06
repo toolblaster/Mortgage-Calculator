@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Affordability Calculator - How Much House Can I Afford?</title>
+    
+    <!-- SEO & Social Meta Tags -->
+    <meta name="description" content="Use our free home affordability calculator to determine how much house you can realistically afford based on your income, debts, down payment, and desired DTI ratio.">
+    <meta name="keywords" content="home affordability calculator, how much house can i afford, mortgage affordability, income for mortgage, dti ratio calculator">
+    <link rel="canonical" href="https://mortgageplanner.toolblaster.com/calculators/affordability-calculator.html" />
+    <meta property="og:url" content="https://mortgageplanner.toolblaster.com/calculators/affordability-calculator.html">
+    <meta property="og:title" content="Home Affordability Calculator - How Much House Can I Afford?">
+    <meta property="og:description" content="Use our free home affordability calculator to determine how much house you can realistically afford based on your income, debts, down payment, and desired DTI ratio.">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Home Affordability Calculator - How Much House Can I Afford?">
+    <meta name="twitter:description" content="Use our free home affordability calculator to determine how much house you can realistically afford based on your income, debts, down payment, and desired DTI ratio.">
+
+    <!-- Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    
+    <!-- App Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#1C768F', 'accent': '#1e8749'
+                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="../style.css">
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+            "@type": "WebApplication",
+            "name": "Home Affordability Calculator",
+            "description": "A free tool to calculate how much house you can afford based on income, debt, and down payment.",
+            "applicationCategory": "FinanceApplication",
+            "operatingSystem": "Any (Web Application)",
+            "offers": {
+                "@type": "Offer",
+                "price": "0"
+            }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [{
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://mortgageplanner.toolblaster.com/"
+          },{
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Calculators",
+            "item": "https://mortgageplanner.toolblaster.com/calculators/"
+          },{
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Home Affordability Calculator"
+          }]
+        },
+        {
+          "@type": "HowTo",
+          "name": "How to Improve Your Home Affordability",
+          "step": [
+            {"@type": "HowToStep", "name": "Reduce Your Debt-to-Income (DTI) Ratio", "text": "Pay down high-interest debts like credit cards and personal loans. A lower DTI directly increases the amount you can borrow."},
+            {"@type": "HowToStep", "name": "Improve Your Credit Score", "text": "Make all payments on time and keep credit card balances low. A higher credit score unlocks lower interest rates, which boosts your buying power."},
+            {"@type": "HowToStep", "name": "Increase Your Down Payment", "text": "A larger down payment reduces the total loan amount needed and can help you avoid costly Private Mortgage Insurance (PMI)."}
+          ]
+        },
+        {
+            "@type": "FAQPage",
+            "mainEntity": [
+                {
+                    "@type": "Question",
+                    "name": "What is the 28/36 rule for affordability?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "The 28/36 rule is a guideline used by lenders. It suggests that your total housing costs (PITI) should not exceed 28% of your gross monthly income (front-end DTI), and your total debt payments (including housing) should not exceed 36% of your gross monthly income (back-end DTI)."
+                    }
+                },
+                {
+                    "@type": "Question",
+                    "name": "Does my down payment affect how much I can afford?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "Yes, significantly. A larger down payment reduces the amount of money you need to borrow, which in turn lowers your monthly mortgage payment. This makes it easier to qualify for a loan and stay within your desired DTI ratio."
+                    }
+                }
+            ]
+        }
+      ]
+    }
+    </script>
+</head>
+<body class="bg-gray-100">
+    <main class="content-wrapper">
+        <div class="bg-white p-4 sm:p-6 md:p-8 rounded-xl shadow-2xl w-full max-w-4xl mx-auto my-4 md:my-8" id="affordability-calculator-container">
+            <header class="text-center mb-6">
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-primary">Home Affordability Calculator</h1>
+                <p class="mt-2 text-sm text-gray-700">Find out how much house you can realistically afford.</p>
+            </header>
+
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
+                <!-- Inputs -->
+                <div class="md:col-span-2 flex flex-col gap-4">
+                    <div class="space-y-1">
+                        <label for="annualIncome" class="block font-medium text-xs text-gray-700">Annual Gross Income</label>
+                        <input type="number" id="annualIncome" value="120000" class="w-full p-2 text-sm border border-gray-300 rounded-md">
+                    </div>
+                     <div class="space-y-1">
+                        <label for="nonMortgageDebt" class="block font-medium text-xs text-gray-700">Monthly Non-Mortgage Debt</label>
+                        <input type="number" id="nonMortgageDebt" value="800" class="w-full p-2 text-sm border border-gray-300 rounded-md">
+                    </div>
+                    <div class="space-y-1">
+                        <label for="downPaymentAmount" class="block font-medium text-xs text-gray-700">Down Payment</label>
+                        <input type="number" id="downPaymentAmount" value="60000" class="w-full p-2 text-sm border border-gray-300 rounded-md">
+                    </div>
+                    <div class="space-y-1">
+                        <label for="interestRate" class="block font-medium text-xs text-gray-700">Interest Rate (%)</label>
+                        <input type="number" id="interestRate" value="6.5" class="w-full p-2 text-sm border border-gray-300 rounded-md">
+                    </div>
+                     <div class="space-y-1">
+                        <label for="loanTerm" class="block font-medium text-xs text-gray-700">Loan Term (Years)</label>
+                        <input type="number" id="loanTerm" value="30" class="w-full p-2 text-sm border border-gray-300 rounded-md">
+                    </div>
+                     <div class="space-y-1">
+                        <label for="propertyTax" class="block font-medium text-xs text-gray-700">Annual Property Tax</label>
+                        <input type="number" id="propertyTax" value="3600" class="w-full p-2 text-sm border border-gray-300 rounded-md">
+                    </div>
+                     <div class="space-y-1">
+                        <label for="insurance" class="block font-medium text-xs text-gray-700">Annual Home Insurance</label>
+                        <input type="number" id="insurance" value="1200" class="w-full p-2 text-sm border border-gray-300 rounded-md">
+                    </div>
+                    <div class="space-y-1">
+                        <label for="desiredBackEndDTI" class="block font-medium text-xs text-gray-700">Desired Total DTI (%)</label>
+                        <input type="number" id="desiredBackEndDTI" value="36" class="w-full p-2 text-sm border border-gray-300 rounded-md">
+                    </div>
+                    <button id="calculate-affordability" class="w-full px-4 py-3 bg-primary text-white font-semibold rounded-lg shadow-lg hover:bg-sky-700 transition duration-150">Calculate</button>
+                </div>
+                <!-- Results -->
+                <div id="affordability-results" class="md:col-span-3 p-4 bg-gray-50 rounded-lg shadow-inner border">
+                    <h2 class="text-lg font-bold text-gray-800 text-center mb-4">Your Affordability Summary</h2>
+                    <div class="p-4 rounded-lg bg-primary/10 border-2 border-primary/50 text-center">
+                        <h3 class="text-sm font-medium text-sky-800">Max Affordable Home Price</h3>
+                        <p id="affordableHomePrice" class="text-3xl font-extrabold text-primary">$0</p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 mt-4 text-center">
+                         <div class="p-3 rounded-lg bg-white border">
+                            <h3 class="text-xs font-medium text-gray-700">Max Loan Amount</h3>
+                            <p id="affordableLoanAmount" class="text-xl font-extrabold text-gray-900">$0</p>
+                        </div>
+                        <div class="p-3 rounded-lg bg-white border">
+                            <h3 class="text-xs font-medium text-gray-700">Estimated Monthly PITI</h3>
+                            <p id="affordablePITI" class="text-xl font-extrabold text-gray-900">$0</p>
+                        </div>
+                    </div>
+                     <div class="relative h-64 mt-4"><canvas id="affordabilityChart"></canvas></div>
+                </div>
+            </div>
+
+            <!-- SEO Content Section -->
+            <section class="mt-8 pt-6 border-t prose prose-sm max-w-none">
+                <h2 class="text-2xl font-black text-primary">Understanding Home Affordability: A Simple Guide</h2>
+                <p>Figuring out "how much house can I afford" is the most important first step in the home-buying journey. It’s not just about the maximum loan a bank will give you; it’s about finding a monthly payment that fits comfortably in your budget. This guide breaks down the key factors.</p>
+                
+                <div class="content-section">
+                    <h3>The Core Components of Affordability</h3>
+                     <ul class="space-y-4 mt-4">
+                        <li class="flex items-start">
+                            <span class="flex-shrink-0 w-6 h-6 mr-3 text-primary"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 10.239 12.768 10 12 10c-.768 0-1.536.239-2.121.707L8.12 12.121" /></svg></span>
+                            <div><strong>Your Income:</strong> This is the foundation. Lenders look at your stable, gross (pre-tax) monthly income.</div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="flex-shrink-0 w-6 h-6 mr-3 text-red-600"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" /></svg></span>
+                            <div><strong>Your Debts:</strong> Lenders add up all your monthly debt payments (car loans, credit cards, student loans) to see how much of your income is already spoken for.</div>
+                        </li>
+                    </ul>
+                </div>
+                 <div class="content-section mt-4">
+                    <h3>The Most Important Metric: Debt-to-Income (DTI) Ratio</h3>
+                    <p>Your DTI ratio is your total monthly debt payments divided by your gross monthly income. Most lenders use two types:</p>
+                     <ul class="space-y-4 mt-4">
+                        <li class="flex items-start">
+                           <span class="flex-shrink-0 w-6 h-6 mr-3 text-primary"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 21v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21m0 0h4.5V3.545M12.75 21h7.5V10.75M2.25 21h4.5m-4.5 0V3.545M2.25 10.75l5.005-5.005a1.125 1.125 0 011.59 0l5.006 5.005m-11.25 0h11.25" /></svg></span>
+                            <div><strong>Front-End DTI (Housing Ratio):</strong> Your proposed new housing payment (PITI). Lenders like to see this at <strong class="font-semibold">28% or less.</strong></div>
+                        </li>
+                        <li class="flex items-start">
+                             <span class="flex-shrink-0 w-6 h-6 mr-3 text-primary"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg></span>
+                            <div><strong>Back-End DTI (Total Debt Ratio):</strong> Your proposed housing payment PLUS all your other monthly debts. Lenders generally want this to be <strong class="font-semibold">36% or less</strong>, though some loans allow up to 43%.</div>
+                        </li>
+                    </ul>
+                     <p class="mt-4">Our calculator uses the back-end DTI for its primary calculation, as it provides the most realistic picture of what a lender will approve.</p>
+                </div>
+
+                <div class="content-section mt-4">
+                    <h3>How to Improve Your Affordability</h3>
+                    <p>If the number is lower than you'd like, don't worry! You can take steps to increase your buying power:</p>
+                    <ul class="space-y-4 mt-4">
+                        <li class="flex items-start">
+                           <span class="flex-shrink-0 w-6 h-6 mr-3 text-accent"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12h-15m0 0l6.75-6.75M4.5 12l6.75 6.75" /></svg></span>
+                           <div><strong>Reduce Debt:</strong> Paying off a high-interest credit card or car loan can significantly lower your DTI ratio and free up borrowing capacity.</div>
+                        </li>
+                        <li class="flex items-start">
+                           <span class="flex-shrink-0 w-6 h-6 mr-3 text-accent"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18" /></svg></span>
+                           <div><strong>Boost Your Credit Score:</strong> A higher credit score qualifies you for lower interest rates, which means your monthly payment will be smaller for the same loan amount, effectively increasing your affordability.</div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="content-section mt-4">
+                    <h3>Frequently Asked Questions</h3>
+                    <div class="space-y-4 mt-2">
+                         <div class="flex items-start">
+                            <span class="flex-shrink-0 flex items-center justify-center h-6 w-6 mr-3 rounded-full bg-primary text-white font-bold text-xs">1</span>
+                            <div>
+                                <h3 class="font-semibold text-gray-800">What is the 28/36 rule for affordability?</h3>
+                                <p class="text-xs text-gray-700 mt-1">The 28/36 rule is a guideline used by lenders. It suggests that your total housing costs (PITI) should not exceed 28% of your gross monthly income (front-end DTI), and your total debt payments (including housing) should not exceed 36% of your gross monthly income (back-end DTI).</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <span class="flex-shrink-0 flex items-center justify-center h-6 w-6 mr-3 rounded-full bg-primary text-white font-bold text-xs">2</span>
+                            <div>
+                                <h3 class="font-semibold text-gray-800">Does my down payment affect how much I can afford?</h3>
+                                <p class="text-xs text-gray-700 mt-1">Yes, significantly. A larger down payment reduces the amount of money you need to borrow, which in turn lowers your monthly mortgage payment. This makes it easier to qualify for a loan and stay within your desired DTI ratio.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+    <script src="calculator-logic.js" defer></script>
+    <script src="../global-elements.js" defer></script>
+</body>
+</html>

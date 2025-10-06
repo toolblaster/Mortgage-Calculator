@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mortgage Refinance Calculator - Should I Refinance?</title>
+    
+    <!-- SEO & Social Meta Tags -->
+    <meta name="description" content="Use our free mortgage refinance calculator to see if refinancing is right for you. Analyze your new payment, break-even point, and total lifetime interest savings.">
+    <meta name="keywords" content="refinance calculator, mortgage refinance, should i refinance, refinance savings, break-even point calculator, new mortgage payment">
+    <link rel="canonical" href="https://mortgageplanner.toolblaster.com/calculators/refinance-calculator.html" />
+    <meta property="og:url" content="https://mortgageplanner.toolblaster.com/calculators/refinance-calculator.html">
+    <meta property="og:title" content="Mortgage Refinance Calculator - Should I Refinance?">
+    <meta property="og:description" content="Analyze your new payment, break-even point, and total lifetime interest savings with our free refinance calculator.">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Mortgage Refinance Calculator - Should I Refinance?">
+    <meta name="twitter:description" content="Analyze your new payment, break-even point, and total lifetime interest savings with our free refinance calculator.">
+
+    <!-- Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    
+    <!-- App Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#1C768F', 'accent': '#1e8749'
+                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="../style.css">
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+            "@type": "WebApplication",
+            "name": "Mortgage Refinance Calculator",
+            "description": "A free tool to analyze the savings and break-even point of refinancing a mortgage.",
+            "applicationCategory": "FinanceApplication",
+            "operatingSystem": "Any (Web Application)",
+            "offers": {
+                "@type": "Offer",
+                "price": "0"
+            }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [{
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://mortgageplanner.toolblaster.com/"
+          },{
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Calculators",
+            "item": "https://mortgageplanner.toolblaster.com/calculators/"
+          },{
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Refinance Calculator"
+          }]
+        },
+        {
+          "@type": "HowTo",
+          "name": "How to Use the Refinance Calculator",
+          "step": [
+            {"@type": "HowToStep", "name": "Enter Your Current Loan Details", "text": "Input your original loan amount, your current interest rate, and the month and year your loan started."},
+            {"@type": "HowToStep", "name": "Input the New Loan Offer", "text": "Enter the new interest rate, the new loan term in years, and the estimated closing costs for the refinance."},
+            {"@type": "HowToStep", "name": "Analyze the Results", "text": "The calculator will instantly show you your potential monthly savings, your break-even point (how long it takes for savings to cover costs), and your total lifetime interest savings."}
+          ]
+        },
+        {
+            "@type": "FAQPage",
+            "mainEntity": [
+                {
+                    "@type": "Question",
+                    "name": "Does refinancing hurt your credit score?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "Refinancing involves a hard credit inquiry, which can cause a small, temporary dip in your credit score. However, for most people with good credit, the score recovers within a few months. The long-term benefits of a lower interest rate often far outweigh the minor, short-term impact on your credit."
+                    }
+                },
+                {
+                    "@type": "Question",
+                    "name": "What is a 'no-cost' refinance?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "A 'no-cost' refinance means you don't pay the closing costs out of pocket. Instead, the lender covers them in one of two ways: by charging a slightly higher interest rate, or by rolling the closing costs into the new loan principal. It offers convenience, but it's important to calculate if it's truly the best financial option long-term."
+                    }
+                }
+            ]
+        }
+      ]
+    }
+    </script>
+</head>
+<body class="bg-gray-100">
+    <main class="content-wrapper">
+        <div class="bg-white p-4 sm:p-6 md:p-8 rounded-xl shadow-2xl w-full max-w-4xl mx-auto my-4 md:my-8" id="refinance-calculator-container">
+            <header class="text-center mb-6">
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-primary">Mortgage Refinance Calculator</h1>
+                <p class="mt-2 text-sm text-gray-700">See if refinancing your mortgage makes financial sense.</p>
+            </header>
+
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
+                <!-- Inputs -->
+                <div class="md:col-span-2 flex flex-col gap-4">
+                    <input type="number" id="loanTerm" value="30" class="hidden">
+                    <h2 class="font-bold text-lg text-primary border-b pb-1">Current Loan</h2>
+                     <div class="space-y-1">
+                        <label for="originalLoanAmount" class="block font-medium text-xs text-gray-700">Original Loan Amount</label>
+                        <input type="number" id="originalLoanAmount" value="300000" class="w-full p-2 text-sm border border-gray-300 rounded-md">
+                    </div>
+                     <div class="space-y-1">
+                        <label for="currentInterestRate" class="block font-medium text-xs text-gray-700">Current Interest Rate (%)</label>
+                        <input type="number" id="currentInterestRate" value="6.5" class="w-full p-2 text-sm border border-gray-300 rounded-md">
+                    </div>
+                     <div class="space-y-1">
+                        <label for="loanStartDate" class="block font-medium text-xs text-gray-700">Loan Start Date</label>
+                        <input type="month" id="loanStartDate" value="2021-01" class="w-full p-2 text-sm border border-gray-300 rounded-md">
+                    </div>
+
+                    <h2 class="font-bold text-lg text-primary border-b pb-1 mt-4">New Loan Offer</h2>
+                     <div class="space-y-1">
+                        <label for="newInterestRate" class="block font-medium text-xs text-gray-700">New Interest Rate (%)</label>
+                        <input type="number" id="newInterestRate" value="5.0" class="w-full p-2 text-sm border border-gray-300 rounded-md">
+                    </div>
+                     <div class="space-y-1">
+                        <label for="newLoanTerm" class="block font-medium text-xs text-gray-700">New Loan Term (Years)</label>
+                        <input type="number" id="newLoanTerm" value="30" class="w-full p-2 text-sm border border-gray-300 rounded-md">
+                    </div>
+                     <div class="space-y-1">
+                        <label for="newClosingCosts" class="block font-medium text-xs text-gray-700">Closing Costs</label>
+                        <input type="number" id="newClosingCosts" value="5000" class="w-full p-2 text-sm border border-gray-300 rounded-md">
+                    </div>
+                    
+                    <button id="calculate-refinance" class="w-full mt-4 px-4 py-3 bg-primary text-white font-semibold rounded-lg shadow-lg hover:bg-sky-700 transition duration-150">Analyze Refinance</button>
+                </div>
+                <!-- Results -->
+                <div id="refinance-results" class="md:col-span-3 p-4 bg-gray-50 rounded-lg shadow-inner border">
+                    <h2 class="text-lg font-bold text-gray-800 text-center mb-4">Refinance Analysis</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-center">
+                        <div class="p-3 rounded-lg bg-accent/10 border-2 border-accent/50">
+                            <h3 class="text-xs font-medium text-accent">Monthly Savings</h3>
+                            <p id="refiMonthlySavings" class="text-2xl font-extrabold text-accent">$0</p>
+                        </div>
+                        <div class="p-3 rounded-lg bg-primary/10 border-2 border-primary/50">
+                            <h3 class="text-xs font-medium text-primary">Break-Even Point</h3>
+                            <p id="refiBreakEven" class="text-2xl font-extrabold text-primary">N/A</p>
+                        </div>
+                    </div>
+                    <div class="mt-4 p-4 text-center rounded-lg bg-white border">
+                         <h3 class="text-sm font-medium text-gray-700">Lifetime Interest Savings</h3>
+                         <p id="refiLifetimeSavings" class="text-3xl font-extrabold text-gray-900">$0</p>
+                    </div>
+                    <div class="relative h-64 mt-4"><canvas id="refinanceChart"></canvas></div>
+                </div>
+            </div>
+
+            <!-- SEO Content Section -->
+            <section class="mt-8 pt-6 border-t prose prose-sm max-w-none">
+                <h2 class="text-2xl font-black text-primary">Should I Refinance My Mortgage? A Guide to Making the Right Choice</h2>
+                <p>Refinancing your mortgage can be a powerful financial move, potentially saving you thousands of dollars. But it's not the right choice for everyone. This guide explains what to look for and how to use our <strong class="font-bold">refinance calculator</strong> to see if it makes sense for you.</p>
+                
+                <div class="content-section">
+                    <h3>Top Reasons to Consider Refinancing</h3>
+                     <ul class="space-y-4 mt-4">
+                        <li class="flex items-start">
+                            <span class="flex-shrink-0 w-6 h-6 mr-3 text-accent"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 10.239 12.768 10 12 10c-.768 0-1.536.239-2.121.707L8.12 12.121" /></svg></span>
+                            <div><strong>Lower Your Interest Rate:</strong> This is the most common reason. If current market rates are significantly lower than your existing rate (often by 0.75% or more), you can reduce your monthly payment and total interest paid.</div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="flex-shrink-0 w-6 h-6 mr-3 text-primary"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></span>
+                            <div><strong>Shorten Your Loan Term:</strong> Refinancing from a 30-year to a 15-year loan will increase your monthly payment but can save you a massive amount in interest and help you build equity much faster.</div>
+                        </li>
+                         <li class="flex items-start">
+                            <span class="flex-shrink-0 w-6 h-6 mr-3 text-accent"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941" /></svg></span>
+                            <div><strong>Tap Into Home Equity:</strong> A "cash-out" refinance allows you to borrow against the equity you've built, providing funds for home renovations, debt consolidation, or other large expenses.</div>
+                        </li>
+                    </ul>
+                </div>
+                 <div class="content-section mt-4">
+                    <h3>The Key Metric: The Break-Even Point</h3>
+                    <p>Refinancing isn't free. You'll have to pay closing costs, just like you did with your original mortgage. The most important calculation is your <strong class="font-bold">break-even point</strong>.</p>
+                     <ul class="space-y-4 mt-4">
+                        <li class="flex items-start">
+                           <span class="flex-shrink-0 w-6 h-6 mr-3 text-primary"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" /></svg></span>
+                            <div>This is the point in time when your accumulated monthly savings equal the upfront closing costs. Our calculator figures this out for you instantly. If you plan to stay in your home longer than the break-even point, refinancing is likely a good financial move.</div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="content-section mt-4">
+                    <h3>Frequently Asked Questions</h3>
+                    <div class="space-y-4 mt-2">
+                         <div class="flex items-start">
+                            <span class="flex-shrink-0 flex items-center justify-center h-6 w-6 mr-3 rounded-full bg-primary text-white font-bold text-xs">1</span>
+                            <div>
+                                <h3 class="font-semibold text-gray-800">Does refinancing hurt your credit score?</h3>
+                                <p class="text-xs text-gray-700 mt-1">Refinancing involves a hard credit inquiry, which can cause a small, temporary dip in your credit score. However, for most people with good credit, the score recovers within a few months. The long-term benefits of a lower interest rate often far outweigh the minor, short-term impact on your credit.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <span class="flex-shrink-0 flex items-center justify-center h-6 w-6 mr-3 rounded-full bg-primary text-white font-bold text-xs">2</span>
+                            <div>
+                                <h3 class="font-semibold text-gray-800">What is a 'no-cost' refinance?</h3>
+                                <p class="text-xs text-gray-700 mt-1">A 'no-cost' refinance means you don't pay the closing costs out of pocket. Instead, the lender covers them in one of two ways: by charging a slightly higher interest rate, or by rolling the closing costs into the new loan principal. It offers convenience, but it's important to calculate if it's truly the best financial option long-term.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+    <script src="calculator-logic.js" defer></script>
+    <script src="../global-elements.js" defer></script>
+</body>
+</html>
