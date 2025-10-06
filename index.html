@@ -193,7 +193,7 @@
                 </ul>
             </div>
 
-            <div id="error-messages" class="hidden p-3 mb-3 text-sm text-red-800 rounded-lg bg-red-50 border border-red-200" role="alert">
+            <div id="error-messages" class="hidden p-3 mb-3 text-sm text-red-800 rounded-lg bg-red-50 border border-red-200" role="alert" aria-live="assertive">
                 <span class="font-medium">Please correct the following errors:</span>
                 <ul id="error-list" class="mt-1.5 ml-4 list-disc list-inside"></ul>
             </div>
@@ -828,6 +828,14 @@
             <button id="closeModalButton" class="w-full mt-4 px-4 py-2 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 transition duration-150">Close</button>
         </div>
     </div>
+    
+    <!-- Back to Top Button -->
+    <button id="back-to-top" class="back-to-top hidden">
+      <span class="visually-hidden">Back to Top</span>
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+      </svg>
+    </button>
 
     <!-- Page-Specific and Global Scripts -->
     <script src="app.js" defer></script>
