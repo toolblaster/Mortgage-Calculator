@@ -14,7 +14,7 @@
     <!-- Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     <!-- App Configuration -->
     <script>
@@ -33,10 +33,13 @@
     <!-- Shared Stylesheet (relative path from blog folder) -->
     <link rel="stylesheet" href="../style.css">
     <style>
-        .prose h1 { @apply text-2xl sm:text-3xl font-extrabold text-primary; }
-        .prose h2 { @apply text-xl sm:text-2xl font-bold text-primary; }
-        .prose h3 { @apply text-lg font-semibold text-gray-800; }
+        .prose h1 { @apply text-xl sm:text-2xl font-extrabold text-primary; }
+        .prose h2 { @apply text-lg sm:text-xl font-extrabold text-primary; }
+        .prose h3 { @apply text-base font-medium text-gray-800; }
         .prose { font-family: 'Inter', sans-serif; }
+        .prose p, .prose li, .prose div, .prose span {
+            @apply text-xs leading-snug;
+        }
     </style>
 </head>
 <body class="bg-gray-100">
@@ -54,7 +57,7 @@
             
             <div class="my-8 h-px w-full bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
 
-            <div class="prose prose-sm sm:prose-base max-w-none mx-auto">
+            <div class="prose max-w-none mx-auto">
                 <!-- Intro -->
                 <p>Buying a home is a huge milestone, but the excitement can quickly turn to confusion. You've heard of getting a <strong>mortgage pre-approval</strong>, but what can you <em>truly</em> afford without stretching your finances too thin? This guide breaks down the essential formula to help you set a realistic <strong>budget for buying a house</strong> and gives you the tools to find your perfect number.</p>
 
