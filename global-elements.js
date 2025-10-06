@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     </a>
                     <!-- Desktop Menu -->
                     <div class="hidden md:flex items-center space-x-4">
-                        <a href="${homePath}" class="text-sm font-semibold text-primary hover:underline">Calculator</a>
+                        <a href="${homePath}" class="text-sm font-semibold text-primary hover:underline">#Calculator</a>
                         <a href="${quizPath}" class="text-sm font-semibold text-primary hover:underline">Refinance Quiz</a>
                         <a href="${blogPath}" class="text-sm font-semibold text-primary hover:underline">Blog</a>
                         <a href="${legalPath}" class="text-sm font-semibold text-primary hover:underline">Contact & Legal</a>
