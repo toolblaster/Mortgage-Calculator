@@ -667,8 +667,26 @@
                                     <input type="number" id="currentInterestRate" value="6.5" min="0.1" max="25" step="0.1" class="w-full p-1.5 text-sm border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
                                 </div>
                                 <div class="space-y-1 sm:col-span-2">
-                                    <label for="loanStartDate" class="block font-medium text-xs text-gray-700">Loan Start Date:</label>
-                                    <input type="month" id="loanStartDate" value="2021-01" class="w-full p-1.5 text-sm border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
+                                    <label class="block font-medium text-xs text-gray-700">Loan Start Date:</label>
+                                    <div class="flex gap-2">
+                                        <select id="loanStartMonth" class="w-full p-1.5 text-sm border border-gray-300 rounded-md focus:ring-primary focus:border-primary h-[34px]">
+                                            <option value="01">January</option>
+                                            <option value="02">February</option>
+                                            <option value="03">March</option>
+                                            <option value="04">April</option>
+                                            <option value="05">May</option>
+                                            <option value="06">June</option>
+                                            <option value="07">July</option>
+                                            <option value="08">August</option>
+                                            <option value="09">September</option>
+                                            <option value="10">October</option>
+                                            <option value="11">November</option>
+                                            <option value="12">December</option>
+                                        </select>
+                                        <select id="loanStartYear" class="w-full p-1.5 text-sm border border-gray-300 rounded-md focus:ring-primary focus:border-primary h-[34px]">
+                                            <!-- Years will be populated by JS -->
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                         </details>
