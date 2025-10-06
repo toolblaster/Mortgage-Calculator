@@ -1,10 +1,12 @@
 document.addEventListener('DOMContentLoaded', function() {
     const isBlogPage = window.location.pathname.includes('/blog/');
+    const isQuizPage = window.location.pathname.includes('/Refinance-Readiness-Quiz.html');
 
     // Determine the correct root path relative to the current page.
-    const rootPath = isBlogPage ? '../' : './';
+    const rootPath = (isBlogPage || isQuizPage) ? '../' : './';
 
     const homePath = rootPath;
+    const quizPath = `${rootPath}Refinance-Readiness-Quiz.html`;
     const legalPath = `${rootPath}legal.html`;
     const blogPath = `${rootPath}blog/`;
     
@@ -27,6 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <!-- Desktop Menu -->
                     <div class="hidden md:flex items-center space-x-4">
                         <a href="${homePath}" class="text-sm font-semibold text-primary hover:underline">Calculator</a>
+                        <a href="${quizPath}" class="text-sm font-semibold text-primary hover:underline">Refinance Quiz</a>
                         <a href="${blogPath}" class="text-sm font-semibold text-primary hover:underline">Blog</a>
                         <a href="${legalPath}" class="text-sm font-semibold text-primary hover:underline">Contact & Legal</a>
                     </div>
@@ -48,6 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="md:hidden hidden" id="mobile-menu">
                 <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
                     <a href="${homePath}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50">Calculator</a>
+                    <a href="${quizPath}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50">Refinance Quiz</a>
                     <a href="${blogPath}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50">Blog</a>
                     <a href="${legalPath}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50">Contact & Legal</a>
                 </div>
