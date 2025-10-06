@@ -14,7 +14,7 @@
     <!-- Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     <!-- App Configuration -->
     <script>
@@ -33,10 +33,13 @@
     <!-- Shared Stylesheet (relative path from blog folder) -->
     <link rel="stylesheet" href="../style.css">
     <style>
-        .prose h1 { @apply text-2xl sm:text-3xl font-extrabold text-primary; }
-        .prose h2 { @apply text-xl sm:text-2xl font-bold text-primary; }
-        .prose h3 { @apply text-lg font-semibold text-gray-800; }
+        .prose h1 { @apply text-xl sm:text-2xl font-extrabold text-primary; }
+        .prose h2 { @apply text-lg sm:text-xl font-extrabold text-primary; }
+        .prose h3 { @apply text-base font-medium text-gray-800; }
         .prose { font-family: 'Inter', sans-serif; }
+        .prose p, .prose li, .prose div, .prose span {
+            @apply text-xs leading-snug;
+        }
     </style>
 </head>
 <body class="bg-gray-100">
@@ -45,7 +48,7 @@
         <article class="bg-white p-4 sm:p-6 md:p-8 rounded-xl shadow-2xl w-full max-w-4xl mx-auto my-4 md:my-8">
             <header class="text-center mb-8">
                 <h1 class="text-2xl sm:text-3xl font-extrabold text-primary">A First-Time Home Buyer's Checklist: <strong>10 Steps to Success</strong></h1>
-                <p class="mt-2 text-sm sm:text-base text-gray-600">Your essential roadmap from dreaming of a new home to holding the keys.</p>
+                <p class="mt-2 text-xs sm:text-sm text-gray-600">Your essential roadmap from dreaming of a new home to holding the keys.</p>
                  <div class="mt-4 text-xs text-gray-700">
                     <span>Published By <strong>Vikas Rana</strong></span>
                 </div>
@@ -53,7 +56,7 @@
             
             <div class="my-8 h-px w-full bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
             
-            <div class="prose prose-xs sm:prose-sm max-w-none mx-auto">
+            <div class="prose max-w-none mx-auto">
                 <p>Buying your first home is an exciting milestone, but the process can feel overwhelming. Where do you even begin? This comprehensive checklist breaks down the journey into 10 manageable steps, empowering you to navigate the path to homeownership with confidence. Let's dive in!</p>
 
                 <section class="mt-6 content-section">
@@ -218,7 +221,7 @@
                 
                 <section class="mt-6">
                     <div class="bg-primary/10 p-6 rounded-lg text-center shadow-inner border border-primary/20">
-                        <h2 class="text-xl md:text-2xl font-bold text-primary">Ready to Take the First Step?</h2>
+                        <h3 class="text-xl md:text-2xl font-bold text-primary">Ready to Take the First Step?</h3>
                         <p class="mt-2 text-gray-700">The journey to homeownership starts with a solid financial plan. Knowing your budget is the most powerful first step you can take.</p>
                         <a href="../#affordability-tab" class="mt-4 inline-block bg-accent hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-transform transform hover:scale-105">
                             Use Our Affordability Calculator Now
@@ -256,7 +259,7 @@
 
                 <!-- Related Articles Section -->
                 <section class="mt-8 pt-6 border-t">
-                    <h2 class="text-center text-lg font-bold text-gray-800 mb-4">Read More Articles</h2>
+                    <h3 class="text-center text-lg font-bold text-gray-800 mb-4">Read More Articles</h3>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
                          <a href="how-much-house-can-i-afford.html" class="text-sm font-semibold text-primary hover:underline">How Much House Can I Afford? Complete Guide + Free Calculator</a>
                          <!-- Placeholder for second article -->
