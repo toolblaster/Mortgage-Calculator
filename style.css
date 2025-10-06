@@ -125,6 +125,11 @@ details[open] summary ~ * { animation: sweep .5s ease-in-out; }
     outline-offset: 1px;
 }
 
+/* Make form elements smoother */
+input, select {
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
 /* Input Error Styling */
 .input-error {
     border-color: #ef4444 !important; /* red-500 */
@@ -229,9 +234,4 @@ details[open] summary ~ * { animation: sweep .5s ease-in-out; }
 
 .back-to-top:hover {
   background-color: #166534;
-}
-
-.dark-mode {
-  background-color: #1a202c;
-  color: #a0aec0;
 }
