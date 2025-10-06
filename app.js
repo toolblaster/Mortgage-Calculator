@@ -22,7 +22,7 @@ Strategic Mortgage Planner - Application Logic
         monthlyUtilities: document.getElementById('monthlyUtilities'), monthlyRent: document.getElementById('monthlyRent'), rentIncrease: document.getElementById('rentIncrease'),
         investmentReturn: document.getElementById('investmentReturn'), closingCosts: document.getElementById('closingCosts'), sellingCosts: document.getElementById('sellingCosts'),
         downPaymentAmount: document.getElementById('downPaymentAmount'), desiredFrontEndDTI: document.getElementById('desiredFrontEndDTI'), desiredBackEndDTI: document.getElementById('desiredBackEndDTI'),
-        originalLoanAmount: document.getElementById('originalLoanAmount'), currentInterestRate: document.getElementById('currentInterestRate'), loanStartDate: document.getElementById('loanStartDate'),
+        originalLoanAmount: document.getElementById('originalLoanAmount'), currentInterestRate: document.getElementById('currentInterestRate'), loanStartMonth: document.getElementById('loanStartMonth'), loanStartYear: document.getElementById('loanStartYear'),
         newInterestRate: document.getElementById('newInterestRate'), newLoanTerm: document.getElementById('newLoanTerm'), newClosingCosts: document.getElementById('newClosingCosts'),
 
         // Buttons
@@ -325,7 +325,7 @@ Strategic Mortgage Planner - Application Logic
 
     function calculateRefinance() {
         const originalAmount = parseFloat(DOM.originalLoanAmount.value); const currentRate = parseFloat(DOM.currentInterestRate.value) / 100;
-        const startDate = new Date(DOM.loanStartDate.value + '-01T00:00:00'); const originalTermYears = parseFloat(DOM.loanTerm.value);
+        const startDateStr = `${DOM.loanStartYear.value}-${DOM.loanStartMonth.value}`; const startDate = new Date(startDateStr + '-01T00:00:00'); const originalTermYears = parseFloat(DOM.loanTerm.value);
         const newRate = parseFloat(DOM.newInterestRate.value) / 100; const newTermYears = parseFloat(DOM.newLoanTerm.value);
         const closingCosts = parseFloat(DOM.newClosingCosts.value); const periodsPerYear = 12;
         const originalTotalPeriods = originalTermYears * periodsPerYear; const monthsPassed = (new Date().getFullYear() - startDate.getFullYear()) * 12 + (new Date().getMonth() - startDate.getMonth());
@@ -429,8 +429,7 @@ Strategic Mortgage Planner - Application Logic
         allInputIds.forEach(id => { if (DOM[id]) DOM[id].classList.remove('input-error'); });
         fields.forEach(field => {
             const el = DOM[field.id]; if (!el) return; const value = parseFloat(el.value); let hasError = false;
-            if (el.type === 'month' && !el.value) { errors.push('Loan Start Date is required.'); hasError = true; } 
-            else if (el.type !== 'month' && isNaN(value)) { errors.push(`${field.name} must be a number.`); hasError = true; } 
+            if (el.type !== 'month' && isNaN(value)) { errors.push(`${field.name} must be a number.`); hasError = true; } 
             else {
                 if (field.min !== undefined && value < field.min) { errors.push(`${field.name} must be at least ${field.min}.`); hasError = true; }
                 if (field.max !== undefined && value > field.max) { errors.push(`${field.name} cannot exceed ${field.max}.`); hasError = true; }
@@ -573,22 +572,44 @@ Strategic Mortgage Planner - Application Logic
     }
 
     function resetForm() {
-        const defaults = { loanAmount: "300000", interestRate: "6.5", loanTerm: "30", initialLTV: "90", discountRate: "3.0", appreciationRate: "3.5", annualIncome: "120000", nonMortgageDebt: "800", propertyTax: "3600", insurance: "1200", hoa: "0", pitiEscalationRate: "2.0", pmiRate: "0.5", extraPayment: "100", lumpSumPayment: "5000", lumpSumPeriod: "1", refiPeriod: "60", refiRate: "5.0", refiTerm: "15", refiClosingCosts: "5000", shockRateIncrease: "1.0", annualMaintenance: "1.0", monthlyUtilities: "300", monthlyRent: "2000", rentIncrease: "3.0", investmentReturn: "7.0", closingCosts: "8000", sellingCosts: "6.0", downPaymentAmount: "60000", desiredFrontEndDTI: "28", desiredBackEndDTI: "36", originalLoanAmount: "300000", currentInterestRate: "6.5", loanStartDate: "2021-01", newInterestRate: "5.0", newLoanTerm: "30", newClosingCosts: "5000" };
+        const defaults = { loanAmount: "300000", interestRate: "6.5", loanTerm: "30", initialLTV: "90", discountRate: "3.0", appreciationRate: "3.5", annualIncome: "120000", nonMortgageDebt: "800", propertyTax: "3600", insurance: "1200", hoa: "0", pitiEscalationRate: "2.0", pmiRate: "0.5", extraPayment: "100", lumpSumPayment: "5000", lumpSumPeriod: "1", refiPeriod: "60", refiRate: "5.0", refiTerm: "15", refiClosingCosts: "5000", shockRateIncrease: "1.0", annualMaintenance: "1.0", monthlyUtilities: "300", monthlyRent: "2000", rentIncrease: "3.0", investmentReturn: "7.0", closingCosts: "8000", sellingCosts: "6.0", downPaymentAmount: "60000", desiredFrontEndDTI: "28", desiredBackEndDTI: "36", originalLoanAmount: "300000", currentInterestRate: "6.5", newInterestRate: "5.0", newLoanTerm: "30", newClosingCosts: "5000" };
         for (const id in defaults) { const el = DOM[id]; if (el) el.value = defaults[id]; }
+        if(DOM.loanStartMonth) DOM.loanStartMonth.value = "01";
+        if(DOM.loanStartYear) DOM.loanStartYear.value = "2021";
         DOM.repaymentFrequency.value = "12"; DOM.currency.value = "USD";
         history.pushState(null, '', window.location.pathname); handleCalculation(); updateCurrencySymbols();
     }
 
     function updateURLWithInputs() {
         const params = new URLSearchParams();
-        allInputIds.forEach(id => { const el = DOM[id]; if (el) params.set(id, el.value); });
+        allInputIds.forEach(id => { 
+            const el = DOM[id]; 
+            if (el && id !== 'loanStartMonth' && id !== 'loanStartYear') {
+                 params.set(id, el.value); 
+            }
+        });
+        if (DOM.loanStartYear && DOM.loanStartMonth) {
+            params.set('loanStartDate', `${DOM.loanStartYear.value}-${DOM.loanStartMonth.value}`);
+        }
         history.replaceState(null, '', '?' + params.toString());
     }
 
     function populateFormFromURL() {
         const params = new URLSearchParams(window.location.search);
         if (params.toString().length === 0) return false;
-        allInputIds.forEach(id => { const el = DOM[id]; if (el && params.has(id)) el.value = params.get(id); });
+        allInputIds.forEach(id => { 
+            const el = DOM[id]; 
+            if (el && params.has(id) && id !== 'loanStartMonth' && id !== 'loanStartYear') {
+                el.value = params.get(id); 
+            }
+        });
+        if (params.has('loanStartDate')) {
+            const [year, month] = params.get('loanStartDate').split('-');
+            if (DOM.loanStartYear && DOM.loanStartMonth) {
+                DOM.loanStartYear.value = year;
+                DOM.loanStartMonth.value = month;
+            }
+        }
         return true;
     }
 
@@ -704,6 +725,8 @@ Strategic Mortgage Planner - Application Logic
             switchTab('mortgage'); // Default to mortgage tab
         }
 
+        populateYearDropdown();
+
         if (!urlPopulated) {
             resetForm(); // Reset form only if not populated from URL
         } else {
@@ -717,12 +740,19 @@ Strategic Mortgage Planner - Application Logic
             else backToTopButton.classList.add('hidden');
         });
         backToTopButton.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-        
-        const darkModeToggle = document.createElement('button');
-        darkModeToggle.textContent = 'Toggle Dark Mode';
-        darkModeToggle.classList.add('dark-mode-toggle');
-        document.body.appendChild(darkModeToggle);
-        darkModeToggle.addEventListener('click', () => document.body.classList.toggle('dark-mode'));
+    }
+    
+    function populateYearDropdown() {
+        const yearSelect = DOM.loanStartYear;
+        if (!yearSelect) return;
+        const currentYear = new Date().getFullYear();
+        for (let i = 0; i < 40; i++) {
+            const year = currentYear - i;
+            const option = document.createElement('option');
+            option.value = year;
+            option.textContent = year;
+            yearSelect.appendChild(option);
+        }
     }
     
     function loadGuide() {
