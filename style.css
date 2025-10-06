@@ -15,18 +15,6 @@ main.content-wrapper {
 }
 
 /* Page-Specific Calculator Styles */
-
-/* CLS (Cumulative Layout Shift) Improvements */
-#results, #affordability-results, #rent-vs-buy-results, #refinance-results {
-    min-height: 400px; /* Reserves space to prevent layout shift when results load */
-}
-
-@media (min-width: 640px) {
-    #results, #affordability-results, #rent-vs-buy-results, #refinance-results {
-        min-height: 500px; 
-    }
-}
-
 details > summary { list-style: none; }
 details > summary::-webkit-details-marker { display: none; }
 details[open] summary ~ * { animation: sweep .5s ease-in-out; }
@@ -45,6 +33,12 @@ details[open] summary ~ * { animation: sweep .5s ease-in-out; }
     }
 }
 #amortizationTable th, #amortizationTable td { white-space: nowrap; }
+
+/* CLS Prevention */
+#results, #affordability-results, #rent-vs-buy-results, #refinance-results {
+    min-height: 350px;
+}
+
 
 /* Mobile-first adjustments for the main calculator layout */
 .main-grid-layout {
@@ -96,7 +90,7 @@ details[open] summary ~ * { animation: sweep .5s ease-in-out; }
 /* Tab Styles */
 #main-tabs button {
     border-color: transparent;
-    color: #6b7280; /* gray-500 */
+    color: #4b5563; /* gray-600 */
 }
 #main-tabs button.active {
     color: #1C768F; /* primary */
@@ -105,7 +99,7 @@ details[open] summary ~ * { animation: sweep .5s ease-in-out; }
 }
 #main-tabs button:hover {
     border-color: #d1d5db; /* gray-300 */
-    color: #374151; /* gray-700 */
+    color: #1f2937; /* gray-800 */
 }
 /* Mobile-friendly scrollable tabs */
 .scrollable-tabs::-webkit-scrollbar {
@@ -116,12 +110,19 @@ details[open] summary ~ * { animation: sweep .5s ease-in-out; }
     scrollbar-width: none;  /* Firefox */
 }
 
+/* Quiz Option Selected Style */
+.quiz-option.selected {
+    border-color: #1C768F;
+    background-color: #f0f9ff; /* sky-50 */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    transform: translateY(-2px);
+}
+
 
 /* Accessibility Focus Styles */
 :is(button, a, input, select, [tabindex="0"]):focus-visible {
     outline: 2px solid #38bdf8; /* sky-400 */
-    outline-offset: 2px;
-    border-radius: 4px;
+    outline-offset: 1px;
 }
 
 /* Input Error Styling */
