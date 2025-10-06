@@ -721,6 +721,21 @@ Strategic Mortgage Planner - Application Logic
         
         if (tabs[tabKeyFromHash]) {
             switchTab(tabKeyFromHash);
+             // Scroll to calculator on hash link load for better UX
+            setTimeout(() => {
+                const calculatorEl = document.getElementById('calculator');
+                const headerEl = document.querySelector('header');
+                if (calculatorEl && headerEl) {
+                    const headerOffset = headerEl.offsetHeight;
+                    const elementPosition = calculatorEl.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset - 16; // 16px buffer (1rem)
+
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: "smooth"
+                    });
+                }
+            }, 150); // Small delay for rendering
         } else {
             switchTab('mortgage'); // Default to mortgage tab
         }
