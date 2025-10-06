@@ -187,19 +187,19 @@
     <!-- Main Content Area -->
     <main class="content-wrapper">
         <div class="w-full max-w-5xl mx-auto my-4 md:my-8 px-4 space-y-8">
-            <div class="bg-white p-4 sm:p-6 md:p-8 rounded-xl shadow-2xl">
+            <div class="bg-white p-4 sm:p-5 rounded-xl shadow-2xl">
                 <!-- Header -->
-                <header class="text-center mb-6 border-b pb-4">
+                <header class="text-center mb-4 pb-3 border-b">
                     <h1 class="text-xl md:text-2xl font-extrabold text-primary">Home Equity: HELOC vs. Cash-Out Refinance</h1>
-                    <p class="mt-2 text-sm text-gray-700">Unlock the value in your home. Compare your options to see which is best for you.</p>
+                    <p class="mt-1 text-sm text-gray-700">Unlock the value in your home. Compare your options to see which is best for you.</p>
                 </header>
                 
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <!-- Input Section -->
-                    <div class="space-y-4">
-                        <details open class="bg-gray-50 p-4 rounded-lg border">
+                    <div class="space-y-3">
+                        <details open class="bg-gray-50 p-3 rounded-lg border">
                             <summary class="font-bold text-base text-primary cursor-pointer">Your Home & Mortgage</summary>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
                                 <div>
                                     <label for="homeValue" class="block font-medium text-sm text-gray-700">Current Home Value ($):</label>
                                     <input type="number" id="homeValue" value="450000" class="w-full mt-1 p-2 text-base border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
@@ -211,9 +211,9 @@
                             </div>
                         </details>
 
-                        <details open class="bg-gray-50 p-4 rounded-lg border">
+                        <details open class="bg-gray-50 p-3 rounded-lg border">
                             <summary class="font-bold text-base text-primary cursor-pointer">Option 1: HELOC Scenario</summary>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
                                 <div>
                                     <label for="ltvRatio" class="block font-medium text-sm text-gray-700">
                                         <span class="tooltip-container">Lender's LTV Ratio (%):
@@ -228,15 +228,15 @@
                                     <input type="number" id="helocTerm" value="15" class="w-full mt-1 p-2 text-base border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
                                 </div>
                             </div>
-                            <div class="mt-4">
+                            <div class="mt-3">
                                 <label for="helocRateSlider" class="block font-medium text-sm text-gray-700">Estimated HELOC Rate: <span id="helocRateValue" class="font-bold text-primary">8.5%</span></label>
                                 <input type="range" id="helocRateSlider" min="3" max="15" value="8.5" step="0.1" class="w-full mt-2 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-slider">
                             </div>
                         </details>
                         
-                        <details open class="bg-gray-50 p-4 rounded-lg border">
+                        <details open class="bg-gray-50 p-3 rounded-lg border">
                             <summary class="font-bold text-base text-primary cursor-pointer">Option 2: Cash-Out Refinance Scenario</summary>
-                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
                                  <div>
                                     <label for="refiTerm" class="block font-medium text-sm text-gray-700">New Mortgage Term (Years):</label>
                                     <input type="number" id="refiTerm" value="30" class="w-full mt-1 p-2 text-base border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
@@ -246,17 +246,17 @@
                                     <input type="number" id="refiClosingCosts" value="5000" class="w-full mt-1 p-2 text-base border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
                                 </div>
                             </div>
-                            <div class="mt-4">
+                            <div class="mt-3">
                                 <label for="refiRateSlider" class="block font-medium text-sm text-gray-700">New Mortgage Rate: <span id="refiRateValue" class="font-bold text-primary">6.5%</span></label>
                                 <input type="range" id="refiRateSlider" min="3" max="15" value="6.5" step="0.1" class="w-full mt-2 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-slider">
                             </div>
                         </details>
 
                         <div class="flex flex-col sm:flex-row gap-3 pt-2">
-                             <button id="compareOptionsBtn" class="w-full px-4 py-3 bg-primary text-white font-semibold rounded-lg shadow-lg hover:bg-sky-700 transition duration-150 text-base">
+                             <button id="compareOptionsBtn" class="w-full px-4 py-2.5 bg-primary text-white font-semibold rounded-lg shadow-lg hover:bg-sky-700 transition duration-150 text-base">
                                 Compare Options
                             </button>
-                             <button id="saveScenario" class="w-full px-4 py-3 bg-accent text-white font-semibold rounded-lg shadow-md hover:bg-green-800 transition duration-150 text-base">
+                             <button id="saveScenario" class="w-full px-4 py-2.5 bg-accent text-white font-semibold rounded-lg shadow-md hover:bg-green-800 transition duration-150 text-base">
                                 Save Scenario
                             </button>
                         </div>
@@ -266,48 +266,48 @@
                     <!-- Results Section -->
                     <div id="equityResults" class="space-y-4">
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-center">
-                            <div class="p-4 rounded-lg bg-accent/10 border-2 border-accent/50 shadow">
+                            <div class="p-3 rounded-lg bg-accent/10 border-2 border-accent/50 shadow">
                                 <h2 class="text-sm font-bold text-accent">Total Cash Available</h2>
-                                <p id="availableEquity" class="text-3xl font-extrabold text-accent" data-value="0">$0</p>
+                                <p id="availableEquity" class="text-2xl font-extrabold text-accent" data-value="0">$0</p>
                             </div>
-                             <div class="p-4 rounded-lg bg-gray-100 border shadow">
+                             <div class="p-3 rounded-lg bg-gray-100 border shadow">
                                 <h2 class="text-sm font-bold text-gray-800">Your Total Equity</h2>
-                                <p id="totalEquity" class="text-3xl font-extrabold text-gray-800" data-value="0">$0</p>
+                                <p id="totalEquity" class="text-2xl font-extrabold text-gray-800" data-value="0">$0</p>
                             </div>
                         </div>
                         
                         <!-- Comparison Cards -->
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <!-- HELOC Results -->
-                            <div class="p-4 bg-gray-50 rounded-lg shadow-inner border border-gray-200 space-y-3">
+                            <div class="p-3 bg-gray-50 rounded-lg shadow-inner border border-gray-200 space-y-2">
                                 <h3 class="font-bold text-primary text-center">HELOC Results</h3>
                                 <div class="text-center">
                                     <p class="text-xs font-medium text-gray-600">Estimated Monthly Pmt.</p>
-                                    <p id="helocMonthlyPayment" class="text-2xl font-extrabold text-primary" data-value="0">$0</p>
+                                    <p id="helocMonthlyPayment" class="text-xl font-extrabold text-primary" data-value="0">$0</p>
                                 </div>
                                 <div class="text-center">
                                     <p class="text-xs font-medium text-gray-600">Total Interest Paid</p>
-                                    <p id="helocTotalInterest" class="text-xl font-extrabold text-gray-700" data-value="0">$0</p>
+                                    <p id="helocTotalInterest" class="text-lg font-extrabold text-gray-700" data-value="0">$0</p>
                                 </div>
                             </div>
                             <!-- Cash-Out Refi Results -->
-                            <div class="p-4 bg-gray-50 rounded-lg shadow-inner border border-gray-200 space-y-3">
+                            <div class="p-3 bg-gray-50 rounded-lg shadow-inner border border-gray-200 space-y-2">
                                 <h3 class="font-bold text-primary text-center">Cash-Out Refi Results</h3>
                                  <div class="text-center">
                                     <p class="text-xs font-medium text-gray-600">New Mortgage Pmt. (P&I)</p>
-                                    <p id="refiMonthlyPayment" class="text-2xl font-extrabold text-primary" data-value="0">$0</p>
+                                    <p id="refiMonthlyPayment" class="text-xl font-extrabold text-primary" data-value="0">$0</p>
                                 </div>
                                 <div class="text-center">
                                     <p class="text-xs font-medium text-gray-600">Total Interest Paid</p>
-                                    <p id="refiTotalInterest" class="text-xl font-extrabold text-gray-700" data-value="0">$0</p>
+                                    <p id="refiTotalInterest" class="text-lg font-extrabold text-gray-700" data-value="0">$0</p>
                                 </div>
                             </div>
                         </div>
                         
                         <!-- Comparison Chart -->
-                        <div class="mt-4 pt-4 border-t">
-                            <h3 class="text-lg font-bold text-primary text-center">Comparison Summary</h3>
-                            <div class="relative h-56 md:h-64 mt-2">
+                        <div class="mt-3 pt-3 border-t">
+                            <h3 class="text-base font-bold text-primary text-center">Comparison Summary</h3>
+                            <div class="relative h-48 md:h-56 mt-2">
                                 <canvas id="comparisonChart"></canvas>
                             </div>
                         </div>
@@ -316,9 +316,9 @@
                 </div>
 
                 <!-- Equity Breakdown Chart -->
-                <div class="mt-8 pt-6 border-t">
-                     <h2 class="text-lg font-bold text-primary text-center">Your Home Equity Breakdown</h2>
-                     <div class="relative h-56 md:h-64 max-w-xs mx-auto mt-4">
+                <div class="mt-6 pt-5 border-t">
+                     <h2 class="text-base font-bold text-primary text-center">Your Home Equity Breakdown</h2>
+                     <div class="relative h-48 md:h-56 max-w-xs mx-auto mt-2">
                         <canvas id="equityChart"></canvas>
                      </div>
                 </div>
@@ -351,7 +351,7 @@
             </div>
 
             <!-- SEO Content Section -->
-            <div class="bg-white p-4 sm:p-6 md:p-8 rounded-xl shadow-2xl max-w-none text-gray-800 space-y-6">
+            <div class="bg-white p-4 sm:p-5 rounded-xl shadow-2xl max-w-none text-gray-800 space-y-6">
                 <h2 class="text-2xl font-extrabold text-primary !mb-4">A Homeowner's Guide to Understanding and Using Home Equity</h2>
                 
                 <section class="bg-gray-50/70 p-6 rounded-lg border">
