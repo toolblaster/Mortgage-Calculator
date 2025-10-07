@@ -112,20 +112,6 @@ Strategic Mortgage Planner - Application Logic
     };
     const formatPercent = (amount) => (amount).toFixed(2) + '%';
 
-    function showLoader() {
-        let activeContentId = `${currentTab}-content`;
-        if (currentTab === 'mortgage') activeContentId = 'mortgage-calculator-content';
-        const activeContent = document.getElementById(activeContentId);
-        if (activeContent) {
-            const loader = activeContent.querySelector('.loading-overlay');
-            if (loader) loader.classList.remove('hidden');
-        }
-    }
-
-    function hideLoader() {
-        document.querySelectorAll('.loading-overlay').forEach(o => o.classList.add('hidden'));
-    }
-
     function animateValue(el, endValue, duration = 500, isCurrency = true, isPercent = false) {
         if (!el) return;
         let startValue = parseFloat(el.dataset.value) || 0;
@@ -338,11 +324,11 @@ Strategic Mortgage Planner - Application Logic
         },
 
         render(results) {
-            DOM.affordableHomePrice.textContent = formatCurrency(results.homePrice);
-            DOM.affordableLoanAmount.textContent = formatCurrency(results.loanAmount);
-            DOM.affordablePITI.textContent = formatCurrency(results.piti);
+            animateValue(DOM.affordableHomePrice, results.homePrice);
+            animateValue(DOM.affordableLoanAmount, results.loanAmount);
+            animateValue(DOM.affordablePITI, results.piti);
             this.renderChart(results);
-            DOM.affordabilityResults.style.opacity = 1; 
+            DOM.affordabilityResults.classList.remove('opacity-0');
             DOM.affordabilityResults.classList.add('results-animate-in');
         },
 
@@ -405,7 +391,7 @@ Strategic Mortgage Planner - Application Logic
             animateValue(DOM.capRate, results.capRate, 500, false, true);
             animateValue(DOM.cashOnCashROI, results.cashOnCashROI, 500, false, true);
             this.renderChart(results);
-            DOM.investmentResults.style.opacity = 1;
+            DOM.investmentResults.classList.remove('opacity-0');
             DOM.investmentResults.classList.add('results-animate-in');
         },
 
@@ -627,16 +613,32 @@ Strategic Mortgage Planner - Application Logic
         DOM.errorMessages.classList.add('hidden'); return true;
     }
 
-    function handleCalculation(isShockTest = false) {
-        let calculateButton;
-        if (currentTab === 'mortgage') {
-            calculateButton = document.querySelector(`#mortgage-calculator-content .calculate-button`);
-        } else {
-            calculateButton = document.querySelector(`#${currentTab}-content .calculate-button`);
+    function handleCalculation(isShockTest = false, button = null) {
+        const calculateButton = button;
+        let originalButtonText = '';
+        let activeContent;
+        let loader;
+
+        if (calculateButton) {
+            originalButtonText = calculateButton.textContent;
+            activeContent = calculateButton.closest('[role="tabpanel"]');
+            if(activeContent) {
+                loader = activeContent.querySelector('.loading-overlay');
+            }
+            
+            // Show loader
+            if (loader) loader.classList.remove('hidden');
+            calculateButton.disabled = true;
+            calculateButton.textContent = 'Calculating...';
         }
-        
-        showLoader();
-        if(calculateButton) { calculateButton.disabled = true; calculateButton.textContent = 'Calculating...'; }
+
+        // Reset animation classes on all result containers
+        [DOM.results, DOM.affordabilityResults, DOM.rentVsBuyResults, DOM.refinanceResults, DOM.investmentResults].forEach(el => {
+            if (el) {
+                el.classList.remove('results-animate-in');
+                el.classList.add('opacity-0');
+            }
+        });
 
         updateStateFromDOM();
 
@@ -653,14 +655,14 @@ Strategic Mortgage Planner - Application Logic
             } 
             catch (e) { console.error("Calculation Error:", e); DOM.errorList.innerHTML = `<li>An unexpected error occurred. Please check console.</li>`; DOM.errorMessages.classList.remove('hidden'); } 
             finally {
-                hideLoader();
-                if(calculateButton) {
+                if (calculateButton) {
+                    // Hide loader
+                    if (loader) loader.classList.add('hidden');
                     calculateButton.disabled = false;
-                    const buttonTextMap = { mortgage: 'Calculate Scenario', affordability: 'Calculate Affordability', 'rent-vs-buy': 'Calculate Comparison', refinance: 'Analyze Refinance', investment: 'Analyze Investment' };
-                    calculateButton.textContent = buttonTextMap[currentTab];
+                    calculateButton.textContent = originalButtonText;
                 }
             }
-        }, 50);
+        }, 250); // Small delay to allow UI to update
     }
 
     function runRentVsBuyAnalysis() {
@@ -669,26 +671,28 @@ Strategic Mortgage Planner - Application Logic
         DOM.rentingNetWorth.textContent = formatCurrency(results.rentingNetWorth);
         DOM.rentVsBuyConclusion.innerHTML = results.buyingNetWorth > results.rentingNetWorth ? `<p class="text-lg font-bold text-green-700">Buying appears to be the better financial decision.</p>` : `<p class="text-lg font-bold text-blue-700">Renting and investing appears to be the better financial decision.</p>`;
         renderRentVsBuyChart(results.rentingTimeline, results.buyingTimeline);
-        DOM.rentVsBuyResults.style.opacity = 1; DOM.rentVsBuyResults.classList.add('results-animate-in');
+        DOM.rentVsBuyResults.classList.remove('opacity-0');
+        DOM.rentVsBuyResults.classList.add('results-animate-in');
     }
     
     function runRefinanceAnalysis() {
         const results = calculateRefinance();
-        DOM.refiMonthlySavings.textContent = formatCurrency(results.monthlySavings);
+        animateValue(DOM.refiMonthlySavings, results.monthlySavings);
         if (isFinite(results.breakEvenMonths)) {
             const years = Math.floor(results.breakEvenMonths / 12); const months = Math.round(results.breakEvenMonths % 12);
             DOM.refiBreakEven.textContent = `${years}y ${months}m`;
         } else { DOM.refiBreakEven.textContent = 'N/A'; }
-        DOM.refiLifetimeSavings.textContent = formatCurrency(results.lifetimeSavings);
+        animateValue(DOM.refiLifetimeSavings, results.lifetimeSavings);
         renderRefinanceChart(results);
-        DOM.refinanceResults.style.opacity = 1; DOM.refinanceResults.classList.add('results-animate-in');
+        DOM.refinanceResults.classList.remove('opacity-0');
+        DOM.refinanceResults.classList.add('results-animate-in');
     }
 
     function calculateMortgage(isShockTest = false) {
         const periodsPerYear = state.repaymentFrequency;
         const originalParams = { principal: state.loanAmount, annualRate: state.interestRate / 100, periodsPerYear, totalPeriods: state.loanTerm * periodsPerYear, extraPaymentPerPeriod: 0, lumpSumAmount: 0, lumpSumPeriod: 0, initialLTV: state.initialLTV, pmiRate: 0, refiPeriod: 0, refiRate: 0, refiTerm: 0, refiClosingCosts: 0, pitiEscalationRate: 0, discountRate: state.discountRate / 100, appreciationRate: 0, propertyTax: state.propertyTax, insurance: state.insurance, hoa: state.hoa };
         const acceleratedParams = { ...originalParams, extraPaymentPerPeriod: state.extraPayment, lumpSumAmount: state.lumpSumPayment, lumpSumPeriod: state.lumpSumPeriod, pmiRate: state.pmiRate / 100, refiPeriod: state.refiPeriod, refiRate: state.refiRate, refiTerm: state.refiTerm, refiClosingCosts: state.refiClosingCosts, pitiEscalationRate: state.pitiEscalationRate / 100, appreciationRate: state.appreciationRate / 100 };
-        DOM.results.style.opacity = 1; DOM.results.classList.add('results-enter-active');
+        
         DOM.scheduleWrapper.style.opacity = 1; DOM.shockResults.style.display = 'none';
         const original = generateAmortization(originalParams);
         const accelerated = generateAmortization(acceleratedParams);
@@ -740,6 +744,10 @@ Strategic Mortgage Planner - Application Logic
             DOM.paymentIncrease.textContent = formatCurrency(shockPmt - original.standardPayment);
         }
         currentResults = { original, accelerated, totalPITI, totalMonthlyOwnershipCost, dti: calculateDTI(totalMonthlyOwnershipCost), interestSaved: iSaved, npvSaved: npvSaved, timeSaved: timeSavedStr, inputs: { ...state } };
+        
+        // Add animation class
+        DOM.results.classList.remove('opacity-0');
+        DOM.results.classList.add('results-animate-in');
     }
 
     function generateAmortizationTable(originalResults, acceleratedResults) {
@@ -765,7 +773,7 @@ Strategic Mortgage Planner - Application Logic
         DOM.repaymentFrequency.value = "12"; DOM.currency.value = "USD";
         updateStateFromDOM();
         history.pushState(null, '', window.location.pathname);
-        handleCalculation();
+        handleCalculation(false, DOM.calculateButtons[0]);
         updateCurrencySymbols();
     }
 
@@ -903,11 +911,15 @@ Strategic Mortgage Planner - Application Logic
         DOM.currency.addEventListener('change', () => {
             updateStateFromDOM();
             updateCurrencySymbols();
-            handleCalculation();
+            // Find the visible calculate button and click it programmatically
+            const visibleButton = document.querySelector(`#${currentTab}-content .calculate-button`) || DOM.calculateButtons[0];
+            handleCalculation(false, visibleButton);
         });
-        DOM.calculateButtons.forEach(btn => btn.addEventListener('click', () => handleCalculation(false)));
+        
+        // MODIFIED: Pass the event target to handleCalculation
+        DOM.calculateButtons.forEach(btn => btn.addEventListener('click', (event) => handleCalculation(false, event.target)));
         DOM.resetButtons.forEach(btn => btn.addEventListener('click', resetForm));
-        if(DOM.shockTestButton) DOM.shockTestButton.addEventListener('click', () => handleCalculation(true));
+        if(DOM.shockTestButton) DOM.shockTestButton.addEventListener('click', () => handleCalculation(true, DOM.shockTestButton));
         
         document.querySelector('.print-button').addEventListener('click', () => window.print());
         document.querySelector('.pdf-button').addEventListener('click', generatePDF);
@@ -933,11 +945,14 @@ Strategic Mortgage Planner - Application Logic
         
         updateStateFromDOM();
 
+        // Find the initially visible calculate button to pass to resetForm/handleCalculation
+        const initialVisibleButton = document.querySelector('.calculate-button:not([style*="display: none"])') || DOM.calculateButtons[0];
+
         if (!urlPopulated) {
-            resetForm();
+             resetForm(initialVisibleButton);
         } else {
             updateStateFromDOM();
-            handleCalculation();
+            handleCalculation(false, initialVisibleButton);
         }
         updateCurrencySymbols();
         
