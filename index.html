@@ -191,6 +191,13 @@
                             Refinance
                         </button>
                     </li>
+                     <!-- NEW TAB BUTTON -->
+                    <li class="mr-2 flex-shrink-0" role="presentation">
+                        <button class="inline-block p-3 border-b-2 rounded-t-lg" id="investment-tab" type="button" role="tab" aria-controls="investment-content" aria-selected="false">
+                           <svg class="w-4 h-4 inline-block mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941" /></svg>
+                            Investment / Rental
+                        </button>
+                    </li>
                 </ul>
             </div>
 
@@ -754,6 +761,108 @@
                             </div>
                             <div id="refinance-chart-container" class="mt-3 bg-white rounded-lg shadow-md p-2">
                                 <canvas id="refinanceChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NEW INVESTMENT TAB CONTENT -->
+            <div id="investment-content" class="hidden" role="tabpanel" aria-labelledby="investment-tab">
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mt-3">
+                    <div class="md:col-span-2 relative flex flex-col gap-3">
+                        <details open class="bg-white rounded-lg shadow-md border">
+                             <summary class="p-3 border-b border-gray-200 cursor-pointer flex justify-between items-center relative before:content-['+'] open:before:content-['−'] before:absolute before:right-4 before:text-lg">
+                                <h3 class="text-sm font-bold text-primary">Property & Purchase</h3>
+                            </summary>
+                            <div class="p-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div class="space-y-1">
+                                    <label for="purchasePrice" class="block font-medium text-xs text-gray-700">Purchase Price:</label>
+                                    <input type="number" id="purchasePrice" value="250000" class="w-full p-1.5 text-sm border border-gray-300 rounded-md">
+                                </div>
+                                <div class="space-y-1">
+                                    <label for="investmentDownPayment" class="block font-medium text-xs text-gray-700">Down Payment (%):</label>
+                                    <input type="number" id="investmentDownPayment" value="20" class="w-full p-1.5 text-sm border border-gray-300 rounded-md">
+                                </div>
+                                <div class="space-y-1">
+                                    <label for="investmentInterestRate" class="block font-medium text-xs text-gray-700">Interest Rate (%):</label>
+                                    <input type="number" id="investmentInterestRate" value="7.5" class="w-full p-1.5 text-sm border border-gray-300 rounded-md">
+                                </div>
+                                 <div class="space-y-1">
+                                    <label for="investmentLoanTerm" class="block font-medium text-xs text-gray-700">Loan Term (Years):</label>
+                                    <input type="number" id="investmentLoanTerm" value="30" class="w-full p-1.5 text-sm border border-gray-300 rounded-md">
+                                </div>
+                                <div class="space-y-1 sm:col-span-2">
+                                    <label for="investmentClosingCosts" class="block font-medium text-xs text-gray-700">Upfront Closing Costs:</label>
+                                    <input type="number" id="investmentClosingCosts" value="4000" class="w-full p-1.5 text-sm border border-gray-300 rounded-md">
+                                </div>
+                            </div>
+                        </details>
+                        <details open class="bg-white rounded-lg shadow-md border">
+                             <summary class="p-3 border-b border-gray-200 cursor-pointer flex justify-between items-center relative before:content-['+'] open:before:content-['−'] before:absolute before:right-4 before:text-lg">
+                                <h3 class="text-sm font-bold text-primary">Income & Expenses</h3>
+                            </summary>
+                            <div class="p-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div class="space-y-1">
+                                    <label for="monthlyRentalIncome" class="block font-medium text-xs text-gray-700">Gross Monthly Rent:</label>
+                                    <input type="number" id="monthlyRentalIncome" value="2200" class="w-full p-1.5 text-sm border border-gray-300 rounded-md">
+                                </div>
+                                <div class="space-y-1">
+                                    <label for="vacancyRate" class="block font-medium text-xs text-gray-700">Vacancy Rate (%):</label>
+                                    <input type="number" id="vacancyRate" value="5" class="w-full p-1.5 text-sm border border-gray-300 rounded-md">
+                                </div>
+                                <div class="space-y-1">
+                                    <label for="propertyTaxes" class="block font-medium text-xs text-gray-700">Annual Prop. Taxes:</label>
+                                    <input type="number" id="propertyTaxes" value="3000" class="w-full p-1.5 text-sm border border-gray-300 rounded-md">
+                                </div>
+                                <div class="space-y-1">
+                                    <label for="propertyInsurance" class="block font-medium text-xs text-gray-700">Annual Insurance:</label>
+                                    <input type="number" id="propertyInsurance" value="1000" class="w-full p-1.5 text-sm border border-gray-300 rounded-md">
+                                </div>
+                                <div class="space-y-1">
+                                    <label for="maintenanceCosts" class="block font-medium text-xs text-gray-700">Repairs/Maint. (%):</label>
+                                    <input type="number" id="maintenanceCosts" value="8" class="w-full p-1.5 text-sm border border-gray-300 rounded-md">
+                                </div>
+                                <div class="space-y-1">
+                                    <label for="managementFee" class="block font-medium text-xs text-gray-700">Management Fee (%):</label>
+                                    <input type="number" id="managementFee" value="10" class="w-full p-1.5 text-sm border border-gray-300 rounded-md">
+                                </div>
+                            </div>
+                        </details>
+                        <!-- Action Buttons -->
+                        <div class="sticky bottom-0 bg-white/80 backdrop-blur-sm py-3 border-t border-gray-200 no-print">
+                            <div class="flex flex-col sm:flex-row gap-3">
+                                <button class="calculate-button w-full px-4 py-2.5 bg-primary text-white font-semibold rounded-lg shadow-lg hover:bg-sky-700 transition duration-150 text-sm">
+                                    Analyze Investment
+                                </button>
+                                <button class="reset-button w-full px-4 py-2.5 bg-gray-200 text-gray-700 font-semibold rounded-lg shadow-sm hover:bg-gray-300 transition duration-150 text-sm">
+                                    Reset to Defaults
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="md:col-span-3 relative flex flex-col gap-3">
+                        <div class="loading-overlay hidden">
+                            <div class="spinner"></div>
+                        </div>
+                        <div id="investment-results" class="p-3 bg-gray-50 rounded-lg shadow-inner border border-gray-200 opacity-0">
+                            <h3 class="text-lg font-bold text-gray-800 text-center mb-3">Rental Property ROI Summary</h3>
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-3 text-center">
+                                <div class="p-3 rounded-lg bg-accent/10 border-2 border-accent/50 shadow">
+                                    <h3 class="text-xs font-medium text-accent">Monthly Cash Flow</h3>
+                                    <p id="cashFlow" class="text-2xl font-extrabold text-accent"></p>
+                                </div>
+                                <div class="p-3 rounded-lg bg-primary/10 border-2 border-primary/50 shadow">
+                                    <h3 class="text-xs font-medium text-primary">Cap Rate</h3>
+                                    <p id="capRate" class="text-2xl font-extrabold text-primary"></p>
+                                </div>
+                                 <div class="p-3 rounded-lg bg-npv/10 border-2 border-npv/50 shadow col-span-2 md:col-span-1">
+                                    <h3 class="text-xs font-medium text-npv">Cash-on-Cash ROI</h3>
+                                    <p id="cashOnCashROI" class="text-2xl font-extrabold text-npv"></p>
+                                </div>
+                            </div>
+                            <div id="investment-chart-container" class="mt-3 bg-white rounded-lg shadow-md p-2 h-56">
+                                <canvas id="investmentChart"></canvas>
                             </div>
                         </div>
                     </div>
