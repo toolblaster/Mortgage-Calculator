@@ -1,7 +1,7 @@
 /*
 ================================================
 Strategic Mortgage Planner - Application Logic
-(Refactored for improved structure and maintainability)
+(Refactored for Centralized State Management)
 ================================================
 */
 
@@ -66,15 +66,55 @@ Strategic Mortgage Planner - Application Logic
     // --- Global State & Chart Instances ---
     let mortgageChart = null, rentVsBuyChart = null, affordabilityChart = null, refinanceChart = null;
     let currentResults = null, currentTab = 'mortgage';
-    let tabs = {}; // Globally scoped tabs object
+    let tabs = {};
+
+    // --- Application State ---
+    let state = {}; // Central state object
+
+    // --- State Management ---
+    function updateStateFromDOM() {
+        allInputIds.forEach(id => {
+            if (DOM[id]) {
+                const el = DOM[id];
+                const isNumberInput = el.tagName === 'INPUT' && el.type === 'number';
+                let value = el.value;
+                if (isNumberInput) {
+                    value = parseFloat(el.value);
+                    if (isNaN(value)) value = 0;
+                }
+                 if (el.tagName === 'SELECT' && !isNaN(parseInt(el.value, 10))) {
+                    value = parseInt(el.value, 10);
+                }
+                state[id] = value;
+            }
+        });
+        if (DOM.loanStartYear && DOM.loanStartMonth) {
+            state.loanStartDate = `${DOM.loanStartYear.value}-${DOM.loanStartMonth.value}`;
+        }
+    }
+
 
     // --- Helper Functions ---
     const formatCurrency = (amount) => {
-        const currency = DOM.currency.value || 'USD';
+        const currency = state.currency || 'USD';
         const locale = ['EUR', 'GBP'].includes(currency) ? 'de-DE' : 'en-US';
         return new Intl.NumberFormat(locale, { style: 'currency', currency: currency, minimumFractionDigits: 0 }).format(amount);
     };
     const formatPercent = (amount) => (amount * 100).toFixed(1) + '%';
+
+    function showLoader() {
+        let activeContentId = `${currentTab}-content`;
+        if (currentTab === 'mortgage') activeContentId = 'mortgage-calculator-content';
+        const activeContent = document.getElementById(activeContentId);
+        if (activeContent) {
+            const loader = activeContent.querySelector('.loading-overlay');
+            if (loader) loader.classList.remove('hidden');
+        }
+    }
+
+    function hideLoader() {
+        document.querySelectorAll('.loading-overlay').forEach(o => o.classList.add('hidden'));
+    }
 
     function animateValue(el, endValue, duration = 500, isCurrency = true) {
         if (!el) return;
@@ -103,7 +143,7 @@ Strategic Mortgage Planner - Application Logic
 
     function updateCurrencySymbols() {
         const symbols = { 'USD': '$', 'EUR': '€', 'GBP': '£', 'CAD': 'C$', 'AUD': 'A$' };
-        const symbol = symbols[DOM.currency.value] || '$';
+        const symbol = symbols[state.currency] || '$';
         const symbolSpanIds = [
             'mc-loan-currency', 'mc-tax-currency', 'mc-ins-currency', 'mc-hoa-currency', 'mc-util-currency', 'mc-extra-currency',
             'mc-lump-currency', 'mc-refi-currency', 'dti-income-currency', 'dti-debt-currency', 'afford-down-payment-currency',
@@ -123,7 +163,6 @@ Strategic Mortgage Planner - Application Logic
         return isFinite(payment) ? payment : 0;
     }
 
-    // --- Refactored Amortization Helpers ---
     function handleAnnualUpdates(period, periodsPerYear, escalationFactor, periodicAppreciationRate, state) {
         if (period > 1 && (period - 1) % periodsPerYear === 0) {
             state.currentAnnualTax *= escalationFactor;
@@ -160,115 +199,65 @@ Strategic Mortgage Planner - Application Logic
         return { pmiPayment, pmiDropPeriod, isPMIActive: state.isPMIActive };
     }
 
-    // --- New Core Financial Calculation Helpers (Refactored) ---
     function applyPaymentsForPeriod(state, params) {
         const { extraPaymentPerPeriod, lumpSumAmount, lumpSumPeriod, periodsPerYear } = params;
         const { currentBalance, standardPayment, period, currentRate } = state;
-
         const interest = currentBalance * (currentRate / periodsPerYear);
-
         let pniPayment = standardPayment;
-        // Handle final payment when balance is less than a standard payment
-        if (currentBalance < standardPayment) {
-            pniPayment = currentBalance + interest;
-        } else if (pniPayment <= interest) {
-            // Ensure payment covers at least interest to prevent infinite loops
-            pniPayment = interest + 1; 
-        }
-        
+        if (currentBalance < standardPayment) pniPayment = currentBalance + interest;
+        else if (pniPayment <= interest) pniPayment = interest + 1;
         let principalFromPni = pniPayment - interest;
-        
         let extraPrincipal = extraPaymentPerPeriod;
-        if (lumpSumAmount > 0 && period === lumpSumPeriod) {
-            extraPrincipal += lumpSumAmount;
-        }
-
+        if (lumpSumAmount > 0 && period === lumpSumPeriod) extraPrincipal += lumpSumAmount;
         let totalPrincipalPaid = principalFromPni + extraPrincipal;
-        
-        // Final check to ensure we don't overpay
         if (currentBalance < totalPrincipalPaid) {
             totalPrincipalPaid = currentBalance;
-            // Recalculate how much of the final payment was from the standard P&I portion
             principalFromPni = Math.max(0, totalPrincipalPaid - extraPrincipal);
         }
-
-        return {
-            interest: Math.max(0, interest),
-            principalFromPni: Math.max(0, principalFromPni),
-            extraPrincipal,
-            totalPrincipalPaid: Math.max(0, totalPrincipalPaid)
-        };
+        return { interest: Math.max(0, interest), principalFromPni: Math.max(0, principalFromPni), extraPrincipal, totalPrincipalPaid: Math.max(0, totalPrincipalPaid) };
     }
     
     function createScheduleEntry(state, paymentDetails, pmiPayment, periodicDiscountRate, periodsPerYear) {
         const { period, currentPropertyValue, currentBalance, currentAnnualTax, currentAnnualInsurance, currentMonthlyHoa, currentRate } = state;
         const { interest, principalFromPni, extraPrincipal, totalPrincipalPaid } = paymentDetails;
-
         const pvInterest = interest / Math.pow(1 + periodicDiscountRate, period);
         const newBalance = Math.max(0, currentBalance - totalPrincipalPaid);
         const totalEquity = Math.max(0, currentPropertyValue - newBalance);
-        
         const periodicPITI = (currentAnnualTax / periodsPerYear) + (currentAnnualInsurance / periodsPerYear) + currentMonthlyHoa + pmiPayment;
-
         return {
-            entry: {
-                period,
-                interest: Math.max(0, interest),
-                principalPaid: Math.max(0, totalPrincipalPaid),
-                balance: newBalance,
-                propertyValue: currentPropertyValue,
-                totalEquity,
-                pniPrincipal: Math.max(0, principalFromPni),
-                extraPayment: extraPrincipal,
-                pmi: pmiPayment,
-                rate: currentRate * 100,
-                periodicPITI: periodicPITI,
-                pvInterest
-            },
-            newBalance,
-            pvInterest
+            entry: { period, interest: Math.max(0, interest), principalPaid: Math.max(0, totalPrincipalPaid), balance: newBalance, propertyValue: currentPropertyValue, totalEquity, pniPrincipal: Math.max(0, principalFromPni), extraPayment: extraPrincipal, pmi: pmiPayment, rate: currentRate * 100, periodicPITI, pvInterest },
+            newBalance, pvInterest
         };
     }
 
     function generateAmortization(params) {
-        const { principal, annualRate, periodsPerYear, totalPeriods, extraPaymentPerPeriod, lumpSumAmount, lumpSumPeriod, initialLTV, pmiRate, refiPeriod, refiRate, refiTerm, refiClosingCosts, pitiEscalationRate, discountRate, appreciationRate } = params;
-        
+        const { principal, annualRate, periodsPerYear, totalPeriods, extraPaymentPerPeriod, lumpSumAmount, lumpSumPeriod, initialLTV, pmiRate, refiPeriod, refiRate, refiTerm, refiClosingCosts, pitiEscalationRate, discountRate, appreciationRate, propertyTax, insurance, hoa } = params;
         const standardPaymentOriginal = calculatePayment(principal, annualRate, periodsPerYear, totalPeriods);
         const initialPropertyValue = (initialLTV > 0 && initialLTV <= 100) ? principal / (initialLTV / 100) : principal;
         const pmiStopThreshold = 0.80 * initialPropertyValue;
         const escalationFactor = 1 + (pitiEscalationRate / 100);
         const periodicDiscountRate = discountRate / periodsPerYear;
         const periodicAppreciationRate = appreciationRate / periodsPerYear;
-
         let loanState = {
             currentBalance: principal, currentRate: annualRate, totalPeriodsRemaining: totalPeriods,
             standardPayment: standardPaymentOriginal, totalInterestPaid: 0, totalPVInterestPaid: 0,
             payoffPeriod: 0, pmiDropPeriod: null, amortizationSchedule: [],
             currentPropertyValue: initialPropertyValue, isPMIActive: (initialLTV > 80), hasRefinanced: false,
-            currentAnnualTax: parseFloat(DOM.propertyTax.value) || 0,
-            currentAnnualInsurance: parseFloat(DOM.insurance.value) || 0,
-            currentMonthlyHoa: parseFloat(DOM.hoa.value) || 0,
+            currentAnnualTax: propertyTax, currentAnnualInsurance: insurance, currentMonthlyHoa: hoa,
         };
-
         for (let period = 1; loanState.currentBalance > 0 && period <= 50 * periodsPerYear; period++) {
             loanState.period = period;
             loanState = handleAnnualUpdates(period, periodsPerYear, escalationFactor, periodicAppreciationRate, loanState);
             loanState = handleRefinancing(period, refiPeriod, refiClosingCosts, refiRate, refiTerm, periodsPerYear, loanState);
-
             const paymentDetails = applyPaymentsForPeriod(loanState, params);
-            
             loanState.totalInterestPaid += paymentDetails.interest;
-            
             const pmiResult = calculatePmiForPeriod(loanState, pmiRate, periodsPerYear, pmiStopThreshold);
             loanState.isPMIActive = pmiResult.isPMIActive;
             loanState.pmiDropPeriod = pmiResult.pmiDropPeriod || loanState.pmiDropPeriod;
-            
             const scheduleUpdate = createScheduleEntry(loanState, paymentDetails, pmiResult.pmiPayment, periodicDiscountRate, periodsPerYear);
-            
             loanState.currentBalance = scheduleUpdate.newBalance;
             loanState.totalPVInterestPaid += scheduleUpdate.pvInterest;
             loanState.amortizationSchedule.push(scheduleUpdate.entry);
-            
             if (loanState.currentBalance <= 0) {
                 loanState.payoffPeriod = period;
                 break;
@@ -278,29 +267,25 @@ Strategic Mortgage Planner - Application Logic
     }
 
     function calculateRentVsBuy() {
-        const loanAmount = parseFloat(DOM.loanAmount.value); const initialLTV = parseFloat(DOM.initialLTV.value);
-        const homePrice = loanAmount / (initialLTV / 100); const downPayment = homePrice - loanAmount;
-        const closingCosts = parseFloat(DOM.closingCosts.value); const sellingCostsRate = parseFloat(DOM.sellingCosts.value) / 100;
-        const monthlyRent = parseFloat(DOM.monthlyRent.value); const annualRentIncrease = parseFloat(DOM.rentIncrease.value) / 100;
-        const annualInvestmentReturn = parseFloat(DOM.investmentReturn.value) / 100; const loanTermYears = parseFloat(DOM.loanTerm.value);
-        const periodsPerYear = 12; const totalPeriods = loanTermYears * periodsPerYear;
-        const buyingParams = { principal: loanAmount, annualRate: parseFloat(DOM.interestRate.value) / 100, periodsPerYear, totalPeriods, extraPaymentPerPeriod: 0, lumpSumAmount: 0, lumpSumPeriod: 0, initialLTV, pmiRate: parseFloat(DOM.pmiRate.value) / 100, refiPeriod: 0, refiRate: 0, refiTerm: 0, refiClosingCosts: 0, pitiEscalationRate: parseFloat(DOM.pitiEscalationRate.value) / 100, discountRate: parseFloat(DOM.discountRate.value) / 100, appreciationRate: parseFloat(DOM.appreciationRate.value) / 100 };
+        const homePrice = state.loanAmount / (state.initialLTV / 100); const downPayment = homePrice - state.loanAmount;
+        const periodsPerYear = 12; const totalPeriods = state.loanTerm * periodsPerYear;
+        const buyingParams = { principal: state.loanAmount, annualRate: state.interestRate / 100, periodsPerYear, totalPeriods, extraPaymentPerPeriod: 0, lumpSumAmount: 0, lumpSumPeriod: 0, initialLTV: state.initialLTV, pmiRate: state.pmiRate / 100, refiPeriod: 0, refiRate: 0, refiTerm: 0, refiClosingCosts: 0, pitiEscalationRate: state.pitiEscalationRate / 100, discountRate: state.discountRate / 100, appreciationRate: state.appreciationRate / 100, propertyTax: state.propertyTax, insurance: state.insurance, hoa: state.hoa };
         const buyingResults = generateAmortization(buyingParams);
-        const buyingNetWorth = buyingResults.finalEquity - (buyingResults.finalPropertyValue * sellingCostsRate);
-        let investmentPortfolio = downPayment + closingCosts; let currentMonthlyRent = monthlyRent;
-        const monthlyInvestmentReturn = annualInvestmentReturn / 12;
-        const totalMonthlyOwnershipCost = (buyingResults.standardPayment * (12 / periodsPerYear)) + (parseFloat(DOM.propertyTax.value) / 12) + (parseFloat(DOM.insurance.value) / 12) + parseFloat(DOM.hoa.value) + ((homePrice * (parseFloat(DOM.annualMaintenance.value) / 100)) / 12) + parseFloat(DOM.monthlyUtilities.value);
+        const buyingNetWorth = buyingResults.finalEquity - (buyingResults.finalPropertyValue * (state.sellingCosts / 100));
+        let investmentPortfolio = downPayment + state.closingCosts; let currentMonthlyRent = state.monthlyRent;
+        const monthlyInvestmentReturn = (state.investmentReturn/100) / 12;
+        const totalMonthlyOwnershipCost = (buyingResults.standardPayment * (12 / periodsPerYear)) + (state.propertyTax / 12) + (state.insurance / 12) + state.hoa + ((homePrice * (state.annualMaintenance / 100)) / 12) + state.monthlyUtilities;
         let rentingTimeline = [], buyingTimeline = [];
         for (let i = 1; i <= totalPeriods; i++) {
             investmentPortfolio += (totalMonthlyOwnershipCost - currentMonthlyRent);
             investmentPortfolio *= (1 + monthlyInvestmentReturn);
-            if (i % 12 === 0) currentMonthlyRent *= (1 + annualRentIncrease);
+            if (i % 12 === 0) currentMonthlyRent *= (1 + (state.rentIncrease/100));
             const year = Math.ceil(i / 12);
             if (i % 12 === 0 || i === totalPeriods) {
                 rentingTimeline.push({ year: year, netWorth: investmentPortfolio });
                 const buyingData = buyingResults.schedule[i - 1];
                 if(buyingData) {
-                    const currentBuyingNetWorth = buyingData.totalEquity - (buyingData.propertyValue * sellingCostsRate);
+                    const currentBuyingNetWorth = buyingData.totalEquity - (buyingData.propertyValue * (state.sellingCosts/100));
                     buyingTimeline.push({ year: year, netWorth: currentBuyingNetWorth });
                 }
             }
@@ -309,54 +294,75 @@ Strategic Mortgage Planner - Application Logic
     }
 
     function calculateAffordability() {
-        const annualIncome = parseFloat(DOM.annualIncome.value); const monthlyDebts = parseFloat(DOM.nonMortgageDebt.value);
-        const downPayment = parseFloat(DOM.downPaymentAmount.value); const frontEndDTI = parseFloat(DOM.desiredFrontEndDTI.value) / 100;
-        const backEndDTI = parseFloat(DOM.desiredBackEndDTI.value) / 100; const annualRate = parseFloat(DOM.interestRate.value) / 100;
-        const termYears = parseFloat(DOM.loanTerm.value); const annualTax = parseFloat(DOM.propertyTax.value);
-        const annualInsurance = parseFloat(DOM.insurance.value); const monthlyIncome = annualIncome / 12;
-        const monthlyTax = annualTax / 12; const monthlyInsurance = annualInsurance / 12;
-        const maxPaymentFromFrontEnd = monthlyIncome * frontEndDTI; const maxPaymentFromBackEnd = (monthlyIncome * backEndDTI) - monthlyDebts;
-        const maxPITI = Math.min(maxPaymentFromFrontEnd, maxPaymentFromBackEnd); const maxPI = maxPITI - monthlyTax - monthlyInsurance;
+        const monthlyIncome = state.annualIncome / 12;
+        const monthlyTax = state.propertyTax / 12; const monthlyInsurance = state.insurance / 12;
+        const maxPaymentFromFrontEnd = monthlyIncome * (state.desiredFrontEndDTI / 100);
+        const maxPaymentFromBackEnd = (monthlyIncome * (state.desiredBackEndDTI / 100)) - state.nonMortgageDebt;
+        const maxPITI = Math.min(maxPaymentFromFrontEnd, maxPaymentFromBackEnd);
+        const maxPI = maxPITI - monthlyTax - monthlyInsurance;
         if (maxPI <= 0) return { homePrice: 0, loanAmount: 0, piti: 0, pi: 0, tax: 0, insurance: 0 };
-        const monthlyRate = annualRate / 12; const loanAmount = maxPI * (1 - Math.pow(1 + monthlyRate, -(termYears * 12))) / monthlyRate;
-        const homePrice = loanAmount + downPayment;
+        const monthlyRate = (state.interestRate/100) / 12;
+        const loanAmount = maxPI * (1 - Math.pow(1 + monthlyRate, -(state.loanTerm * 12))) / monthlyRate;
+        const homePrice = loanAmount + state.downPaymentAmount;
         return { homePrice, loanAmount, piti: maxPITI, pi: maxPI, tax: monthlyTax, insurance: monthlyInsurance };
     }
 
     function calculateRefinance() {
-        const originalAmount = parseFloat(DOM.originalLoanAmount.value); const currentRate = parseFloat(DOM.currentInterestRate.value) / 100;
-        const startDateStr = `${DOM.loanStartYear.value}-${DOM.loanStartMonth.value}`; const startDate = new Date(startDateStr + '-01T00:00:00'); const originalTermYears = parseFloat(DOM.loanTerm.value);
-        const newRate = parseFloat(DOM.newInterestRate.value) / 100; const newTermYears = parseFloat(DOM.newLoanTerm.value);
-        const closingCosts = parseFloat(DOM.newClosingCosts.value); const periodsPerYear = 12;
-        const originalTotalPeriods = originalTermYears * periodsPerYear; const monthsPassed = (new Date().getFullYear() - startDate.getFullYear()) * 12 + (new Date().getMonth() - startDate.getMonth());
-        if (monthsPassed >= originalTotalPeriods || monthsPassed < 0) return { monthlySavings: 0, breakEvenMonths: Infinity, lifetimeSavings: 0, currentPayment: 0, newPayment: 0, totalOldInterest: 0, totalNewInterest: 0 };
-        const periodicCurrentRate = currentRate / periodsPerYear;
-        const currentPayment = calculatePayment(originalAmount, currentRate, periodsPerYear, originalTotalPeriods);
-        let remainingBalance = originalAmount;
+        const { originalLoanAmount, currentInterestRate, loanTerm, newInterestRate, newLoanTerm, newClosingCosts, loanStartDate } = state;
+        const currentRate = currentInterestRate / 100;
+        const newRate = newInterestRate / 100;
+        const startDate = new Date(loanStartDate + '-01T00:00:00');
+        const originalTotalPeriods = loanTerm * 12;
+        const monthsPassed = (new Date().getFullYear() - startDate.getFullYear()) * 12 + (new Date().getMonth() - startDate.getMonth());
+        
+        if (monthsPassed >= originalTotalPeriods || monthsPassed < 0) return { monthlySavings: 0, breakEvenMonths: Infinity, lifetimeSavings: 0, savingsTimeline: [] };
+        
+        const periodicCurrentRate = currentRate / 12;
+        const currentPayment = calculatePayment(originalLoanAmount, currentRate, 12, originalTotalPeriods);
+        
+        let remainingBalance = originalLoanAmount;
         for (let i = 0; i < monthsPassed; i++) {
-            const interest = remainingBalance * periodicCurrentRate; remainingBalance -= (currentPayment - interest);
+            const interest = remainingBalance * periodicCurrentRate;
+            remainingBalance -= (currentPayment - interest);
         }
-        const newTotalPeriods = newTermYears * periodsPerYear; const newPayment = calculatePayment(remainingBalance, newRate, periodsPerYear, newTotalPeriods);
-        const monthlySavings = currentPayment - newPayment; const breakEvenMonths = monthlySavings > 0 ? closingCosts / monthlySavings : Infinity;
+        
+        const newTotalPeriods = newLoanTerm * 12;
+        const newPayment = calculatePayment(remainingBalance, newRate, 12, newTotalPeriods);
+        const monthlySavings = currentPayment - newPayment;
+        const breakEvenMonths = monthlySavings > 0 ? newClosingCosts / monthlySavings : Infinity;
+        
         let remainingOldInterest = 0; let tempBalanceOld = remainingBalance;
         for (let i = 0; i < (originalTotalPeriods - monthsPassed); i++) {
-            const interest = tempBalanceOld * periodicCurrentRate; remainingOldInterest += interest; tempBalanceOld -= (currentPayment - interest);
+            const interest = tempBalanceOld * periodicCurrentRate;
+            remainingOldInterest += interest;
+            tempBalanceOld -= (currentPayment - interest);
         }
-        let totalNewInterest = 0; let tempBalanceNew = remainingBalance; const periodicNewRate = newRate / periodsPerYear;
+        
+        let totalNewInterest = 0; let tempBalanceNew = remainingBalance;
+        const periodicNewRate = newRate / 12;
         for (let i = 0; i < newTotalPeriods; i++) {
-            const interest = tempBalanceNew * periodicNewRate; totalNewInterest += interest; tempBalanceNew -= (newPayment - interest);
+            const interest = tempBalanceNew * periodicNewRate;
+            totalNewInterest += interest;
+            tempBalanceNew -= (newPayment - interest);
         }
-        const lifetimeSavings = remainingOldInterest - (totalNewInterest + closingCosts);
-        return { monthlySavings, breakEvenMonths, lifetimeSavings, currentPayment, newPayment, totalOldInterest: remainingOldInterest, totalNewInterest: totalNewInterest + closingCosts };
+        
+        const lifetimeSavings = remainingOldInterest - (totalNewInterest + newClosingCosts);
+
+        const savingsTimeline = [];
+        const timelineMonths = Math.min(newTotalPeriods, 120);
+        for (let i = 0; i <= timelineMonths; i++) {
+            savingsTimeline.push({ month: i, savings: (monthlySavings * i) - newClosingCosts });
+        }
+        
+        return { monthlySavings, breakEvenMonths, lifetimeSavings, savingsTimeline };
     }
+
 
     // --- DTI Calculation & Rendering ---
     function calculateDTI(totalMonthlyHousingCost) {
-        const annualIncome = parseFloat(DOM.annualIncome.value) || 0;
-        const monthlyNonMortgageDebt = parseFloat(DOM.nonMortgageDebt.value) || 0;
-        if (annualIncome === 0) return { frontEnd: 0, backEnd: 0 };
-        const grossMonthlyIncome = annualIncome / 12;
-        return { frontEnd: totalMonthlyHousingCost / grossMonthlyIncome, backEnd: (totalMonthlyHousingCost + monthlyNonMortgageDebt) / grossMonthlyIncome };
+        if (state.annualIncome === 0) return { frontEnd: 0, backEnd: 0 };
+        const grossMonthlyIncome = state.annualIncome / 12;
+        return { frontEnd: totalMonthlyHousingCost / grossMonthlyIncome, backEnd: (totalMonthlyHousingCost + state.nonMortgageDebt) / grossMonthlyIncome };
     }
 
     function renderDTI(frontEndDTI, backEndDTI) {
@@ -367,7 +373,7 @@ Strategic Mortgage Planner - Application Logic
             return { text: 'High Risk (>43%)', color: 'dti-critical' };
         };
         const applyStatus = (element, statusElement, status) => {
-            element.className = `text-lg sm:text-xl font-extrabold text-${status.color}`;
+            element.className = `text-lg font-extrabold text-${status.color}`;
             statusElement.textContent = status.text;
             statusElement.className = `text-xs font-semibold mt-1 text-${status.color}`;
         };
@@ -413,9 +419,39 @@ Strategic Mortgage Planner - Application Logic
     function renderRefinanceChart(results) {
         const ctx = document.getElementById('refinanceChart').getContext('2d');
         if (refinanceChart) refinanceChart.destroy();
+        const breakEvenMonth = isFinite(results.breakEvenMonths) ? results.breakEvenMonths : null;
+        const labels = results.savingsTimeline.map(d => d.month);
         refinanceChart = new Chart(ctx, {
-            type: 'bar', data: { labels: ['Monthly P&I Payment', 'Total Interest Cost'], datasets: [ { label: 'Current Loan', data: [results.currentPayment, results.totalOldInterest], backgroundColor: '#be123c' }, { label: 'New Loan', data: [results.newPayment, results.totalNewInterest], backgroundColor: '#166534' } ] },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { title: { display: true, text: 'Payment & Total Cost Comparison' }, tooltip: { callbacks: { label: c => `${c.dataset.label}: ${formatCurrency(c.raw)}` } } }, scales: { y: { beginAtZero: true, ticks: { callback: value => formatCurrency(value) } } } }
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Cumulative Savings',
+                    data: results.savingsTimeline.map(d => d.savings),
+                    borderColor: '#166534',
+                    backgroundColor: 'rgba(22, 101, 52, 0.1)',
+                    fill: 'origin',
+                    tension: 0.1,
+                    pointRadius: 0,
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: {
+                    title: { display: true, text: 'Refinance Cumulative Savings Over Time' },
+                    tooltip: { callbacks: { label: c => `Month ${c.label}: ${formatCurrency(c.raw)} in savings` } },
+                    annotation: {
+                        annotations: {
+                            breakEvenLine: { type: 'line', yMin: 0, yMax: 0, borderColor: '#9A3412', borderWidth: 2, borderDash: [6, 6], label: { content: 'Break-Even', position: 'start', display: true, font: { weight: 'bold' }, backgroundColor: 'rgba(255,255,255,0.7)' } },
+                            ...(breakEvenMonth && { breakEvenMarker: { type: 'line', xMin: breakEvenMonth, xMax: breakEvenMonth, borderColor: '#9A3412', borderWidth: 2, label: { content: `Break-Even: ${Math.floor(breakEvenMonth / 12)}y ${Math.round(breakEvenMonth % 12)}m`, position: 'end', display: true, font: { weight: 'bold' }, backgroundColor: 'rgba(255,255,255,0.7)', rotation: -90, yAdjust: 20 } } })
+                        }
+                    }
+                },
+                scales: {
+                    y: { beginAtZero: false, ticks: { callback: value => formatCurrency(value) }, title: { display: true, text: 'Cumulative Savings' } },
+                    x: { ticks: { callback: function(value, index) { const month = labels[index]; return month % 12 === 0 ? `Year ${month/12}` : null; }, autoSkip: false, maxRotation: 0 }, title: { display: true, text: 'Months Since Refinance' } }
+                }
+            }
         });
     }
 
@@ -428,8 +464,8 @@ Strategic Mortgage Planner - Application Logic
         else if (currentTab === 'refinance') fields = [{ id: 'originalLoanAmount', name: 'Original Loan Amount', min: 1000 }, { id: 'currentInterestRate', name: 'Current Interest Rate', min: 0.1, max: 25 }, { id: 'newInterestRate', name: 'New Interest Rate', min: 0.1, max: 25 }, { id: 'newLoanTerm', name: 'New Loan Term', min: 5, max: 50 }, { id: 'newClosingCosts', name: 'Closing Costs', min: 0 }];
         allInputIds.forEach(id => { if (DOM[id]) DOM[id].classList.remove('input-error'); });
         fields.forEach(field => {
-            const el = DOM[field.id]; if (!el) return; const value = parseFloat(el.value); let hasError = false;
-            if (el.type !== 'month' && isNaN(value)) { errors.push(`${field.name} must be a number.`); hasError = true; } 
+            const el = DOM[field.id]; if (!el) return; const value = state[field.id]; let hasError = false;
+            if (typeof value === 'undefined' || (typeof value === 'number' && isNaN(value))) { errors.push(`${field.name} must be a number.`); hasError = true; }
             else {
                 if (field.min !== undefined && value < field.min) { errors.push(`${field.name} must be at least ${field.min}.`); hasError = true; }
                 if (field.max !== undefined && value > field.max) { errors.push(`${field.name} cannot exceed ${field.max}.`); hasError = true; }
@@ -444,8 +480,18 @@ Strategic Mortgage Planner - Application Logic
     }
 
     function handleCalculation(isShockTest = false) {
-        const calculateButton = document.querySelector(`#${currentTab}-content .calculate-button`);
+        let calculateButton;
+        if (currentTab === 'mortgage') {
+            calculateButton = document.querySelector(`#mortgage-calculator-content .calculate-button`);
+        } else {
+            calculateButton = document.querySelector(`#${currentTab}-content .calculate-button`);
+        }
+        
+        showLoader();
         if(calculateButton) { calculateButton.disabled = true; calculateButton.textContent = 'Calculating...'; }
+
+        updateStateFromDOM();
+
         setTimeout(() => {
             try { 
                 if (validateInputs()) {
@@ -458,6 +504,7 @@ Strategic Mortgage Planner - Application Logic
             } 
             catch (e) { console.error("Calculation Error:", e); DOM.errorList.innerHTML = `<li>An unexpected error occurred. Please check console.</li>`; DOM.errorMessages.classList.remove('hidden'); } 
             finally {
+                hideLoader();
                 if(calculateButton) {
                     calculateButton.disabled = false;
                     const buttonTextMap = { mortgage: 'Calculate Scenario', affordability: 'Calculate Affordability', 'rent-vs-buy': 'Calculate Comparison', refinance: 'Analyze Refinance' };
@@ -498,31 +545,30 @@ Strategic Mortgage Planner - Application Logic
     }
 
     function calculateMortgage(isShockTest = false) {
-        const getVal = id => parseFloat(DOM[id].value);
-        const periodsPerYear = parseInt(DOM.repaymentFrequency.value);
-        const originalParams = { principal: getVal('loanAmount'), annualRate: getVal('interestRate') / 100, periodsPerYear, totalPeriods: getVal('loanTerm') * periodsPerYear, extraPaymentPerPeriod: 0, lumpSumAmount: 0, lumpSumPeriod: 0, initialLTV: getVal('initialLTV'), pmiRate: 0, refiPeriod: 0, refiRate: 0, refiTerm: 0, refiClosingCosts: 0, pitiEscalationRate: 0, discountRate: getVal('discountRate') / 100, appreciationRate: 0 };
-        const acceleratedParams = { ...originalParams, extraPaymentPerPeriod: getVal('extraPayment'), lumpSumAmount: getVal('lumpSumPayment'), lumpSumPeriod: getVal('lumpSumPeriod'), pmiRate: getVal('pmiRate') / 100, refiPeriod: getVal('refiPeriod'), refiRate: getVal('refiRate'), refiTerm: getVal('refiTerm'), refiClosingCosts: getVal('refiClosingCosts'), pitiEscalationRate: getVal('pitiEscalationRate') / 100, appreciationRate: getVal('appreciationRate') / 100 };
+        const periodsPerYear = state.repaymentFrequency;
+        const originalParams = { principal: state.loanAmount, annualRate: state.interestRate / 100, periodsPerYear, totalPeriods: state.loanTerm * periodsPerYear, extraPaymentPerPeriod: 0, lumpSumAmount: 0, lumpSumPeriod: 0, initialLTV: state.initialLTV, pmiRate: 0, refiPeriod: 0, refiRate: 0, refiTerm: 0, refiClosingCosts: 0, pitiEscalationRate: 0, discountRate: state.discountRate / 100, appreciationRate: 0, propertyTax: state.propertyTax, insurance: state.insurance, hoa: state.hoa };
+        const acceleratedParams = { ...originalParams, extraPaymentPerPeriod: state.extraPayment, lumpSumAmount: state.lumpSumPayment, lumpSumPeriod: state.lumpSumPeriod, pmiRate: state.pmiRate / 100, refiPeriod: state.refiPeriod, refiRate: state.refiRate, refiTerm: state.refiTerm, refiClosingCosts: state.refiClosingCosts, pitiEscalationRate: state.pitiEscalationRate / 100, appreciationRate: state.appreciationRate / 100 };
         DOM.results.style.opacity = 1; DOM.results.classList.add('results-enter-active');
         DOM.scheduleWrapper.style.opacity = 1; DOM.shockResults.style.display = 'none';
         const original = generateAmortization(originalParams);
         const accelerated = generateAmortization(acceleratedParams);
         const pniMonthly = original.standardPayment * (12 / periodsPerYear);
         const pmiMonthly = (accelerated.schedule[0] ? accelerated.schedule[0].pmi : 0) * (12 / periodsPerYear);
-        const totalPITI = pniMonthly + (getVal('propertyTax') / 12) + (getVal('insurance') / 12) + getVal('hoa') + pmiMonthly;
-        const initialPropertyValue = (getVal('initialLTV') > 0 && getVal('initialLTV') <= 100) ? getVal('loanAmount') / (getVal('initialLTV') / 100) : getVal('loanAmount');
-        const monthlyMaintenance = (initialPropertyValue * (getVal('annualMaintenance') / 100)) / 12;
-        const totalMonthlyOwnershipCost = totalPITI + monthlyMaintenance + getVal('monthlyUtilities');
+        const totalPITI = pniMonthly + (state.propertyTax / 12) + (state.insurance / 12) + state.hoa + pmiMonthly;
+        const initialPropertyValue = (state.initialLTV > 0 && state.initialLTV <= 100) ? state.loanAmount / (state.initialLTV / 100) : state.loanAmount;
+        const monthlyMaintenance = (initialPropertyValue * (state.annualMaintenance / 100)) / 12;
+        const totalMonthlyOwnershipCost = totalPITI + monthlyMaintenance + state.monthlyUtilities;
         renderDTI(calculateDTI(totalMonthlyOwnershipCost).frontEnd, calculateDTI(totalMonthlyOwnershipCost).backEnd);
         animateValue(DOM.finalEquity, accelerated.finalEquity);
         animateValue(DOM.finalPropertyValue, accelerated.finalPropertyValue);
         DOM.totalMonthlyPaymentPITI.textContent = formatCurrency(totalPITI);
         DOM.totalOwnershipCost.textContent = formatCurrency(totalMonthlyOwnershipCost);
-        if (getVal('pmiRate') > 0 && getVal('initialLTV') > 80 && accelerated.pmiDropPeriod) {
+        if (state.pmiRate > 0 && state.initialLTV > 80 && accelerated.pmiDropPeriod) {
             DOM.pmiDropNote.style.display = 'block';
             DOM.pmiDropPeriod.textContent = accelerated.pmiDropPeriod;
         } else { DOM.pmiDropNote.style.display = 'none'; }
         DOM.standardPaymentDisplay.textContent = formatCurrency(original.standardPayment * (12 / periodsPerYear));
-        DOM.acceleratedPaymentDisplay.textContent = formatCurrency((original.standardPayment + getVal('extraPayment')) * (12/periodsPerYear));
+        DOM.acceleratedPaymentDisplay.textContent = formatCurrency((original.standardPayment + state.extraPayment) * (12/periodsPerYear));
         animateValue(DOM.totalInterestOriginal, original.totalInterest);
         animateValue(DOM.totalInterestNew, accelerated.totalInterest);
         animateValue(DOM.npvOriginal, original.totalPVInterest);
@@ -544,16 +590,16 @@ Strategic Mortgage Planner - Application Logic
         renderChart(accelerated);
         generateAmortizationTable(original, accelerated);
         if (isShockTest) {
-            const shockInc = getVal('shockRateIncrease') / 100;
-            const shockRate = (getVal('interestRate') / 100) + shockInc;
-            const shockPmt = calculatePayment(getVal('loanAmount'), shockRate, periodsPerYear, getVal('loanTerm') * periodsPerYear);
+            const shockInc = state.shockRateIncrease / 100;
+            const shockRate = (state.interestRate / 100) + shockInc;
+            const shockPmt = calculatePayment(state.loanAmount, shockRate, periodsPerYear, state.loanTerm * periodsPerYear);
             DOM.shockResults.style.display = 'block';
             DOM.shockRateDisplay.textContent = (shockRate * 100).toFixed(2);
             DOM.originalShockPaymentDisplay.textContent = formatCurrency(original.standardPayment);
             DOM.shockPaymentDisplay.textContent = formatCurrency(shockPmt);
             DOM.paymentIncrease.textContent = formatCurrency(shockPmt - original.standardPayment);
         }
-        currentResults = { original, accelerated, totalPITI, totalMonthlyOwnershipCost, dti: calculateDTI(totalMonthlyOwnershipCost), interestSaved: iSaved, npvSaved: npvSaved, timeSaved: timeSavedStr, inputs: Object.fromEntries(allInputIds.map(id => [id, DOM[id].value])) };
+        currentResults = { original, accelerated, totalPITI, totalMonthlyOwnershipCost, dti: calculateDTI(totalMonthlyOwnershipCost), interestSaved: iSaved, npvSaved: npvSaved, timeSaved: timeSavedStr, inputs: { ...state } };
     }
 
     function generateAmortizationTable(originalResults, acceleratedResults) {
@@ -577,19 +623,16 @@ Strategic Mortgage Planner - Application Logic
         if(DOM.loanStartMonth) DOM.loanStartMonth.value = "01";
         if(DOM.loanStartYear) DOM.loanStartYear.value = "2021";
         DOM.repaymentFrequency.value = "12"; DOM.currency.value = "USD";
-        history.pushState(null, '', window.location.pathname); handleCalculation(); updateCurrencySymbols();
+        updateStateFromDOM();
+        history.pushState(null, '', window.location.pathname);
+        handleCalculation();
+        updateCurrencySymbols();
     }
 
     function updateURLWithInputs() {
         const params = new URLSearchParams();
-        allInputIds.forEach(id => { 
-            const el = DOM[id]; 
-            if (el && id !== 'loanStartMonth' && id !== 'loanStartYear') {
-                 params.set(id, el.value); 
-            }
-        });
-        if (DOM.loanStartYear && DOM.loanStartMonth) {
-            params.set('loanStartDate', `${DOM.loanStartYear.value}-${DOM.loanStartMonth.value}`);
+        for (const key in state) {
+            params.set(key, state[key]);
         }
         history.replaceState(null, '', '?' + params.toString());
     }
@@ -679,7 +722,6 @@ Strategic Mortgage Planner - Application Logic
                 tabs[key].content.classList.toggle('hidden', !isActive);
             }
         }
-        // Update URL hash without adding to history
         if(history.replaceState) {
             history.replaceState(null, null, `#${tab}-tab`);
         }
@@ -700,10 +742,20 @@ Strategic Mortgage Planner - Application Logic
     }
 
     function init() {
+        if (window.ChartAnnotation) {
+            Chart.register(window.ChartAnnotation);
+        } else {
+            console.warn('Chart.js Annotation plugin not found. Break-even line will not be displayed.');
+        }
+
         setupTabs();
         setupModal();
         
-        DOM.currency.addEventListener('change', updateCurrencySymbols);
+        DOM.currency.addEventListener('change', () => {
+            updateStateFromDOM();
+            updateCurrencySymbols();
+            handleCalculation();
+        });
         DOM.calculateButtons.forEach(btn => btn.addEventListener('click', () => handleCalculation(false)));
         DOM.resetButtons.forEach(btn => btn.addEventListener('click', resetForm));
         if(DOM.shockTestButton) DOM.shockTestButton.addEventListener('click', () => handleCalculation(true));
@@ -715,37 +767,34 @@ Strategic Mortgage Planner - Application Logic
 
         const urlPopulated = populateFormFromURL();
         
-        // Handle initial tab state from URL hash or default
         const hash = window.location.hash.substring(1);
         const tabKeyFromHash = hash.replace('-tab', '');
         
         if (tabs[tabKeyFromHash]) {
             switchTab(tabKeyFromHash);
-             // Scroll to calculator on hash link load for better UX
             setTimeout(() => {
                 const calculatorEl = document.getElementById('calculator');
                 const headerEl = document.querySelector('header');
                 if (calculatorEl && headerEl) {
                     const headerOffset = headerEl.offsetHeight;
                     const elementPosition = calculatorEl.getBoundingClientRect().top;
-                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset - 16; // 16px buffer (1rem)
-
-                    window.scrollTo({
-                        top: offsetPosition,
-                        behavior: "smooth"
-                    });
+                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset - 16;
+                    window.scrollTo({ top: offsetPosition, behavior: "smooth" });
                 }
-            }, 150); // Small delay for rendering
+            }, 150);
         } else {
-            switchTab('mortgage'); // Default to mortgage tab
+            switchTab('mortgage');
         }
 
         populateYearDropdown();
+        
+        updateStateFromDOM(); // Initial state sync from default DOM values
 
         if (!urlPopulated) {
-            resetForm(); // Reset form only if not populated from URL
+            resetForm(); // This resets DOM, updates state, and recalculates
         } else {
-            handleCalculation(); // Calculate if populated from URL
+            updateStateFromDOM(); // Sync state from URL-populated DOM
+            handleCalculation(); // Calculate based on the new state
         }
         updateCurrencySymbols();
         
