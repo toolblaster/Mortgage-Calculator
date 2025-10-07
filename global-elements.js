@@ -1,63 +1,3 @@
-/**
- * Sets up social sharing links on the page.
- * Finds elements with specific IDs and populates their href attribute
- * based on the current page's URL and title.
- */
-function initializeSocialSharing() {
-    const shareUrl = encodeURIComponent(window.location.href);
-    const shareTitle = encodeURIComponent(document.title);
-    const shareSource = encodeURIComponent("Strategic Mortgage Planner");
-
-    const shareMappings = {
-        'share-twitter': `https://twitter.com/intent/tweet?url=${shareUrl}&text=${shareTitle}`,
-        'share-facebook': `https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`,
-        'share-linkedin': `https://www.linkedin.com/shareArticle?mini=true&url=${shareUrl}&title=${shareTitle}&source=${shareSource}`,
-        'share-whatsapp': `https://api.whatsapp.com/send?text=${shareTitle}%20${shareUrl}`,
-        'share-email': `mailto:?subject=${shareTitle}&body=Check out this helpful guide: ${shareUrl}`
-    };
-
-    for (const id in shareMappings) {
-        const element = document.getElementById(id);
-        if (element) {
-            element.href = shareMappings[id];
-        }
-    }
-}
-
-/**
- * Initializes the mobile sidebar functionality.
- * The sidebar appears when the user scrolls near the bottom of the page.
- */
-function initializeMobileSidebar() {
-    const mobileSidebar = document.getElementById('mobile-related-articles');
-    const closeButton = document.getElementById('close-mobile-sidebar');
-    let sidebarShown = false;
-
-    if (mobileSidebar && closeButton) {
-        const showSidebar = () => {
-            if (!sidebarShown) {
-                mobileSidebar.classList.remove('translate-y-full');
-                sidebarShown = true;
-            }
-        };
-
-        const hideSidebar = () => {
-            mobileSidebar.classList.add('translate-y-full');
-            sidebarShown = false;
-        };
-
-        closeButton.addEventListener('click', hideSidebar);
-
-        // Show the sidebar when scrolling near the bottom of the page
-        window.addEventListener('scroll', () => {
-            if (!sidebarShown && (window.innerHeight + window.scrollY) >= document.body.offsetHeight - 200) {
-                showSidebar();
-            }
-        }, { passive: true });
-    }
-}
-
-
 document.addEventListener('DOMContentLoaded', function() {
     // Determine the root path based on the current page's location
     let rootPath = './';
@@ -175,8 +115,4 @@ document.addEventListener('DOMContentLoaded', function() {
             close.classList.toggle('hidden');
         });
     }
-
-    // Initialize Global Functions
-    initializeSocialSharing();
-    initializeMobileSidebar();
 });
