@@ -1,7 +1,7 @@
 /*
 ================================================
 Strategic Mortgage Planner - Application Logic
-(Refactored for Centralized State Management)
+(Refactored for Centralized State Management & Modularity)
 ================================================
 */
 
@@ -9,6 +9,7 @@ Strategic Mortgage Planner - Application Logic
     'use strict';
 
     // --- DOM Element Cache ---
+    // This remains largely the same, caching all necessary elements.
     const DOM = {
         // Input Fields
         loanAmount: document.getElementById('loanAmount'), interestRate: document.getElementById('interestRate'), loanTerm: document.getElementById('loanTerm'),
@@ -293,19 +294,46 @@ Strategic Mortgage Planner - Application Logic
         return { buyingNetWorth, rentingNetWorth: investmentPortfolio, rentingTimeline, buyingTimeline };
     }
 
-    function calculateAffordability() {
-        const monthlyIncome = state.annualIncome / 12;
-        const monthlyTax = state.propertyTax / 12; const monthlyInsurance = state.insurance / 12;
-        const maxPaymentFromFrontEnd = monthlyIncome * (state.desiredFrontEndDTI / 100);
-        const maxPaymentFromBackEnd = (monthlyIncome * (state.desiredBackEndDTI / 100)) - state.nonMortgageDebt;
-        const maxPITI = Math.min(maxPaymentFromFrontEnd, maxPaymentFromBackEnd);
-        const maxPI = maxPITI - monthlyTax - monthlyInsurance;
-        if (maxPI <= 0) return { homePrice: 0, loanAmount: 0, piti: 0, pi: 0, tax: 0, insurance: 0 };
-        const monthlyRate = (state.interestRate/100) / 12;
-        const loanAmount = maxPI * (1 - Math.pow(1 + monthlyRate, -(state.loanTerm * 12))) / monthlyRate;
-        const homePrice = loanAmount + state.downPaymentAmount;
-        return { homePrice, loanAmount, piti: maxPITI, pi: maxPI, tax: monthlyTax, insurance: monthlyInsurance };
-    }
+    // REFACTOR: Encapsulate Affordability logic into its own module
+    const AffordabilityCalculator = {
+        calculate() {
+            const monthlyIncome = state.annualIncome / 12;
+            const monthlyTax = state.propertyTax / 12; 
+            const monthlyInsurance = state.insurance / 12;
+            const maxPaymentFromFrontEnd = monthlyIncome * (state.desiredFrontEndDTI / 100);
+            const maxPaymentFromBackEnd = (monthlyIncome * (state.desiredBackEndDTI / 100)) - state.nonMortgageDebt;
+            const maxPITI = Math.min(maxPaymentFromFrontEnd, maxPaymentFromBackEnd);
+            const maxPI = maxPITI - monthlyTax - monthlyInsurance;
+            if (maxPI <= 0) return { homePrice: 0, loanAmount: 0, piti: 0, pi: 0, tax: 0, insurance: 0 };
+            const monthlyRate = (state.interestRate/100) / 12;
+            const loanAmount = maxPI * (1 - Math.pow(1 + monthlyRate, -(state.loanTerm * 12))) / monthlyRate;
+            const homePrice = loanAmount + state.downPaymentAmount;
+            return { homePrice, loanAmount, piti: maxPITI, pi: maxPI, tax: monthlyTax, insurance: monthlyInsurance };
+        },
+
+        render(results) {
+            DOM.affordableHomePrice.textContent = formatCurrency(results.homePrice);
+            DOM.affordableLoanAmount.textContent = formatCurrency(results.loanAmount);
+            DOM.affordablePITI.textContent = formatCurrency(results.piti);
+            this.renderChart(results);
+            DOM.affordabilityResults.style.opacity = 1; 
+            DOM.affordabilityResults.classList.add('results-animate-in');
+        },
+
+        renderChart(results) {
+            const ctx = document.getElementById('affordabilityChart').getContext('2d');
+            if (affordabilityChart) affordabilityChart.destroy();
+            affordabilityChart = new Chart(ctx, {
+                type: 'doughnut', data: { labels: ['Principal & Interest', 'Property Tax', 'Home Insurance'], datasets: [{ label: 'Monthly Payment Breakdown', data: [results.pi, results.tax, results.insurance], backgroundColor: ['#1C768F', '#b45309', '#065f46'], borderColor: '#ffffff', borderWidth: 2 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { title: { display: true, text: 'Estimated Monthly Payment Breakdown' }, legend: { position: 'bottom', }, tooltip: { callbacks: { label: c => `${c.label}: ${formatCurrency(c.raw)}` } } } }
+            });
+        },
+        
+        run() {
+            const results = this.calculate();
+            this.render(results);
+        }
+    };
 
     function calculateRefinance() {
         const { originalLoanAmount, currentInterestRate, loanTerm, newInterestRate, newLoanTerm, newClosingCosts, loanStartDate } = state;
@@ -407,15 +435,6 @@ Strategic Mortgage Planner - Application Logic
         });
     }
 
-    function renderAffordabilityChart(results) {
-        const ctx = document.getElementById('affordabilityChart').getContext('2d');
-        if (affordabilityChart) affordabilityChart.destroy();
-        affordabilityChart = new Chart(ctx, {
-            type: 'doughnut', data: { labels: ['Principal & Interest', 'Property Tax', 'Home Insurance'], datasets: [{ label: 'Monthly Payment Breakdown', data: [results.pi, results.tax, results.insurance], backgroundColor: ['#1C768F', '#b45309', '#065f46'], borderColor: '#ffffff', borderWidth: 2 }] },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { title: { display: true, text: 'Estimated Monthly Payment Breakdown' }, legend: { position: 'bottom', }, tooltip: { callbacks: { label: c => `${c.label}: ${formatCurrency(c.raw)}` } } } }
-        });
-    }
-
     function renderRefinanceChart(results) {
         const ctx = document.getElementById('refinanceChart').getContext('2d');
         if (refinanceChart) refinanceChart.destroy();
@@ -497,7 +516,8 @@ Strategic Mortgage Planner - Application Logic
                 if (validateInputs()) {
                     if(currentTab === 'mortgage') calculateMortgage(isShockTest);
                     else if (currentTab === 'rent-vs-buy') runRentVsBuyAnalysis();
-                    else if (currentTab === 'affordability') runAffordabilityAnalysis();
+                    // UPDATED: Use the new AffordabilityCalculator module
+                    else if (currentTab === 'affordability') AffordabilityCalculator.run();
                     else if (currentTab === 'refinance') runRefinanceAnalysis();
                     updateURLWithInputs();
                 }
@@ -521,15 +541,6 @@ Strategic Mortgage Planner - Application Logic
         DOM.rentVsBuyConclusion.innerHTML = results.buyingNetWorth > results.rentingNetWorth ? `<p class="text-lg font-bold text-green-700">Buying appears to be the better financial decision.</p>` : `<p class="text-lg font-bold text-blue-700">Renting and investing appears to be the better financial decision.</p>`;
         renderRentVsBuyChart(results.rentingTimeline, results.buyingTimeline);
         DOM.rentVsBuyResults.style.opacity = 1; DOM.rentVsBuyResults.classList.add('results-animate-in');
-    }
-
-    function runAffordabilityAnalysis() {
-        const results = calculateAffordability();
-        DOM.affordableHomePrice.textContent = formatCurrency(results.homePrice);
-        DOM.affordableLoanAmount.textContent = formatCurrency(results.loanAmount);
-        DOM.affordablePITI.textContent = formatCurrency(results.piti);
-        renderAffordabilityChart(results);
-        DOM.affordabilityResults.style.opacity = 1; DOM.affordabilityResults.classList.add('results-animate-in');
     }
     
     function runRefinanceAnalysis() {
