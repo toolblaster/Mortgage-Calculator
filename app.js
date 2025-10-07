@@ -751,6 +751,19 @@ Strategic Mortgage Planner - Application Logic
         setupTabs();
         setupModal();
         
+        // Add print event listeners to disable/re-enable chart animations
+        window.addEventListener('beforeprint', () => {
+            if (Chart && Chart.defaults) {
+                Chart.defaults.animation = false;
+            }
+        });
+
+        window.addEventListener('afterprint', () => {
+            if (Chart && Chart.defaults) {
+                Chart.defaults.animation = {}; // Re-enable animations by resetting to default
+            }
+        });
+
         DOM.currency.addEventListener('change', () => {
             updateStateFromDOM();
             updateCurrencySymbols();
