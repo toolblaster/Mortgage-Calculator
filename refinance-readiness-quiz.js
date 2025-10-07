@@ -181,27 +181,36 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('share-email-quiz').href = `mailto:?subject=${pageTitle}&body=Check out this helpful quiz: ${pageUrl}`;
     }
 
+    // *** EDITED: Replaced individual listeners with event delegation ***
+    // This is more efficient as it uses only one event listener for the entire quiz.
     quizContainer.addEventListener('click', function(e) {
+        // Find the closest ancestor which is a quiz option button
         const button = e.target.closest('.quiz-option');
+
+        // If the click was not on a button or its child, do nothing
         if (!button) return;
 
+        // Disable all options in the same card to prevent multiple clicks
         const allOptionsInCard = button.closest('.quiz-card').querySelectorAll('.quiz-option');
         allOptionsInCard.forEach(opt => opt.disabled = true);
-        button.classList.add('selected');
+
+        button.classList.add('selected'); // Highlight selected option
 
         const currentCard = button.closest('.quiz-card');
         const nextQuestion = button.dataset.next;
         userAnswers[currentCard.dataset.key] = button.dataset.value;
 
+        // Brief delay before showing the next question for a smoother transition
         setTimeout(() => {
             if (nextQuestion === 'results') {
                 showResults();
             } else {
                 showQuestion(nextQuestion);
             }
-        }, 400);
+        }, 400); // 400ms delay
     });
 
     document.getElementById('retake-quiz-button').addEventListener('click', resetQuiz);
-    showQuestion('1');
+
+    showQuestion('1'); // Show the first question initially
 });
