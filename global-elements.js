@@ -7,7 +7,8 @@ document.addEventListener('DOMContentLoaded', function() {
         rootPath = '../';
     }
 
-    const homePath = `${rootPath}index.html`;
+    // UPDATED: Removed index.html from homePath
+    const homePath = rootPath;
     const quizPath = `${rootPath}Refinance-Readiness-Quiz.html`;
     const equityCalcPath = `${rootPath}calculators/home-equity-calculator.html`;
     const legalPath = `${rootPath}legal.html`;
