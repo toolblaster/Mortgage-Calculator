@@ -11,18 +11,17 @@ document.addEventListener('DOMContentLoaded', function() {
         refiClosingCosts: document.getElementById('refiClosingCosts'),
         refiRateSlider: document.getElementById('refiRateSlider'),
         refiRateValue: document.getElementById('refiRateValue'),
-        compareBtn: document.getElementById('compareOptionsBtn'),
-        saveBtn: document.getElementById('saveScenario'),
+        compareOptionsBtn: document.getElementById('compareOptionsBtn'),
+        saveScenarioBtn: document.getElementById('saveScenario'),
         saveFeedback: document.getElementById('saveFeedback'),
-        totalEquityEl: document.getElementById('totalEquity'),
-        availableEquityEl: document.getElementById('availableEquity'),
-        helocMonthlyPaymentEl: document.getElementById('helocMonthlyPayment'),
-        helocTotalInterestEl: document.getElementById('helocTotalInterest'),
-        refiMonthlyPaymentEl: document.getElementById('refiMonthlyPayment'),
-        refiTotalInterestEl: document.getElementById('refiTotalInterest'),
-        equityChartCanvas: document.getElementById('equityChart'),
-        comparisonChartCanvas: document.getElementById('comparisonChart'),
-        faqAccordion: document.getElementById('faq-accordion'),
+        
+        // Results
+        availableEquity: document.getElementById('availableEquity'),
+        totalEquity: document.getElementById('totalEquity'),
+        helocMonthlyPayment: document.getElementById('helocMonthlyPayment'),
+        helocTotalInterest: document.getElementById('helocTotalInterest'),
+        refiMonthlyPayment: document.getElementById('refiMonthlyPayment'),
+        refiTotalInterest: document.getElementById('refiTotalInterest'),
     };
 
     let equityChart = null;
@@ -38,7 +37,6 @@ document.addEventListener('DOMContentLoaded', function() {
         let startValue = parseFloat(el.dataset.value) || 0;
         el.dataset.value = endValue;
         let startTime = null;
-        
         function animation(currentTime) {
             if (startTime === null) startTime = currentTime;
             const timeElapsed = currentTime - startTime;
@@ -51,150 +49,173 @@ document.addEventListener('DOMContentLoaded', function() {
         requestAnimationFrame(animation);
     }
     
-    // --- Chart Rendering ---
-    function renderEquityChart(mortgageBalance, totalEquity) {
-        const ctx = DOM.equityChartCanvas.getContext('2d');
+    // --- Core Calculation Logic ---
+    function calculatePayment(principal, annualRate, termYears) {
+        if (principal <= 0 || annualRate <= 0 || termYears <= 0) return 0;
+        const monthlyRate = annualRate / 12 / 100;
+        const numberOfPayments = termYears * 12;
+        const payment = principal * monthlyRate * Math.pow(1 + monthlyRate, numberOfPayments) / (Math.pow(1 + monthlyRate, numberOfPayments) - 1);
+        return isFinite(payment) ? payment : 0;
+    }
+
+    function calculateEquity() {
+        const homeValue = parseFloat(DOM.homeValue.value) || 0;
+        const mortgageBalance = parseFloat(DOM.mortgageBalance.value) || 0;
+        const ltvRatio = parseFloat(DOM.ltvRatio.value) || 0;
+
+        const totalEquity = homeValue - mortgageBalance;
+        const maxLoanAmount = homeValue * (ltvRatio / 100);
+        const availableEquity = Math.max(0, maxLoanAmount - mortgageBalance);
+
+        return { totalEquity, availableEquity };
+    }
+
+    function calculateScenarios() {
+        const { totalEquity, availableEquity } = calculateEquity();
+
+        // HELOC Calculation
+        const helocRate = parseFloat(DOM.helocRateSlider.value);
+        const helocTerm = parseFloat(DOM.helocTerm.value);
+        const helocPayment = calculatePayment(availableEquity, helocRate, helocTerm);
+        const helocTotalInterest = (helocPayment * helocTerm * 12) - availableEquity;
+        
+        // Cash-Out Refinance Calculation
+        const mortgageBalance = parseFloat(DOM.mortgageBalance.value) || 0;
+        const closingCosts = parseFloat(DOM.refiClosingCosts.value) || 0;
+        const newLoanAmount = mortgageBalance + availableEquity + closingCosts;
+        const refiRate = parseFloat(DOM.refiRateSlider.value);
+        const refiTerm = parseFloat(DOM.refiTerm.value);
+        const refiPayment = calculatePayment(newLoanAmount, refiRate, refiTerm);
+        const refiTotalInterest = (refiPayment * refiTerm * 12) - newLoanAmount;
+
+        return {
+            totalEquity,
+            availableEquity,
+            heloc: {
+                monthlyPayment: helocPayment,
+                totalInterest: helocTotalInterest > 0 ? helocTotalInterest : 0,
+            },
+            refi: {
+                monthlyPayment: refiPayment,
+                totalInterest: refiTotalInterest > 0 ? refiTotalInterest : 0,
+            }
+        };
+    }
+    
+    // --- UI Update & Rendering ---
+    function updateUI() {
+        const results = calculateScenarios();
+
+        animateValue(DOM.totalEquity, results.totalEquity);
+        animateValue(DOM.availableEquity, results.availableEquity);
+        animateValue(DOM.helocMonthlyPayment, results.heloc.monthlyPayment);
+        animateValue(DOM.helocTotalInterest, results.heloc.totalInterest);
+        animateValue(DOM.refiMonthlyPayment, results.refi.monthlyPayment);
+        animateValue(DOM.refiTotalInterest, results.refi.totalInterest);
+
+        renderEquityChart(results.totalEquity, parseFloat(DOM.mortgageBalance.value) || 0);
+        renderComparisonChart(results);
+    }
+
+    function renderEquityChart(equity, mortgage) {
+        const ctx = document.getElementById('equityChart').getContext('2d');
         if (equityChart) equityChart.destroy();
+        
         equityChart = new Chart(ctx, {
             type: 'doughnut',
             data: {
-                labels: ['Mortgage Balance', 'Your Equity'],
-                datasets: [{ data: [mortgageBalance, totalEquity], backgroundColor: ['#1C768F', '#166534'], borderColor: '#ffffff', borderWidth: 3 }]
+                labels: ['Your Equity', 'Mortgage Balance'],
+                datasets: [{
+                    data: [equity, mortgage],
+                    backgroundColor: ['#166534', '#1C768F'],
+                    borderColor: '#ffffff',
+                    borderWidth: 2,
+                }]
             },
-            options: { responsive: true, maintainAspectRatio: false, cutout: '60%', plugins: { legend: { position: 'bottom' }, tooltip: { callbacks: { label: (c) => `${c.label}: ${formatCurrency(c.parsed)}` } } } }
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' },
+                    tooltip: { callbacks: { label: c => `${c.label}: ${formatCurrency(c.raw)}` } }
+                }
+            }
         });
     }
 
-    function renderComparisonChart(helocPayment, refiPayment, helocInterest, refiInterest) {
-        const ctx = DOM.comparisonChartCanvas.getContext('2d');
+    function renderComparisonChart(results) {
+        const ctx = document.getElementById('comparisonChart').getContext('2d');
         if (comparisonChart) comparisonChart.destroy();
+
         comparisonChart = new Chart(ctx, {
             type: 'bar',
             data: {
                 labels: ['Monthly Payment', 'Total Interest Paid'],
                 datasets: [
-                    { label: 'HELOC', data: [helocPayment, helocInterest], backgroundColor: '#3b82f6', },
-                    { label: 'Cash-Out Refinance', data: [refiPayment, refiInterest], backgroundColor: '#10b981', }
+                    {
+                        label: 'HELOC',
+                        data: [results.heloc.monthlyPayment, results.heloc.totalInterest],
+                        backgroundColor: '#38bdf8', // sky-400
+                    },
+                    {
+                        label: 'Cash-Out Refinance',
+                        data: [results.refi.monthlyPayment, results.refi.totalInterest],
+                        backgroundColor: '#34d399', // emerald-400
+                    }
                 ]
             },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' }, tooltip: { callbacks: { label: c => `${c.dataset.label}: ${formatCurrency(c.raw)}` } } }, scales: { y: { beginAtZero: true, ticks: { callback: v => formatCurrency(v) } } } }
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y',
+                plugins: {
+                    legend: { position: 'bottom' },
+                    tooltip: { callbacks: { label: c => `${c.dataset.label}: ${formatCurrency(c.raw)}` } }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: value => formatCurrency(value)
+                        }
+                    }
+                }
+            }
         });
     }
 
-    // --- Core Calculation Logic ---
-    function calculatePaymentAndInterest(principal, annualRate, termYears) {
-        if (principal <= 0 || annualRate <= 0 || termYears <= 0) {
-            return { payment: 0, totalInterest: 0 };
-        }
-        const monthlyRate = annualRate / 12 / 100;
-        const numberOfPayments = termYears * 12;
-        const payment = principal * (monthlyRate * Math.pow(1 + monthlyRate, numberOfPayments)) / (Math.pow(1 + monthlyRate, numberOfPayments) - 1);
-        const totalPaid = payment * numberOfPayments;
-        const totalInterest = totalPaid - principal;
-        return { payment, totalInterest };
-    }
+    // --- Event Listeners ---
+    function setupEventListeners() {
+        DOM.compareOptionsBtn.addEventListener('click', updateUI);
 
-    function runComparison() {
-        const homeValue = parseFloat(DOM.homeValue.value) || 0;
-        const mortgageBalance = parseFloat(DOM.mortgageBalance.value) || 0;
-        const ltvRatio = (parseFloat(DOM.ltvRatio.value) || 85) / 100;
+        DOM.helocRateSlider.addEventListener('input', (e) => {
+            DOM.helocRateValue.textContent = `${parseFloat(e.target.value).toFixed(1)}%`;
+        });
         
-        if (homeValue <= 0) {
-            if (equityChart) equityChart.destroy();
-            if (comparisonChart) comparisonChart.destroy();
-            return;
-        }
+        DOM.refiRateSlider.addEventListener('input', (e) => {
+            DOM.refiRateValue.textContent = `${parseFloat(e.target.value).toFixed(1)}%`;
+        });
 
-        const totalEquity = Math.max(0, homeValue - mortgageBalance);
-        const maxLoanAmount = homeValue * ltvRatio;
-        const availableEquity = Math.max(0, maxLoanAmount - mortgageBalance);
-
-        // HELOC Calculation
-        const helocRate = parseFloat(DOM.helocRateSlider.value) || 0;
-        const helocTerm = parseFloat(DOM.helocTerm.value) || 0;
-        const helocResult = calculatePaymentAndInterest(availableEquity, helocRate, helocTerm);
+        // Save Scenario
+        DOM.saveScenarioBtn.addEventListener('click', () => {
+            const params = new URLSearchParams({
+                hv: DOM.homeValue.value,
+                mb: DOM.mortgageBalance.value,
+                ltv: DOM.ltvRatio.value,
+                ht: DOM.helocTerm.value,
+                hr: DOM.helocRateSlider.value,
+                rt: DOM.refiTerm.value,
+                rc: DOM.refiClosingCosts.value,
+                rr: DOM.refiRateSlider.value
+            });
+            const newUrl = `${window.location.pathname}?${params.toString()}`;
+            window.history.pushState({ path: newUrl }, '', newUrl);
+            DOM.saveFeedback.textContent = 'Scenario saved to URL!';
+            setTimeout(() => { DOM.saveFeedback.textContent = ''; }, 3000);
+        });
         
-        // Cash-Out Refinance Calculation
-        const refiRate = parseFloat(DOM.refiRateSlider.value) || 0;
-        const refiTerm = parseFloat(DOM.refiTerm.value) || 0;
-        const refiClosingCosts = parseFloat(DOM.refiClosingCosts.value) || 0;
-        const newLoanAmount = mortgageBalance + availableEquity + refiClosingCosts;
-        const refiResult = calculatePaymentAndInterest(newLoanAmount, refiRate, refiTerm);
-
-        // --- Render Results ---
-        animateValue(DOM.totalEquityEl, totalEquity);
-        animateValue(DOM.availableEquityEl, availableEquity);
-        animateValue(DOM.helocMonthlyPaymentEl, helocResult.payment);
-        animateValue(DOM.helocTotalInterestEl, helocResult.totalInterest);
-        animateValue(DOM.refiMonthlyPaymentEl, refiResult.payment);
-        animateValue(DOM.refiTotalInterestEl, refiResult.totalInterest);
-        
-        // --- Render Charts ---
-        renderEquityChart(mortgageBalance, totalEquity);
-        renderComparisonChart(helocResult.payment, refiResult.payment, helocResult.totalInterest, refiResult.totalInterest);
-    }
-
-    // --- URL Parameter Handling ---
-    function saveScenarioToURL() {
-        const params = new URLSearchParams();
-        params.set('hv', DOM.homeValue.value);
-        params.set('mb', DOM.mortgageBalance.value);
-        params.set('ltv', DOM.ltvRatio.value);
-        params.set('heloc_ir', DOM.helocRateSlider.value);
-        params.set('heloc_lt', DOM.helocTerm.value);
-        params.set('refi_ir', DOM.refiRateSlider.value);
-        params.set('refi_lt', DOM.refiTerm.value);
-        params.set('refi_cc', DOM.refiClosingCosts.value);
-        
-        const newUrl = `${window.location.pathname}?${params.toString()}`;
-        history.pushState({}, '', newUrl);
-
-        DOM.saveFeedback.textContent = 'Scenario saved to URL!';
-        setTimeout(() => { DOM.saveFeedback.textContent = ''; }, 3000);
-    }
-    
-    function populateFromURL() {
-        const params = new URLSearchParams(window.location.search);
-        const setVal = (key, el) => { if (params.has(key)) el.value = params.get(key); };
-        const setSlider = (key, slider, label) => {
-            if (params.has(key)) {
-                const val = params.get(key);
-                slider.value = val;
-                label.textContent = `${val}%`;
-            }
-        };
-
-        setVal('hv', DOM.homeValue);
-        setVal('mb', DOM.mortgageBalance);
-        setVal('ltv', DOM.ltvRatio);
-        setVal('heloc_lt', DOM.helocTerm);
-        setSlider('heloc_ir', DOM.helocRateSlider, DOM.helocRateValue);
-        setVal('refi_lt', DOM.refiTerm);
-        setVal('refi_cc', DOM.refiClosingCosts);
-        setSlider('refi_ir', DOM.refiRateSlider, DOM.refiRateValue);
-        
-        if (params.toString().length > 0) {
-            runComparison();
-        }
-    }
-    
-    // --- Social Sharing ---
-    function setupSharing() {
-        const pageUrl = encodeURIComponent(window.location.href);
-        const pageTitle = encodeURIComponent(document.title);
-        const pageSource = encodeURIComponent("Strategic Mortgage Planner");
-
-        document.getElementById('share-twitter-equity').href = `https://twitter.com/intent/tweet?url=${pageUrl}&text=${pageTitle}`;
-        document.getElementById('share-facebook-equity').href = `https://www.facebook.com/sharer/sharer.php?u=${pageUrl}`;
-        document.getElementById('share-linkedin-equity').href = `https://www.linkedin.com/shareArticle?mini=true&url=${pageUrl}&title=${pageTitle}&source=${pageSource}`;
-        document.getElementById('share-whatsapp-equity').href = `https://api.whatsapp.com/send?text=${pageTitle}%20${pageUrl}`;
-        document.getElementById('share-email-equity').href = `mailto:?subject=${pageTitle}&body=Check out this helpful calculator: ${pageUrl}`;
-    }
-
-    // --- FAQ Accordion ---
-    function setupFAQ() {
-        if (!DOM.faqAccordion) return;
-        const faqItems = DOM.faqAccordion.querySelectorAll('.faq-item');
+        // FAQ Accordion
+        const faqItems = document.querySelectorAll('.faq-item');
         faqItems.forEach(item => {
             const question = item.querySelector('.faq-question');
             const answer = item.querySelector('.faq-answer');
@@ -203,7 +224,7 @@ document.addEventListener('DOMContentLoaded', function() {
             question.addEventListener('click', () => {
                 const isOpen = answer.style.maxHeight && answer.style.maxHeight !== '0px';
                 
-                // Close all other items
+                // Close all other answers when opening a new one
                 faqItems.forEach(otherItem => {
                     if (otherItem !== item) {
                         otherItem.querySelector('.faq-answer').style.maxHeight = '0px';
@@ -211,7 +232,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 });
 
-                // Toggle the clicked item
                 if (isOpen) {
                     answer.style.maxHeight = '0px';
                     chevron.classList.remove('rotate-180');
@@ -221,19 +241,36 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         });
+
+        // Share links
+        const pageUrl = encodeURIComponent(window.location.href);
+        const pageTitle = encodeURIComponent(document.title);
+        document.getElementById('share-twitter-equity').href = `https://twitter.com/intent/tweet?url=${pageUrl}&text=${pageTitle}`;
+        document.getElementById('share-facebook-equity').href = `https://www.facebook.com/sharer/sharer.php?u=${pageUrl}`;
+        document.getElementById('share-linkedin-equity').href = `https://www.linkedin.com/shareArticle?mini=true&url=${pageUrl}&title=${pageTitle}`;
+        document.getElementById('share-whatsapp-equity').href = `https://api.whatsapp.com/send?text=${pageTitle}%20${pageUrl}`;
+        document.getElementById('share-email-equity').href = `mailto:?subject=${pageTitle}&body=Check out this helpful calculator: ${pageUrl}`;
     }
 
-    // --- Event Listeners ---
-    if (DOM.compareBtn) DOM.compareBtn.addEventListener('click', runComparison);
-    if (DOM.saveBtn) DOM.saveBtn.addEventListener('click', saveScenarioToURL);
-    if (DOM.helocRateSlider) DOM.helocRateSlider.addEventListener('input', (e) => { DOM.helocRateValue.textContent = `${e.target.value}%`; });
-    if (DOM.refiRateSlider) DOM.refiRateSlider.addEventListener('input', (e) => { DOM.refiRateValue.textContent = `${e.target.value}%`; });
-    
-    // --- Initial Load ---
-    populateFromURL();
-    setupSharing();
-    setupFAQ();
-    if (!window.location.search) {
-        runComparison();
+    // --- Initialization ---
+    function init() {
+        const params = new URLSearchParams(window.location.search);
+        if (params.has('hv')) {
+            DOM.homeValue.value = params.get('hv');
+            DOM.mortgageBalance.value = params.get('mb');
+            DOM.ltvRatio.value = params.get('ltv');
+            DOM.helocTerm.value = params.get('ht');
+            DOM.helocRateSlider.value = params.get('hr');
+            DOM.helocRateValue.textContent = `${params.get('hr')}%`;
+            DOM.refiTerm.value = params.get('rt');
+            DOM.refiClosingCosts.value = params.get('rc');
+            DOM.refiRateSlider.value = params.get('rr');
+            DOM.refiRateValue.textContent = `${params.get('rr')}%`;
+        }
+        
+        setupEventListeners();
+        updateUI(); // Initial calculation
     }
+
+    init();
 });
