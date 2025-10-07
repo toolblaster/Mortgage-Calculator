@@ -72,6 +72,17 @@ details[open] summary ~ * { animation: sweep .5s ease-in-out; }
     position: relative;
 }
 
+/* IMPROVEMENT: Sticky header for amortization table */
+#amortizationTable thead th {
+    position: -webkit-sticky; /* for Safari */
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    /* The background color is essential to hide content scrolling underneath */
+    background-color: #f9fafb; /* bg-gray-50 */
+}
+
+
 /* Visual cue for horizontally scrolling table on touch devices */
 @media (max-width: 768px) {
     .schedule-container::after {
@@ -83,7 +94,7 @@ details[open] summary ~ * { animation: sweep .5s ease-in-out; }
         width: 40px;
         background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
         pointer-events: none;
-        z-index: 1;
+        z-index: 2; /* Make sure it's above the sticky header */
     }
 }
 
@@ -234,4 +245,33 @@ input, select {
 
 .back-to-top:hover {
   background-color: #166534;
+}
+
+/* Loading Overlay & Spinner Styles */
+.loading-overlay {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(249, 250, 251, 0.75); /* bg-gray-50 with opacity */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 20; /* High z-index to be on top */
+    transition: opacity 0.3s ease-in-out;
+    border-radius: 0.75rem; /* Match parent's border-radius */
+    backdrop-filter: blur(2px);
+}
+
+.spinner {
+    width: 48px;
+    height: 48px;
+    border: 5px solid #d1d5db; /* gray-300 */
+    border-top-color: #1C768F; /* primary */
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
 }
