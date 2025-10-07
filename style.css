@@ -33,10 +33,44 @@ details[open] summary ~ * { animation: sweep .5s ease-in-out; }
     }
 }
 #amortizationTable th, #amortizationTable td { white-space: nowrap; }
+#amortizationTable thead th {
+    position: -webkit-sticky; /* For Safari */
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
 
 /* CLS Prevention */
 #results, #affordability-results, #rent-vs-buy-results, #refinance-results {
     min-height: 350px;
+}
+
+/* Loading Overlay */
+.loading-overlay {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(255, 255, 255, 0.7);
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.5rem; /* rounded-lg */
+    transition: opacity 0.3s ease-in-out;
+}
+.spinner {
+    width: 48px;
+    height: 48px;
+    border: 5px solid #d1d5db; /* gray-300 */
+    border-bottom-color: #1C768F; /* primary */
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+}
+@keyframes rotation {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 
@@ -72,17 +106,6 @@ details[open] summary ~ * { animation: sweep .5s ease-in-out; }
     position: relative;
 }
 
-/* IMPROVEMENT: Sticky header for amortization table */
-#amortizationTable thead th {
-    position: -webkit-sticky; /* for Safari */
-    position: sticky;
-    top: 0;
-    z-index: 1;
-    /* The background color is essential to hide content scrolling underneath */
-    background-color: #f9fafb; /* bg-gray-50 */
-}
-
-
 /* Visual cue for horizontally scrolling table on touch devices */
 @media (max-width: 768px) {
     .schedule-container::after {
@@ -94,7 +117,7 @@ details[open] summary ~ * { animation: sweep .5s ease-in-out; }
         width: 40px;
         background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
         pointer-events: none;
-        z-index: 2; /* Make sure it's above the sticky header */
+        z-index: 1;
     }
 }
 
@@ -161,7 +184,84 @@ input, select {
 .results-animate-in { animation: fadeInSlideUp 0.6s ease-out forwards; }
 @keyframes fadeInSlideUp { 0% { opacity: 0; transform: translateY(15px); } 100% { opacity: 1; transform: translateY(0); } }
 
-@media print { .no-print, #calculateButton, #resetButton, .input-column, header, footer, details > summary, #load-guide-btn, #main-tabs { display: none !important; } .content-wrapper, #results, #schedule-wrapper { box-shadow: none !important; border: none !important; } .main-grid-layout { display: block; } details { open: true !important; } details[open] { page-break-before: always; } .output-column { width: 100%; } #chartContainer { height: 350px !important; } }
+/* UPDATED AND ENHANCED PRINT STYLES */
+@media print {
+    /* Hide non-essential elements */
+    .no-print, header, footer, .input-column, #main-tabs, details > summary, #guide-content {
+        display: none !important;
+    }
+
+    /* General page setup for printing */
+    body {
+        background-color: #fff;
+        font-size: 10pt;
+        color: #000;
+        -webkit-print-color-adjust: exact; /* Force background colors for charts */
+        print-color-adjust: exact;
+    }
+
+    /* Override layout to be single-column */
+    .main-grid-layout {
+        display: block !important;
+    }
+
+    .output-column, .calculator-container, main.content-wrapper {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    /* Reset styles for report-like appearance */
+    #results, #schedule-wrapper, .calculator-container {
+        box-shadow: none !important;
+        border: none !important;
+    }
+
+    /* Ensure backgrounds are transparent for clean printing */
+    .bg-gray-50, .bg-primary\/10, .bg-accent\/10, .bg-npv\/10, .bg-red-50\/50, .bg-sky-50\/50, .bg-sky-50\/70, .bg-red-50\/70 {
+        background-color: transparent !important;
+    }
+    
+    /* Force details sections to be open */
+    details {
+        page-break-inside: avoid;
+    }
+    
+    details[open] {
+        page-break-before: auto; /* Change from always to auto for better flow */
+    }
+
+    /* Control page breaks for a cleaner report */
+    #results, #schedule-wrapper {
+        page-break-inside: avoid;
+    }
+    #schedule-wrapper {
+        page-break-before: always; /* Start the schedule on a new page */
+    }
+    
+    /* Style chart containers for printing */
+    #chartContainer, #rent-vs-buy-chart-container, #affordability-chart-container, #refinance-chart-container {
+        height: 300px !important; /* A reasonable fixed height for print */
+        width: 100% !important;
+        page-break-inside: avoid;
+    }
+
+    /* Make amortization table headers readable */
+    #amortizationTable thead {
+        background-color: #f3f4f6 !important; /* A light gray for header */
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+    #amortizationTable th {
+        color: #000 !important;
+    }
+
+    /* Visually hide elements but keep for screen readers if needed */
+    .visually-hidden {
+        display: none;
+    }
+}
 
 /* Styles for Prose on Legal & Content Pages */
 .prose p, .prose ul, .content-section p, .content-section ul {
@@ -245,33 +345,4 @@ input, select {
 
 .back-to-top:hover {
   background-color: #166534;
-}
-
-/* Loading Overlay & Spinner Styles */
-.loading-overlay {
-    position: absolute;
-    inset: 0;
-    background-color: rgba(249, 250, 251, 0.75); /* bg-gray-50 with opacity */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 20; /* High z-index to be on top */
-    transition: opacity 0.3s ease-in-out;
-    border-radius: 0.75rem; /* Match parent's border-radius */
-    backdrop-filter: blur(2px);
-}
-
-.spinner {
-    width: 48px;
-    height: 48px;
-    border: 5px solid #d1d5db; /* gray-300 */
-    border-top-color: #1C768F; /* primary */
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
 }
