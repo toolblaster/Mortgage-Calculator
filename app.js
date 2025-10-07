@@ -9,7 +9,6 @@ Strategic Mortgage Planner - Application Logic
     'use strict';
 
     // --- DOM Element Cache ---
-    // This remains largely the same, caching all necessary elements.
     const DOM = {
         // Input Fields
         loanAmount: document.getElementById('loanAmount'), interestRate: document.getElementById('interestRate'), loanTerm: document.getElementById('loanTerm'),
@@ -25,6 +24,12 @@ Strategic Mortgage Planner - Application Logic
         downPaymentAmount: document.getElementById('downPaymentAmount'), desiredFrontEndDTI: document.getElementById('desiredFrontEndDTI'), desiredBackEndDTI: document.getElementById('desiredBackEndDTI'),
         originalLoanAmount: document.getElementById('originalLoanAmount'), currentInterestRate: document.getElementById('currentInterestRate'), loanStartMonth: document.getElementById('loanStartMonth'), loanStartYear: document.getElementById('loanStartYear'),
         newInterestRate: document.getElementById('newInterestRate'), newLoanTerm: document.getElementById('newLoanTerm'), newClosingCosts: document.getElementById('newClosingCosts'),
+        
+        // NEW Investment Property Inputs
+        purchasePrice: document.getElementById('purchasePrice'), investmentDownPayment: document.getElementById('investmentDownPayment'), investmentInterestRate: document.getElementById('investmentInterestRate'),
+        investmentLoanTerm: document.getElementById('investmentLoanTerm'), investmentClosingCosts: document.getElementById('investmentClosingCosts'), monthlyRentalIncome: document.getElementById('monthlyRentalIncome'),
+        vacancyRate: document.getElementById('vacancyRate'), propertyTaxes: document.getElementById('propertyTaxes'), propertyInsurance: document.getElementById('propertyInsurance'),
+        maintenanceCosts: document.getElementById('maintenanceCosts'), managementFee: document.getElementById('managementFee'),
 
         // Buttons
         calculateButtons: document.querySelectorAll('.calculate-button'), resetButtons: document.querySelectorAll('.reset-button'),
@@ -33,6 +38,7 @@ Strategic Mortgage Planner - Application Logic
         // Output Areas
         results: document.getElementById('results'), affordabilityResults: document.getElementById('affordability-results'),
         rentVsBuyResults: document.getElementById('rent-vs-buy-results'), refinanceResults: document.getElementById('refinance-results'),
+        investmentResults: document.getElementById('investment-results'),
         shockResults: document.getElementById('shock-results'), totalMonthlyPaymentPITI: document.getElementById('totalMonthlyPaymentPITI'),
         totalOwnershipCost: document.getElementById('totalOwnershipCost'), pmiDropNote: document.getElementById('pmiDropNote'),
         pmiDropPeriod: document.getElementById('pmiDropPeriod'), frontEndDTI: document.getElementById('frontEndDTI'),
@@ -52,6 +58,9 @@ Strategic Mortgage Planner - Application Logic
         affordableLoanAmount: document.getElementById('affordableLoanAmount'), affordablePITI: document.getElementById('affordablePITI'),
         refiMonthlySavings: document.getElementById('refiMonthlySavings'), refiBreakEven: document.getElementById('refiBreakEven'),
         refiLifetimeSavings: document.getElementById('refiLifetimeSavings'),
+        // NEW Investment Property Outputs
+        cashFlow: document.getElementById('cashFlow'), capRate: document.getElementById('capRate'), cashOnCashROI: document.getElementById('cashOnCashROI'),
+
 
         // UI Components
         errorMessages: document.getElementById('error-messages'), errorList: document.getElementById('error-list'),
@@ -65,7 +74,7 @@ Strategic Mortgage Planner - Application Logic
     );
 
     // --- Global State & Chart Instances ---
-    let mortgageChart = null, rentVsBuyChart = null, affordabilityChart = null, refinanceChart = null;
+    let mortgageChart = null, rentVsBuyChart = null, affordabilityChart = null, refinanceChart = null, investmentChart = null;
     let currentResults = null, currentTab = 'mortgage';
     let tabs = {};
 
@@ -101,7 +110,7 @@ Strategic Mortgage Planner - Application Logic
         const locale = ['EUR', 'GBP'].includes(currency) ? 'de-DE' : 'en-US';
         return new Intl.NumberFormat(locale, { style: 'currency', currency: currency, minimumFractionDigits: 0 }).format(amount);
     };
-    const formatPercent = (amount) => (amount * 100).toFixed(1) + '%';
+    const formatPercent = (amount) => (amount).toFixed(2) + '%';
 
     function showLoader() {
         let activeContentId = `${currentTab}-content`;
@@ -117,7 +126,7 @@ Strategic Mortgage Planner - Application Logic
         document.querySelectorAll('.loading-overlay').forEach(o => o.classList.add('hidden'));
     }
 
-    function animateValue(el, endValue, duration = 500, isCurrency = true) {
+    function animateValue(el, endValue, duration = 500, isCurrency = true, isPercent = false) {
         if (!el) return;
         let startValue = parseFloat(el.dataset.value) || 0;
         el.dataset.value = endValue;
@@ -127,9 +136,26 @@ Strategic Mortgage Planner - Application Logic
             const timeElapsed = currentTime - startTime;
             const progress = Math.min(timeElapsed / duration, 1);
             const currentValue = startValue + (endValue - startValue) * progress;
-            el.textContent = isCurrency ? formatCurrency(currentValue) : currentValue.toFixed(1);
-            if (progress < 1) requestAnimationFrame(animation);
-            else el.textContent = isCurrency ? formatCurrency(endValue) : endValue.toFixed(1);
+
+            if (isPercent) {
+                 el.textContent = formatPercent(currentValue);
+            } else if (isCurrency) {
+                 el.textContent = formatCurrency(currentValue);
+            } else {
+                 el.textContent = currentValue.toFixed(1);
+            }
+
+            if (progress < 1) {
+                requestAnimationFrame(animation);
+            } else {
+                 if (isPercent) {
+                    el.textContent = formatPercent(endValue);
+                } else if (isCurrency) {
+                    el.textContent = formatCurrency(endValue);
+                } else {
+                    el.textContent = endValue.toFixed(1);
+                }
+            }
         }
         requestAnimationFrame(animation);
     }
@@ -158,8 +184,9 @@ Strategic Mortgage Planner - Application Logic
 
     // --- Core Financial Calculation Functions ---
     function calculatePayment(principal, annualRate, periodsPerYear, totalPeriods) {
+        if (principal <= 0) return 0;
         if (annualRate <= 0 || totalPeriods <= 0) return principal / (totalPeriods > 0 ? totalPeriods : 1);
-        const periodicRate = annualRate / periodsPerYear;
+        const periodicRate = (annualRate/100) / periodsPerYear;
         const payment = principal * periodicRate / (1 - Math.pow(1 + periodicRate, -totalPeriods));
         return isFinite(payment) ? payment : 0;
     }
@@ -181,7 +208,7 @@ Strategic Mortgage Planner - Application Logic
             if (state.currentBalance > 0) state.currentBalance += refiClosingCosts;
             state.currentRate = refiRate / 100;
             state.totalPeriodsRemaining = Math.max(0, refiTerm * periodsPerYear);
-            state.standardPayment = calculatePayment(state.currentBalance, state.currentRate, periodsPerYear, state.totalPeriodsRemaining);
+            state.standardPayment = calculatePayment(state.currentBalance, state.currentRate * 100, periodsPerYear, state.totalPeriodsRemaining);
             state.hasRefinanced = true;
         }
         return state;
@@ -233,7 +260,7 @@ Strategic Mortgage Planner - Application Logic
 
     function generateAmortization(params) {
         const { principal, annualRate, periodsPerYear, totalPeriods, extraPaymentPerPeriod, lumpSumAmount, lumpSumPeriod, initialLTV, pmiRate, refiPeriod, refiRate, refiTerm, refiClosingCosts, pitiEscalationRate, discountRate, appreciationRate, propertyTax, insurance, hoa } = params;
-        const standardPaymentOriginal = calculatePayment(principal, annualRate, periodsPerYear, totalPeriods);
+        const standardPaymentOriginal = calculatePayment(principal, annualRate * 100, periodsPerYear, totalPeriods);
         const initialPropertyValue = (initialLTV > 0 && initialLTV <= 100) ? principal / (initialLTV / 100) : principal;
         const pmiStopThreshold = 0.80 * initialPropertyValue;
         const escalationFactor = 1 + (pitiEscalationRate / 100);
@@ -294,7 +321,6 @@ Strategic Mortgage Planner - Application Logic
         return { buyingNetWorth, rentingNetWorth: investmentPortfolio, rentingTimeline, buyingTimeline };
     }
 
-    // REFACTOR: Encapsulate Affordability logic into its own module
     const AffordabilityCalculator = {
         calculate() {
             const monthlyIncome = state.annualIncome / 12;
@@ -335,6 +361,101 @@ Strategic Mortgage Planner - Application Logic
         }
     };
 
+    // NEW: Encapsulate Investment logic into its own module
+    const InvestmentCalculator = {
+        calculate() {
+            const { purchasePrice, investmentDownPayment, investmentInterestRate, investmentLoanTerm, investmentClosingCosts, monthlyRentalIncome, vacancyRate, propertyTaxes, propertyInsurance, maintenanceCosts, managementFee } = state;
+
+            const downPaymentAmount = purchasePrice * (investmentDownPayment / 100);
+            const loanAmount = purchasePrice - downPaymentAmount;
+            const totalCashInvested = downPaymentAmount + investmentClosingCosts;
+
+            const mortgagePayment = calculatePayment(loanAmount, investmentInterestRate, 12, investmentLoanTerm * 12);
+
+            const grossOperatingIncome = monthlyRentalIncome * 12;
+            const vacancyLoss = grossOperatingIncome * (vacancyRate / 100);
+            const effectiveGrossIncome = grossOperatingIncome - vacancyLoss;
+
+            const maintenance = effectiveGrossIncome * (maintenanceCosts / 100);
+            const management = effectiveGrossIncome * (managementFee / 100);
+            const operatingExpenses = propertyTaxes + propertyInsurance + maintenance + management;
+
+            const netOperatingIncome = effectiveGrossIncome - operatingExpenses;
+            const annualDebtService = mortgagePayment * 12;
+            
+            const annualCashFlow = netOperatingIncome - annualDebtService;
+            const monthlyCashFlow = annualCashFlow / 12;
+            
+            const capRate = (netOperatingIncome / purchasePrice) * 100;
+            const cashOnCashROI = (annualCashFlow / totalCashInvested) * 100;
+            
+            return {
+                monthlyCashFlow,
+                capRate: isFinite(capRate) ? capRate : 0,
+                cashOnCashROI: isFinite(cashOnCashROI) ? cashOnCashROI : 0,
+                income: effectiveGrossIncome / 12,
+                p_i: mortgagePayment,
+                taxes_ins: (propertyTaxes + propertyInsurance) / 12,
+                other_exp: (maintenance + management) / 12
+            };
+        },
+        
+        render(results) {
+            animateValue(DOM.cashFlow, results.monthlyCashFlow, 500, true, false);
+            animateValue(DOM.capRate, results.capRate, 500, false, true);
+            animateValue(DOM.cashOnCashROI, results.cashOnCashROI, 500, false, true);
+            this.renderChart(results);
+            DOM.investmentResults.style.opacity = 1;
+            DOM.investmentResults.classList.add('results-animate-in');
+        },
+
+        renderChart(results) {
+            const ctx = document.getElementById('investmentChart').getContext('2d');
+            if (investmentChart) investmentChart.destroy();
+            
+            const cashFlowColor = results.monthlyCashFlow >= 0 ? 'rgba(22, 163, 74, 0.8)' : 'rgba(239, 68, 68, 0.8)';
+
+            investmentChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Gross Income', 'Expenses', 'Cash Flow'],
+                    datasets: [{
+                        label: 'Monthly Financials',
+                        data: [
+                            results.income,
+                            results.p_i + results.taxes_ins + results.other_exp,
+                            results.monthlyCashFlow
+                        ],
+                        backgroundColor: [
+                            'rgba(5, 150, 105, 0.8)',
+                            'rgba(219, 39, 119, 0.8)',
+                            cashFlowColor
+                        ],
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    plugins: {
+                        legend: { display: false },
+                        title: { display: true, text: 'Monthly Income vs. Expenses' },
+                        tooltip: { callbacks: { label: c => formatCurrency(c.raw) } }
+                    },
+                    scales: {
+                        x: { beginAtZero: true, ticks: { callback: value => formatCurrency(value) } }
+                    }
+                }
+            });
+        },
+
+        run() {
+            const results = this.calculate();
+            this.render(results);
+        }
+    };
+
+
     function calculateRefinance() {
         const { originalLoanAmount, currentInterestRate, loanTerm, newInterestRate, newLoanTerm, newClosingCosts, loanStartDate } = state;
         const currentRate = currentInterestRate / 100;
@@ -346,7 +467,7 @@ Strategic Mortgage Planner - Application Logic
         if (monthsPassed >= originalTotalPeriods || monthsPassed < 0) return { monthlySavings: 0, breakEvenMonths: Infinity, lifetimeSavings: 0, savingsTimeline: [] };
         
         const periodicCurrentRate = currentRate / 12;
-        const currentPayment = calculatePayment(originalLoanAmount, currentRate, 12, originalTotalPeriods);
+        const currentPayment = calculatePayment(originalLoanAmount, currentInterestRate, 12, originalTotalPeriods);
         
         let remainingBalance = originalLoanAmount;
         for (let i = 0; i < monthsPassed; i++) {
@@ -355,7 +476,7 @@ Strategic Mortgage Planner - Application Logic
         }
         
         const newTotalPeriods = newLoanTerm * 12;
-        const newPayment = calculatePayment(remainingBalance, newRate, 12, newTotalPeriods);
+        const newPayment = calculatePayment(remainingBalance, newInterestRate, 12, newTotalPeriods);
         const monthlySavings = currentPayment - newPayment;
         const breakEvenMonths = monthlySavings > 0 ? newClosingCosts / monthlySavings : Infinity;
         
@@ -405,9 +526,9 @@ Strategic Mortgage Planner - Application Logic
             statusElement.textContent = status.text;
             statusElement.className = `text-xs font-semibold mt-1 text-${status.color}`;
         };
-        DOM.frontEndDTI.textContent = formatPercent(frontEndDTI);
+        DOM.frontEndDTI.textContent = formatPercent(frontEndDTI*100);
         applyStatus(DOM.frontEndDTI, DOM.frontEndDTIStatus, getStatus(frontEndDTI));
-        DOM.backEndDTI.textContent = formatPercent(backEndDTI);
+        DOM.backEndDTI.textContent = formatPercent(backEndDTI*100);
         applyStatus(DOM.backEndDTI, DOM.backEndDTIStatus, getStatus(backEndDTI));
     }
 
@@ -477,10 +598,18 @@ Strategic Mortgage Planner - Application Logic
     // --- Input Validation ---
     function validateInputs() {
         const errors = [];
-        let fields = [ { id: 'loanAmount', name: 'Loan Principal', min: 1 }, { id: 'interestRate', name: 'Interest Rate', min: 0.1, max: 100 }, { id: 'loanTerm', name: 'Loan Term', min: 1, max: 50 }, { id: 'initialLTV', name: 'Initial LTV', min: 1, max: 100 }, { id: 'annualIncome', name: 'Annual Income', min: 0 }, { id: 'nonMortgageDebt', name: 'Non-Mortgage Debt', min: 0 }, { id: 'appreciationRate', name: 'Appreciation Rate', min: 0, max: 50 }, { id: 'discountRate', name: 'Discount Rate', min: 0, max: 50 }, { id: 'pitiEscalationRate', name: 'PITI Escalation Rate', min: 0, max: 50 }, { id: 'pmiRate', name: 'PMI Rate', min: 0, max: 10 }, { id: 'propertyTax', name: 'Property Tax', min: 0 }, { id: 'insurance', name: 'Home Insurance', min: 0 }, { id: 'hoa', name: 'HOA Dues', min: 0 }, { id: 'extraPayment', name: 'Extra Payment', min: 0 }, { id: 'lumpSumPayment', name: 'Lump Sum Payment', min: 0 }, { id: 'annualMaintenance', name: 'Annual Maintenance', min: 0, max: 20 }, { id: 'monthlyUtilities', name: 'Monthly Utilities', min: 0 } ];
-        if (currentTab === 'rent-vs-buy') fields = fields.concat([{ id: 'monthlyRent', name: 'Monthly Rent', min: 1 }, { id: 'rentIncrease', name: 'Rent Increase', min: 0, max: 20 }, { id: 'investmentReturn', name: 'Investment Return', min: 0, max: 30 }, { id: 'closingCosts', name: 'Closing Costs', min: 0 }, { id: 'sellingCosts', name: 'Selling Costs', min: 0, max: 20 }]);
-        else if (currentTab === 'affordability') fields = fields.concat([{ id: 'downPaymentAmount', name: 'Down Payment', min: 0 }, { id: 'desiredFrontEndDTI', name: 'Housing DTI', min: 10, max: 50 }, { id: 'desiredBackEndDTI', name: 'Total DTI', min: 10, max: 50 }]);
-        else if (currentTab === 'refinance') fields = [{ id: 'originalLoanAmount', name: 'Original Loan Amount', min: 1000 }, { id: 'currentInterestRate', name: 'Current Interest Rate', min: 0.1, max: 25 }, { id: 'newInterestRate', name: 'New Interest Rate', min: 0.1, max: 25 }, { id: 'newLoanTerm', name: 'New Loan Term', min: 5, max: 50 }, { id: 'newClosingCosts', name: 'Closing Costs', min: 0 }];
+        let fields;
+        if (currentTab === 'mortgage') {
+             fields = [ { id: 'loanAmount', name: 'Loan Principal', min: 1 }, { id: 'interestRate', name: 'Interest Rate', min: 0.1, max: 100 }, { id: 'loanTerm', name: 'Loan Term', min: 1, max: 50 }, { id: 'initialLTV', name: 'Initial LTV', min: 1, max: 100 }, { id: 'annualIncome', name: 'Annual Income', min: 0 }, { id: 'nonMortgageDebt', name: 'Non-Mortgage Debt', min: 0 }, { id: 'appreciationRate', name: 'Appreciation Rate', min: 0, max: 50 }, { id: 'discountRate', name: 'Discount Rate', min: 0, max: 50 }, { id: 'pitiEscalationRate', name: 'PITI Escalation Rate', min: 0, max: 50 }, { id: 'pmiRate', name: 'PMI Rate', min: 0, max: 10 }, { id: 'propertyTax', name: 'Property Tax', min: 0 }, { id: 'insurance', name: 'Home Insurance', min: 0 }, { id: 'hoa', name: 'HOA Dues', min: 0 }, { id: 'extraPayment', name: 'Extra Payment', min: 0 }, { id: 'lumpSumPayment', name: 'Lump Sum Payment', min: 0 }, { id: 'annualMaintenance', name: 'Annual Maintenance', min: 0, max: 20 }, { id: 'monthlyUtilities', name: 'Monthly Utilities', min: 0 } ];
+        } else if (currentTab === 'rent-vs-buy') {
+            fields = [ { id: 'monthlyRent', name: 'Monthly Rent', min: 1 }, { id: 'rentIncrease', name: 'Rent Increase', min: 0, max: 20 }, { id: 'investmentReturn', name: 'Investment Return', min: 0, max: 30 }, { id: 'closingCosts', name: 'Closing Costs', min: 0 }, { id: 'sellingCosts', name: 'Selling Costs', min: 0, max: 20 } ];
+        } else if (currentTab === 'affordability') {
+            fields = [ { id: 'downPaymentAmount', name: 'Down Payment', min: 0 }, { id: 'desiredFrontEndDTI', name: 'Housing DTI', min: 10, max: 50 }, { id: 'desiredBackEndDTI', name: 'Total DTI', min: 10, max: 50 } ];
+        } else if (currentTab === 'refinance') {
+            fields = [{ id: 'originalLoanAmount', name: 'Original Loan Amount', min: 1000 }, { id: 'currentInterestRate', name: 'Current Interest Rate', min: 0.1, max: 25 }, { id: 'newInterestRate', name: 'New Interest Rate', min: 0.1, max: 25 }, { id: 'newLoanTerm', name: 'New Loan Term', min: 5, max: 50 }, { id: 'newClosingCosts', name: 'Closing Costs', min: 0 }];
+        } else if (currentTab === 'investment') {
+            fields = [ {id: 'purchasePrice', name: 'Purchase Price', min: 1}, {id: 'investmentDownPayment', name: 'Down Payment', min: 0, max: 100}, {id: 'investmentInterestRate', name: 'Interest Rate', min: 0}, {id: 'investmentLoanTerm', name: 'Loan Term', min: 1}, {id: 'investmentClosingCosts', name: 'Closing Costs', min: 0}, {id: 'monthlyRentalIncome', name: 'Monthly Rent', min: 0}, {id: 'vacancyRate', name: 'Vacancy Rate', min: 0, max: 100}, {id: 'propertyTaxes', name: 'Property Taxes', min: 0}, {id: 'propertyInsurance', name: 'Insurance', min: 0}, {id: 'maintenanceCosts', name: 'Maintenance', min: 0, max: 100}, {id: 'managementFee', name: 'Management Fee', min: 0, max: 100} ];
+        }
         allInputIds.forEach(id => { if (DOM[id]) DOM[id].classList.remove('input-error'); });
         fields.forEach(field => {
             const el = DOM[field.id]; if (!el) return; const value = state[field.id]; let hasError = false;
@@ -516,9 +645,9 @@ Strategic Mortgage Planner - Application Logic
                 if (validateInputs()) {
                     if(currentTab === 'mortgage') calculateMortgage(isShockTest);
                     else if (currentTab === 'rent-vs-buy') runRentVsBuyAnalysis();
-                    // UPDATED: Use the new AffordabilityCalculator module
                     else if (currentTab === 'affordability') AffordabilityCalculator.run();
                     else if (currentTab === 'refinance') runRefinanceAnalysis();
+                    else if (currentTab === 'investment') InvestmentCalculator.run();
                     updateURLWithInputs();
                 }
             } 
@@ -527,7 +656,7 @@ Strategic Mortgage Planner - Application Logic
                 hideLoader();
                 if(calculateButton) {
                     calculateButton.disabled = false;
-                    const buttonTextMap = { mortgage: 'Calculate Scenario', affordability: 'Calculate Affordability', 'rent-vs-buy': 'Calculate Comparison', refinance: 'Analyze Refinance' };
+                    const buttonTextMap = { mortgage: 'Calculate Scenario', affordability: 'Calculate Affordability', 'rent-vs-buy': 'Calculate Comparison', refinance: 'Analyze Refinance', investment: 'Analyze Investment' };
                     calculateButton.textContent = buttonTextMap[currentTab];
                 }
             }
@@ -603,7 +732,7 @@ Strategic Mortgage Planner - Application Logic
         if (isShockTest) {
             const shockInc = state.shockRateIncrease / 100;
             const shockRate = (state.interestRate / 100) + shockInc;
-            const shockPmt = calculatePayment(state.loanAmount, shockRate, periodsPerYear, state.loanTerm * periodsPerYear);
+            const shockPmt = calculatePayment(state.loanAmount, shockRate * 100, periodsPerYear, state.loanTerm * periodsPerYear);
             DOM.shockResults.style.display = 'block';
             DOM.shockRateDisplay.textContent = (shockRate * 100).toFixed(2);
             DOM.originalShockPaymentDisplay.textContent = formatCurrency(original.standardPayment);
@@ -629,7 +758,7 @@ Strategic Mortgage Planner - Application Logic
     }
 
     function resetForm() {
-        const defaults = { loanAmount: "300000", interestRate: "6.5", loanTerm: "30", initialLTV: "90", discountRate: "3.0", appreciationRate: "3.5", annualIncome: "120000", nonMortgageDebt: "800", propertyTax: "3600", insurance: "1200", hoa: "0", pitiEscalationRate: "2.0", pmiRate: "0.5", extraPayment: "100", lumpSumPayment: "5000", lumpSumPeriod: "1", refiPeriod: "60", refiRate: "5.0", refiTerm: "15", refiClosingCosts: "5000", shockRateIncrease: "1.0", annualMaintenance: "1.0", monthlyUtilities: "300", monthlyRent: "2000", rentIncrease: "3.0", investmentReturn: "7.0", closingCosts: "8000", sellingCosts: "6.0", downPaymentAmount: "60000", desiredFrontEndDTI: "28", desiredBackEndDTI: "36", originalLoanAmount: "300000", currentInterestRate: "6.5", newInterestRate: "5.0", newLoanTerm: "30", newClosingCosts: "5000" };
+        const defaults = { loanAmount: "300000", interestRate: "6.5", loanTerm: "30", initialLTV: "90", discountRate: "3.0", appreciationRate: "3.5", annualIncome: "120000", nonMortgageDebt: "800", propertyTax: "3600", insurance: "1200", hoa: "0", pitiEscalationRate: "2.0", pmiRate: "0.5", extraPayment: "100", lumpSumPayment: "5000", lumpSumPeriod: "1", refiPeriod: "60", refiRate: "5.0", refiTerm: "15", refiClosingCosts: "5000", shockRateIncrease: "1.0", annualMaintenance: "1.0", monthlyUtilities: "300", monthlyRent: "2000", rentIncrease: "3.0", investmentReturn: "7.0", closingCosts: "8000", sellingCosts: "6.0", downPaymentAmount: "60000", desiredFrontEndDTI: "28", desiredBackEndDTI: "36", originalLoanAmount: "300000", currentInterestRate: "6.5", newInterestRate: "5.0", newLoanTerm: "30", newClosingCosts: "5000", purchasePrice: "250000", investmentDownPayment: "20", investmentInterestRate: "7.5", investmentLoanTerm: "30", investmentClosingCosts: "4000", monthlyRentalIncome: "2200", vacancyRate: "5", propertyTaxes: "3000", propertyInsurance: "1000", maintenanceCosts: "8", managementFee: "10" };
         for (const id in defaults) { const el = DOM[id]; if (el) el.value = defaults[id]; }
         if(DOM.loanStartMonth) DOM.loanStartMonth.value = "01";
         if(DOM.loanStartYear) DOM.loanStartYear.value = "2021";
@@ -690,7 +819,7 @@ Strategic Mortgage Planner - Application Logic
         doc.setFontSize(10); doc.setTextColor(100); doc.setFont("helvetica", "normal");
         doc.text("Personalized Mortgage Report", 105, 27, { align: 'center' });
         doc.text(`Report Generated: ${new Date().toLocaleDateString()}`, 105, 32, { align: 'center' });
-        const summaryData = [ ['Loan Principal', formatCurrency(inputs.loanAmount)], ['Interest Rate', `${inputs.interestRate}%`], ['Loan Term', `${inputs.loanTerm} Years`], ['Est. PITI + PMI', formatCurrency(totalPITI)], ['Total Monthly Ownership Cost', formatCurrency(totalMonthlyOwnershipCost)], ['Front-End DTI (Housing)', formatPercent(dti.frontEnd)], ['Back-End DTI (Total Debt)', formatPercent(dti.backEnd)] ];
+        const summaryData = [ ['Loan Principal', formatCurrency(inputs.loanAmount)], ['Interest Rate', `${inputs.interestRate}%`], ['Loan Term', `${inputs.loanTerm} Years`], ['Est. PITI + PMI', formatCurrency(totalPITI)], ['Total Monthly Ownership Cost', formatCurrency(totalMonthlyOwnershipCost)], ['Front-End DTI (Housing)', formatPercent(dti.frontEnd*100)], ['Back-End DTI (Total Debt)', formatPercent(dti.backEnd*100)] ];
         doc.autoTable({ startY: 40, head: [['Key Metric', 'Value']], body: summaryData, theme: 'striped', headStyles: { fillColor: [28, 118, 143] } });
         const comparisonData = [ ['Payoff Date', payoffDate(original.payoffPeriod, inputs.repaymentFrequency), payoffDate(accelerated.payoffPeriod, inputs.repaymentFrequency)], ['Total Interest Paid', formatCurrency(original.totalInterest), formatCurrency(accelerated.totalInterest)], ['NPV of Interest Cost', formatCurrency(original.totalPVInterest), formatCurrency(accelerated.totalPVInterest)], ['Final Equity', formatCurrency(original.finalEquity), formatCurrency(accelerated.finalEquity)] ];
         doc.autoTable({ startY: doc.lastAutoTable.finalY + 10, head: [['Metric', 'Original Loan', 'Accelerated Scenario']], body: comparisonData, theme: 'grid', headStyles: { fillColor: [28, 118, 143] } });
@@ -743,7 +872,8 @@ Strategic Mortgage Planner - Application Logic
             'mortgage': { button: document.getElementById('mortgage-tab'), content: document.getElementById('mortgage-calculator-content') }, 
             'affordability': { button: document.getElementById('affordability-tab'), content: document.getElementById('affordability-content') }, 
             'rent-vs-buy': { button: document.getElementById('rent-vs-buy-tab'), content: document.getElementById('rent-vs-buy-content') },
-            'refinance': { button: document.getElementById('refinance-tab'), content: document.getElementById('refinance-content') } 
+            'refinance': { button: document.getElementById('refinance-tab'), content: document.getElementById('refinance-content') },
+            'investment': { button: document.getElementById('investment-tab'), content: document.getElementById('investment-content') }
         };
         for (const key in tabs) {
             if (tabs[key].button) {
@@ -762,17 +892,12 @@ Strategic Mortgage Planner - Application Logic
         setupTabs();
         setupModal();
         
-        // Add print event listeners to disable/re-enable chart animations
         window.addEventListener('beforeprint', () => {
-            if (Chart && Chart.defaults) {
-                Chart.defaults.animation = false;
-            }
+            if (Chart && Chart.defaults) Chart.defaults.animation = false;
         });
 
         window.addEventListener('afterprint', () => {
-            if (Chart && Chart.defaults) {
-                Chart.defaults.animation = {}; // Re-enable animations by resetting to default
-            }
+            if (Chart && Chart.defaults) Chart.defaults.animation = {};
         });
 
         DOM.currency.addEventListener('change', () => {
@@ -796,15 +921,9 @@ Strategic Mortgage Planner - Application Logic
         
         if (tabs[tabKeyFromHash]) {
             switchTab(tabKeyFromHash);
-            setTimeout(() => {
+             setTimeout(() => {
                 const calculatorEl = document.getElementById('calculator');
-                const headerEl = document.querySelector('header');
-                if (calculatorEl && headerEl) {
-                    const headerOffset = headerEl.offsetHeight;
-                    const elementPosition = calculatorEl.getBoundingClientRect().top;
-                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset - 16;
-                    window.scrollTo({ top: offsetPosition, behavior: "smooth" });
-                }
+                if (calculatorEl) calculatorEl.scrollIntoView({ behavior: 'smooth' });
             }, 150);
         } else {
             switchTab('mortgage');
@@ -812,13 +931,13 @@ Strategic Mortgage Planner - Application Logic
 
         populateYearDropdown();
         
-        updateStateFromDOM(); // Initial state sync from default DOM values
+        updateStateFromDOM();
 
         if (!urlPopulated) {
-            resetForm(); // This resets DOM, updates state, and recalculates
+            resetForm();
         } else {
-            updateStateFromDOM(); // Sync state from URL-populated DOM
-            handleCalculation(); // Calculate based on the new state
+            updateStateFromDOM();
+            handleCalculation();
         }
         updateCurrencySymbols();
         
