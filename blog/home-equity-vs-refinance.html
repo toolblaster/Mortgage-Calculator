@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Equity vs. Refinance: Which Option Makes More Sense for You?</title>
+    
+    <!-- Primary Meta Tags -->
+    <meta name="description" content="HELOC vs. refinance? This guide compares home equity options vs. cash-out refinancing to help you decide how to best tap into your home's value.">
+    <meta name="keywords" content="home equity vs refinance, HELOC vs refinance, cash-out refinance vs home equity loan, when to use HELOC, how to tap home equity, refinance or equity loan, HELOC interest rates, refinance savings calculator">
+    <meta name="author" content="Vikas Rana">
+    <link rel="canonical" href="https://mortgageplanner.toolblaster.com/blog/home-equity-vs-refinance.html" />
+
+    <!-- Open Graph / Facebook Meta Tags -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://mortgageplanner.toolblaster.com/blog/home-equity-vs-refinance.html">
+    <meta property="og:title" content="Home Equity vs. Refinance: Which Option Makes More Sense for You?">
+    <meta property="og:description" content="HELOC vs. refinance? This guide compares home equity options vs. cash-out refinancing to help you decide how to best tap into your home's value.">
+    <meta property="og:site_name" content="Strategic Mortgage Planner">
+
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Home Equity vs. Refinance: Which Option Makes More Sense for You?">
+    <meta name="twitter:description" content="HELOC vs. refinance? This guide compares home equity options vs. cash-out refinancing to help you decide how to best tap into your home's value.">
+
+    <link rel="icon" href="data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100' height='100' rx='20' fill='%231C768F'/%3E%3Cpath d='M50 25L25 45V75H41.6667V58.3333H58.3333V75H75V45L50 25Z' stroke='white' stroke-width='5' stroke-linejoin='round'/%3E%3Cpath d='M40 65L50 55L60 65' stroke='white' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M50 55V45' stroke='white' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+
+    <!-- Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- App Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#1C768F', 
+                        'accent': '#166534'
+                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+
+    <!-- Shared Stylesheet (relative path from blog folder) -->
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .prose h1 { @apply text-xl sm:text-2xl font-extrabold text-primary; }
+        .prose h2 { @apply text-xl sm:text-2xl font-bold text-primary; }
+        .prose h3 { @apply text-lg font-semibold text-gray-800; }
+    </style>
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Article",
+          "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https://mortgageplanner.toolblaster.com/blog/home-equity-vs-refinance.html"
+          },
+          "headline": "Home Equity vs. Refinance: Which Option Makes More Sense for You?",
+          "description": "Confused between a HELOC and a cash-out refinance? Our guide breaks down home equity vs. refinance options to help you choose the best way to access your home's value.",
+          "author": {
+            "@type": "Person",
+            "name": "Vikas Rana"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "Strategic Mortgage Planner"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [{
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://mortgageplanner.toolblaster.com/"
+          },{
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Blog",
+            "item": "https://mortgageplanner.toolblaster.com/blog/"
+          },{
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Home Equity vs. Refinance Guide"
+          }]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Is it better to refinance or get a home equity loan?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "It depends on your goal. A home equity line of credit (HELOC) is often better for flexible, ongoing expenses, while a cash-out refinance is better for large, one-time costs, especially if you can also lower your primary mortgage rate in the process."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Can you have a HELOC and a mortgage at the same time?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes, absolutely. A HELOC is a second mortgage, meaning it's a separate loan that sits 'behind' your primary mortgage. You will have two separate monthly payments."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Does a HELOC affect your mortgage interest rate?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No, a HELOC does not change the terms of your existing mortgage. Your primary mortgage's interest rate and payment will remain the same. The HELOC will have its own separate interest rate, which is typically variable."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How much equity do I need to qualify for a HELOC?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Most lenders require you to retain at least 15-20% equity in your home after taking out the HELOC. This means your combined loan-to-value (LTV) ratio (your mortgage balance plus your potential HELOC) should not exceed 80-85% of your home's value."
+              }
+            },
+             {
+              "@type": "Question",
+              "name": "Is home equity taxable income?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No, the cash you receive from a HELOC or cash-out refinance is not considered taxable income. It is a loan that you are borrowing against your own asset, so you do not need to report it to the IRS."
+              }
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+<body class="bg-gray-100">
+    <!-- Main Content Area -->
+    <main class="content-wrapper">
+         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-4 md:my-8">
+            <div class="relative max-w-4xl mx-auto">
+                <article class="bg-white p-4 sm:p-6 md:p-8 rounded-xl shadow-2xl">
+                    <header class="text-center mb-8">
+                        <h1 class="text-2xl sm:text-3xl font-extrabold text-primary">Home Equity vs. Refinance: Which Option Makes More Sense for You?</h1>
+                        <p class="mt-2 text-sm sm:text-base text-gray-800">Your home is an asset. Let's explore the two best ways to tap into its value.</p>
+                         <div class="mt-4 text-xs text-gray-700">
+                            <span>Published By <strong>Vikas Rana</strong></span>
+                        </div>
+                    </header>
+                    
+                    <div class="my-8 h-px w-full bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
+                    
+                    <div class="prose prose-sm max-w-none mx-auto text-gray-800">
+                        <h2 class="!text-2xl">Your Home Is an Asset: Which Option Should You Use?</h2>
+                        <p>As a homeowner, you’ve likely heard that your property is more than just a place to live. It is a financial asset. The equity you’ve built is a powerful resource that can be used for home improvements, debt consolidation, or other major life expenses. But when it comes to accessing that value, you’re faced with a big question: is it better to use a <strong>home equity line of credit (HELOC) vs. refinance</strong> your mortgage?</p>
+                        <p>Choosing the right option between a <strong>HELOC vs. refinance</strong> can save you thousands in interest and provide the financial flexibility you need. This guide breaks down the pros and cons of each, helping you make an informed decision.</p>
+
+                        <section class="mt-6 content-section">
+                            <h2 class="!mt-0">What Is Home Equity & How It Works</h2>
+                            <p>Before you decide <strong>how to tap home equity</strong>, it’s essential to understand what it is. In short, your equity is the portion of your home you actually own.</p>
+                            <ul class="space-y-4 mt-4 text-sm">
+                                <li class="flex items-start">
+                                    <span class="flex-shrink-0 w-6 h-6 mr-3 text-accent"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 10.239 12.768 10 12 10c-.768 0-1.536.239-2.121.707L8.12 12.121" /></svg></span>
+                                    <div><strong>The Formula:</strong> It’s simply your home’s current market value minus your remaining mortgage balance.</div>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="flex-shrink-0 w-6 h-6 mr-3 text-accent"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941" /></svg></span>
+                                    <div><strong>How It Grows:</strong> Your equity increases in two ways: by paying down your mortgage principal and through market appreciation of your home’s value.</div>
+                                </li>
+                            </ul>
+                        </section>
+                        
+                        <section class="mt-6 content-section">
+                            <h2 class="!mt-0">What Is a Refinance (and When It Makes Sense)</h2>
+                            <p>A <strong>cash-out refinance</strong> involves replacing your current mortgage with a new, larger one. You receive the difference between the two loan amounts in cash. This is a powerful option, but it’s not always the right choice.</p>
+                            <ul class="space-y-4 mt-4 text-sm">
+                                <li class="flex items-start">
+                                    <span class="flex-shrink-0 w-6 h-6 mr-3 text-primary"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3" /></svg></span>
+                                    <div><strong>Best Use Case:</strong> It's ideal if you can also lower the interest rate on your primary mortgage. This allows you to get cash while potentially reducing your long-term interest costs.</div>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="flex-shrink-0 w-6 h-6 mr-3 text-primary"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></span>
+                                    <div><strong>The Catch:</strong> A refinance resets your loan term. If you’re 10 years into a 30-year mortgage, a new 30-year loan means you’ll be paying for 40 years in total.</div>
+                                </li>
+                            </ul>
+                        </section>
+                        
+                        <!-- CTA Block 1 -->
+                        <div class="my-8 p-6 bg-accent/10 rounded-lg text-center shadow-inner border border-accent/20">
+                            <h3 class="text-lg font-bold text-accent">💠 Want to see how much you could borrow?</h3>
+                            <p class="mt-2 text-gray-700">Before you go further, find out exactly how much equity you can access.</p>
+                            <a href="../calculators/home-equity-calculator.html" class="mt-4 inline-block bg-accent text-white font-bold py-2 px-6 rounded-lg shadow-lg hover:bg-green-800 transition-transform transform hover:scale-105">
+                                Calculate Your Home Equity →
+                            </a>
+                        </div>
+
+                        <section class="mt-6 content-section">
+                            <h2 class="!mt-0">HELOC vs. Refinance: Side-by-Side Comparison</h2>
+                            <p>Let's break down the core differences between a <strong>cash-out refinance vs. home equity loan</strong> (specifically a HELOC) to make the choice clearer.</p>
+                            <div class="mt-4 overflow-x-auto">
+                                <table class="min-w-full divide-y-2 divide-gray-200 text-sm">
+                                    <thead class="text-left">
+                                        <tr>
+                                            <th class="whitespace-nowrap px-4 py-3 font-bold text-gray-900">Feature</th>
+                                            <th class="whitespace-nowrap px-4 py-3 font-bold text-primary bg-primary/10">HELOC</th>
+                                            <th class="whitespace-nowrap px-4 py-3 font-bold text-accent bg-accent/10">Cash-Out Refinance</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-200">
+                                        <tr>
+                                            <td class="px-4 py-3 font-semibold">Loan Type</td>
+                                            <td class="px-4 py-3 bg-primary/5">A second, separate mortgage (like a credit card for your house).</td>
+                                            <td class="px-4 py-3 bg-accent/5">A brand new primary mortgage that replaces your old one.</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-4 py-3 font-semibold">Interest Rate</td>
+                                            <td class="px-4 py-3 bg-primary/5">Typically variable and tied to the prime rate.</td>
+                                            <td class="px-4 py-3 bg-accent/5">Typically fixed for the life of the new loan.</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-4 py-3 font-semibold">How You Get Funds</td>
+                                            <td class="px-4 py-3 bg-primary/5">Draw what you need, when you need it, up to your credit limit.</td>
+                                            <td class="px-4 py-3 bg-accent/5">Receive a single lump-sum payment at closing.</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-4 py-3 font-semibold">Best For...</td>
+                                            <td class="px-4 py-3 bg-primary/5">Ongoing projects with uncertain costs (e.g., renovations) or as an emergency fund.</td>
+                                            <td class="px-4 py-3 bg-accent/5">Large, one-time expenses (e.g., debt consolidation) and when current mortgage rates are low.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </section>
+                        
+                        <section class="mt-6 content-section">
+                            <h2 class="!mt-0">Example Scenarios: Putting It into Practice</h2>
+                            <p>Let’s look at two common situations to see where each option shines. Assume a homeowner has a $450k home and a $250k mortgage, giving them access to about $132,500 in equity.</p>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                                <!-- Scenario 1 -->
+                                <div class="border p-4 rounded-lg bg-gray-50">
+                                    <h3 class="font-bold text-center">Scenario 1: The Kitchen Remodel</h3>
+                                    <p class="text-xs text-center"><strong>Goal:</strong> $50,000 for a renovation project.</p>
+                                    <div class="relative h-48 mt-2"><canvas id="scenario1Chart"></canvas></div>
+                                    <p class="mt-2 text-sm">A <strong>HELOC</strong> is likely better here. It provides the flexibility to draw funds as different phases of the project need payment, and you only pay interest on what you use.</p>
+                                </div>
+                                <!-- Scenario 2 -->
+                                <div class="border p-4 rounded-lg bg-gray-50">
+                                    <h3 class="font-bold text-center">Scenario 2: High-Interest Debt</h3>
+                                    <p class="text-xs text-center"><strong>Goal:</strong> $40,000 to pay off credit cards.</p>
+                                    <div class="relative h-48 mt-2"><canvas id="scenario2Chart"></canvas></div>
+                                    <p class="mt-2 text-sm">A <strong>Cash-Out Refinance</strong> could be superior, especially if today’s mortgage rates are lower than your current one. You consolidate debt into a low, fixed-rate payment.</p>
+                                </div>
+                            </div>
+                        </section>
+                        
+                        <!-- CTA Block 2 -->
+                        <div class="my-8 p-6 bg-primary/10 rounded-lg text-center shadow-inner border border-primary/20">
+                            <h3 class="text-lg font-bold text-primary">💠 Could a refinance lower your overall rate?</h3>
+                            <p class="mt-2 text-gray-700">Use our calculator to see if refinancing could save you money in the long run.</p>
+                            <a href="../#refinance-tab" class="mt-4 inline-block bg-primary text-white font-bold py-2 px-6 rounded-lg shadow-lg hover:bg-sky-800 transition-transform transform hover:scale-105">
+                                Compare Refinance Savings →
+                            </a>
+                        </div>
+
+                        <section class="mt-6 content-section">
+                            <h2 class="!mt-0">How to Choose the Right Option for You</h2>
+                            <p>Still undecided? Answer these three questions to find your answer:</p>
+                             <ul class="space-y-4 mt-4 text-sm">
+                                <li class="flex items-start">
+                                    <span class="flex-shrink-0 w-6 h-6 mr-3 text-accent"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></span>
+                                    <div><strong>How will you use the money?</strong> For ongoing, flexible spending, choose a <strong>HELOC</strong>. For a single, large expense, a <strong>cash-out refinance</strong> is cleaner.</div>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="flex-shrink-0 w-6 h-6 mr-3 text-accent"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941" /></svg></span>
+                                    <div><strong>What are current interest rates?</strong> If rates are lower than your current mortgage, a <strong>cash-out refinance</strong> is very attractive. If rates are higher, a <strong>HELOC</strong> is better as it leaves your low-rate primary mortgage untouched.</div>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="flex-shrink-0 w-6 h-6 mr-3 text-accent"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></span>
+                                    <div><strong>How comfortable are you with variable rates?</strong> If the thought of a fluctuating payment makes you nervous, the fixed rate of a <strong>cash-out refinance</strong> offers more peace of mind than typical <strong>HELOC interest rates</strong>.</div>
+                                </li>
+                            </ul>
+                        </section>
+
+                        <section class="mt-6 content-section">
+                            <h2 class="!mt-0">FAQs: Home Equity vs. Refinance</h2>
+                            <div class="space-y-4 mt-4 text-sm">
+                                <div>
+                                    <h3 class="font-semibold">Is it better to refinance or get a home equity loan?</h3>
+                                    <p>It depends on your goal. A home equity line of credit (HELOC) is often better for flexible, ongoing expenses, while a cash-out refinance is better for large, one-time costs, especially if you can also lower your primary mortgage rate in the process.</p>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold">Can you have a HELOC and a mortgage at the same time?</h3>
+                                    <p>Yes, absolutely. A HELOC is a second mortgage, meaning it's a separate loan that sits 'behind' your primary mortgage. You will have two separate monthly payments.</p>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold">Does a HELOC affect your mortgage interest rate?</h3>
+                                    <p>No, a HELOC does not change the terms of your existing mortgage. Your primary mortgage's interest rate and payment will remain the same. The HELOC will have its own separate interest rate, which is typically variable.</p>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold">How much equity do I need to qualify for a HELOC?</h3>
+                                    <p>Most lenders require you to retain at least 15-20% equity in your home after taking out the HELOC. This means your combined loan-to-value (LTV) ratio (your mortgage balance plus your potential HELOC) should not exceed 80-85% of your home's value.</p>
+                                </div>
+                                 <div>
+                                    <h3 class="font-semibold">Is home equity taxable income?</h3>
+                                    <p>No, the cash you receive from a HELOC or cash-out refinance is not considered taxable income. It is a loan that you are borrowing against your own asset, so you do not need to report it to the IRS.</p>
+                                </div>
+                            </div>
+                        </section>
+                        
+                        <!-- Share Section -->
+                        <section class="bg-white border-t pt-6 mt-6">
+                            <div class="max-w-7xl mx-auto">
+                                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 text-center">
+                                    <h3 class="text-sm font-semibold text-gray-800">Found this guide helpful? Share it:</h3>
+                                    <div class="flex items-center gap-3">
+                                        <a id="share-twitter" href="#" target="_blank" rel="noopener noreferrer" title="Share on Twitter" class="p-2 bg-[#1DA1F2] text-white rounded-full hover:bg-[#0c85d0] transition-colors shadow-md">
+                                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.223.085a4.93 4.93 0 004.6 3.419A9.9 9.9 0 010 17.54a13.94 13.94 0 007.547 2.21c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg>
+                                        </a>
+                                        <a id="share-facebook" href="#" target="_blank" rel="noopener noreferrer" title="Share on Facebook" class="p-2 bg-[#1877F2] text-white rounded-full hover:bg-[#166fe5] transition-colors shadow-md">
+                                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clip-rule="evenodd"/></svg>
+                                        </a>
+                                        <a id="share-linkedin" href="#" target="_blank" rel="noopener noreferrer" title="Share on LinkedIn" class="p-2 bg-[#0077B5] text-white rounded-full hover:bg-[#006097] transition-colors shadow-md">
+                                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                                        </a>
+                                        <a id="share-whatsapp" href="#" target="_blank" rel="noopener noreferrer" title="Share on WhatsApp" class="p-2 bg-[#25D366] text-white rounded-full hover:bg-[#1ebe59] transition-colors shadow-md">
+                                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.31-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/>
+                                            </svg>
+                                        </a>
+                                        <a id="share-email" href="#" title="Share via Email" class="p-2 bg-gray-600 text-white rounded-full hover:bg-gray-700 transition-colors shadow-md">
+                                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path></svg>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </article>
+
+                <!-- Desktop Sidebar -->
+                <aside class="hidden lg:block absolute top-0 left-full ml-8 w-72">
+                    <div class="sticky top-24">
+                        <div class="bg-gray-50 p-4 rounded-lg border">
+                             <h3 class="font-bold text-lg text-primary border-b-2 border-primary pb-2 mb-4">Related Articles</h3>
+                             <ul class="space-y-4">
+                                 <li>
+                                    <a href="how-much-house-can-i-afford.html" class="font-semibold text-primary hover:underline group">
+                                        <span class="block text-sm">How Much House Can I Afford?</span>
+                                        <span class="block text-xs text-gray-500 group-hover:text-accent">Our complete guide to find your budget.</span>
+                                    </a>
+                                 </li>
+                                 <li>
+                                    <a href="first-time-home-buyer-checklist.html" class="font-semibold text-primary hover:underline group">
+                                         <span class="block text-sm">First-Time Home Buyer's Checklist</span>
+                                         <span class="block text-xs text-gray-500 group-hover:text-accent">Your essential 10-step guide.</span>
+                                    </a>
+                                </li>
+                                  <li>
+                                    <a href="mortgage-amortization-explained.html" class="font-semibold text-primary hover:underline group">
+                                         <span class="block text-sm">Mortgage Amortization Explained</span>
+                                         <span class="block text-xs text-gray-500 group-hover:text-accent">See where your payment really goes.</span>
+                                    </a>
+                                </li>
+                             </ul>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+         </div>
+         <!-- Mobile Related Articles Banner -->
+        <div id="mobile-related-articles" class="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg transform translate-y-full transition-transform duration-300 ease-in-out z-40">
+            <div class="flex justify-between items-center mb-3">
+                 <h3 class="font-bold text-md text-primary">Related Articles</h3>
+                 <button id="close-mobile-sidebar" class="text-gray-500 hover:text-gray-800 text-2xl font-bold">&times;</button>
+            </div>
+             <ul class="space-y-3">
+                 <li>
+                    <a href="how-much-house-can-i-afford.html" class="font-semibold text-primary hover:underline group">
+                        <span class="block text-sm">How Much House Can I Afford?</span>
+                    </a>
+                 </li>
+                 <li>
+                    <a href="first-time-home-buyer-checklist.html" class="font-semibold text-primary hover:underline group">
+                         <span class="block text-sm">First-Time Home Buyer's Checklist</span>
+                    </a>
+                </li>
+                 <li>
+                    <a href="mortgage-amortization-explained.html" class="font-semibold text-primary hover:underline group">
+                         <span class="block text-sm">Mortgage Amortization Explained</span>
+                    </a>
+                </li>
+             </ul>
+        </div>
+    </main>
+    <script src="../global-elements.js" defer></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- Chart Rendering ---
+            const scenario1Ctx = document.getElementById('scenario1Chart');
+            if (scenario1Ctx) {
+                new Chart(scenario1Ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Monthly Payment'],
+                        datasets: [{
+                            label: 'HELOC (15yr)',
+                            data: [542],
+                            backgroundColor: '#38bdf8', // sky-400
+                        }, {
+                            label: 'Cash-Out Refi (30yr)',
+                            data: [1863],
+                             backgroundColor: '#34d399', // emerald-400
+                        }]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        plugins: { legend: { position: 'bottom' }, title: { display: true, text: 'Payment Impact ($50k cash)' } },
+                        scales: { y: { beginAtZero: true, ticks: { callback: (value) => '$' + value } } }
+                    },
+                });
+            }
+
+            const scenario2Ctx = document.getElementById('scenario2Chart');
+            if (scenario2Ctx) {
+                 new Chart(scenario2Ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Credit Cards', 'HELOC', 'Refinance'],
+                        datasets: [{
+                            label: 'Interest Rate',
+                            data: [22, 8.5, 6.5],
+                            backgroundColor: ['#ef4444', '#38bdf8', '#34d399'], // red, sky, emerald
+                        }]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false, indexAxis: 'y',
+                        plugins: { legend: { display: false }, title: { display: true, text: 'Interest Rate Comparison' } },
+                        scales: { x: { beginAtZero: true, ticks: { callback: (value) => value + '%' } } }
+                    },
+                });
+            }
+
+            // --- Social Sharing Links ---
+            const postUrl = encodeURIComponent(window.location.href);
+            const postTitle = encodeURIComponent(document.title);
+            const postSource = encodeURIComponent("Strategic Mortgage Planner");
+
+            document.getElementById('share-twitter').href = `https://twitter.com/intent/tweet?url=${postUrl}&text=${postTitle}`;
+            document.getElementById('share-facebook').href = `https://www.facebook.com/sharer/sharer.php?u=${postUrl}`;
+            document.getElementById('share-linkedin').href = `https://www.linkedin.com/shareArticle?mini=true&url=${postUrl}&title=${postTitle}&source=${postSource}`;
+            document.getElementById('share-whatsapp').href = `https://api.whatsapp.com/send?text=${postTitle}%20${postUrl}`;
+            document.getElementById('share-email').href = `mailto:?subject=${postTitle}&body=Check out this helpful guide: ${postUrl}`;
+
+            // --- Mobile Related Articles Logic ---
+            const mobileSidebar = document.getElementById('mobile-related-articles');
+            const closeButton = document.getElementById('close-mobile-sidebar');
+            let sidebarShown = false;
+
+            if (mobileSidebar && closeButton) {
+                const showSidebar = () => { if (!sidebarShown) { mobileSidebar.classList.remove('translate-y-full'); sidebarShown = true; } };
+                const hideSidebar = () => { mobileSidebar.classList.add('translate-y-full'); sidebarShown = false; };
+                closeButton.addEventListener('click', hideSidebar);
+                window.addEventListener('scroll', () => { if (!sidebarShown && (window.innerHeight + window.scrollY) >= document.body.offsetHeight - 200) { showSidebar(); } }, { passive: true });
+            }
+        });
+    </script>
+</body>
+</html>
