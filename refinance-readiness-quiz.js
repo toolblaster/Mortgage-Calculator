@@ -47,24 +47,59 @@ document.addEventListener('DOMContentLoaded', function() {
         progressBar.style.width = `100%`;
         
         const { goal, credit } = userAnswers;
-        const goalText = goal.replace(/_/g, ' ');
+        const goalText = (goal || '').replace(/_/g, ' ');
 
         let title = "Here's Your Personalized Recommendation";
         let subtitle = "Based on your answers, here is our analysis of your refinance readiness.";
         let content = '';
-        let cta = `<a href="/#refinance-tab" class="inline-block w-full sm:w-auto bg-accent text-white font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-green-800 transition-transform transform hover:scale-105">Analyze My Refinance &rarr;</a>`;
+        
+        // --- NEW: Intelligent CTA Link Generation ---
+        const params = new URLSearchParams();
+        
+        // Map loan age to an approximate start date
+        const loanAge = userAnswers.loan_age;
+        if (loanAge) {
+            const currentDate = new Date();
+            let yearsAgo = 0;
+            if (loanAge === 'under_2_years') yearsAgo = 1;
+            else if (loanAge === '2_5_years') yearsAgo = 3;
+            else if (loanAge === '5_10_years') yearsAgo = 7;
+            else if (loanAge === 'over_10_years') yearsAgo = 12;
+
+            if (yearsAgo > 0) {
+                const startDate = new Date();
+                startDate.setFullYear(startDate.getFullYear() - yearsAgo);
+                params.set('loanStartYear', startDate.getFullYear());
+                params.set('loanStartMonth', ('0' + (startDate.getMonth() + 1)).slice(-2));
+            }
+        }
+
+        // Map goal to a suggested new loan term
+        if (goal === 'pay_off_faster') {
+            params.set('newLoanTerm', '15');
+        } else {
+            params.set('newLoanTerm', '30'); // Default for lower payment or cash out
+        }
+        
+        // Map credit score to a suggested new interest rate
+        if (credit === 'excellent') params.set('newInterestRate', '5.5');
+        else if (credit === 'good') params.set('newInterestRate', '6.0');
+        else if (credit === 'fair') params.set('newInterestRate', '7.0');
+        
+        const calculatorUrl = `index.html#refinance-tab?${params.toString()}`;
+        let cta = `<a href="${calculatorUrl}" class="inline-block w-full sm:w-auto bg-accent text-white font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-green-800 transition-transform transform hover:scale-105">Analyze My Refinance &rarr;</a>`;
         
         // --- Special Case Handling ---
         if (goal === 'unsure') {
             title = "Let's Figure Out Your Budget!";
             subtitle = "It's smart to start by understanding your financial picture. Here's our recommendation:";
             content = `<p>Since you're exploring your options, the best place to start is our <strong>Home Affordability Calculator</strong>. This tool will help you understand how a mortgage fits into your budget and what you might qualify for.</p>`;
-            cta = `<a href="/#affordability-tab" class="inline-block w-full sm:w-auto bg-accent text-white font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-green-800 transition-transform transform hover:scale-105">Calculate My Affordability &rarr;</a>`;
+            cta = `<a href="index.html#affordability-tab" class="inline-block w-full sm:w-auto bg-accent text-white font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-green-800 transition-transform transform hover:scale-105">Calculate My Affordability &rarr;</a>`;
         } else if (credit === 'poor') {
              title = "Let's Build a Plan for the Future";
              subtitle = "Refinancing might be challenging right now, but here's a recommended path forward."
              content = `<p>With a credit score that needs improvement, the best first step is to focus on strengthening your financial profile. This will put you in a much stronger position to get the best rates in the future.</p><h3 class="font-bold mt-4">Recommended Actions:</h3><ul class="list-disc list-inside space-y-2 pl-4"><li>Review your credit report for any errors.</li><li>Focus on making all payments on time.</li><li>Work on paying down high-interest credit card balances.</li></ul>`;
-             cta = `<a href="/#mortgage-tab" class="inline-block w-full sm:w-auto bg-primary text-white font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-sky-700 transition-transform transform hover:scale-105">Explore Scenarios &rarr;</a>`;
+             cta = `<a href="index.html#mortgage-tab" class="inline-block w-full sm:w-auto bg-primary text-white font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-sky-700 transition-transform transform hover:scale-105">Explore Scenarios &rarr;</a>`;
         } else {
             // --- Weighted Scoring Logic ---
             const weights = {
