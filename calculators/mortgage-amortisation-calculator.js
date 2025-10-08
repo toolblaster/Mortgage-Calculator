@@ -33,12 +33,6 @@ document.addEventListener('DOMContentLoaded', function () {
     let standardSchedule = [], acceleratedSchedule = [];
 
     // --- Helper Functions ---
-    const formatCurrency = (amount) => {
-        const currency = DOM.currency.value || 'USD';
-        const locale = ['EUR', 'GBP'].includes(currency) ? 'de-DE' : 'en-US';
-        return new Intl.NumberFormat(locale, { style: 'currency', currency: currency, minimumFractionDigits: 2 }).format(amount);
-    };
-
     const updateCurrencySymbols = () => {
         const symbols = { 'USD': '$', 'EUR': '€', 'GBP': '£', 'CAD': 'C$', 'AUD': 'A$' };
         const symbol = symbols[DOM.currency.value] || '$';
@@ -48,9 +42,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // --- Core Calculation Logic ---
     function calculateAmortization(loanAmount, annualRate, years, extraMonthly, oneTimePayment, oneTimePaymentMonth) {
-        const monthlyRate = annualRate / 12 / 100;
         const totalMonths = years * 12;
-        const monthlyPayment = (loanAmount * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -totalMonths));
+        const monthlyPayment = window.mortgageUtils.calculatePayment(loanAmount, annualRate, 12, totalMonths);
+        const monthlyRate = annualRate / 12 / 100;
 
         let balance = loanAmount;
         let schedule = [];
@@ -103,15 +97,15 @@ document.addEventListener('DOMContentLoaded', function () {
         const insurance = parseFloat(DOM.homeInsurance.value) || 0;
         const totalMonthly = displaySchedule[0].payment + (tax / 12) + (insurance / 12) + (isCompare ? parseFloat(DOM.extraMonthly.value) || 0 : 0);
         
-        DOM.monthlyPayment.textContent = formatCurrency(totalMonthly);
-        DOM.totalInterest.textContent = formatCurrency(isCompare ? acceleratedTotalInterest : standardTotalInterest);
+        DOM.monthlyPayment.textContent = window.mortgageUtils.formatCurrency(totalMonthly, DOM.currency.value, 2);
+        DOM.totalInterest.textContent = window.mortgageUtils.formatCurrency(isCompare ? acceleratedTotalInterest : standardTotalInterest, DOM.currency.value, 2);
 
         const payoff = new Date();
         payoff.setMonth(payoff.getMonth() + displaySchedule.length);
         DOM.payoffDate.textContent = payoff.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
 
         const saved = standardTotalInterest - acceleratedTotalInterest;
-        DOM.interestSaved.textContent = formatCurrency(saved > 0 ? saved : 0);
+        DOM.interestSaved.textContent = window.mortgageUtils.formatCurrency(saved > 0 ? saved : 0, DOM.currency.value, 2);
 
         const progress = (1 - (displaySchedule[displaySchedule.length - 1].balance / parseFloat(DOM.loanAmount.value))) * 100;
         DOM.progressBar.style.width = `${progress}%`;
@@ -169,7 +163,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 scales: {
                     y: {
                         beginAtZero: true,
-                        ticks: { callback: value => formatCurrency(value) }
+                        ticks: { callback: value => window.mortgageUtils.formatCurrency(value, DOM.currency.value, 2) }
                     },
                     x: {
                          ticks: {
@@ -188,7 +182,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         mode: 'index',
                         intersect: false,
                         callbacks: {
-                            label: (context) => `${context.dataset.label}: ${formatCurrency(context.raw)}`
+                            label: (context) => `${context.dataset.label}: ${window.mortgageUtils.formatCurrency(context.raw, DOM.currency.value, 2)}`
                         }
                     }
                 }
@@ -202,11 +196,11 @@ document.addEventListener('DOMContentLoaded', function () {
             html += `
                 <tr class="hover:bg-gray-50">
                     <td class="p-2">${p.month}</td>
-                    <td class="p-2 text-right">${formatCurrency(p.payment)}</td>
-                    <td class="p-2 text-right">${formatCurrency(p.principal)}</td>
-                    <td class="p-2 text-right">${formatCurrency(p.interest)}</td>
-                    <td class="p-2 text-right text-accent">${p.extraPayment > 0 ? formatCurrency(p.extraPayment) : '-'}</td>
-                    <td class="p-2 text-right font-semibold">${formatCurrency(p.balance)}</td>
+                    <td class="p-2 text-right">${window.mortgageUtils.formatCurrency(p.payment, DOM.currency.value, 2)}</td>
+                    <td class="p-2 text-right">${window.mortgageUtils.formatCurrency(p.principal, DOM.currency.value, 2)}</td>
+                    <td class="p-2 text-right">${window.mortgageUtils.formatCurrency(p.interest, DOM.currency.value, 2)}</td>
+                    <td class="p-2 text-right text-accent">${p.extraPayment > 0 ? window.mortgageUtils.formatCurrency(p.extraPayment, DOM.currency.value, 2) : '-'}</td>
+                    <td class="p-2 text-right font-semibold">${window.mortgageUtils.formatCurrency(p.balance, DOM.currency.value, 2)}</td>
                 </tr>
             `;
         });
@@ -266,11 +260,11 @@ document.addEventListener('DOMContentLoaded', function () {
         const head = [['Month', 'Payment', 'Principal', 'Interest', 'Extra', 'Balance']];
         const body = schedule.map(p => [
             p.month,
-            formatCurrency(p.payment),
-            formatCurrency(p.principal),
-            formatCurrency(p.interest),
-            formatCurrency(p.extraPayment),
-            formatCurrency(p.balance)
+            window.mortgageUtils.formatCurrency(p.payment, DOM.currency.value, 2),
+            window.mortgageUtils.formatCurrency(p.principal, DOM.currency.value, 2),
+            window.mortgageUtils.formatCurrency(p.interest, DOM.currency.value, 2),
+            window.mortgageUtils.formatCurrency(p.extraPayment, DOM.currency.value, 2),
+            window.mortgageUtils.formatCurrency(p.balance, DOM.currency.value, 2)
         ]);
         
         doc.autoTable({
