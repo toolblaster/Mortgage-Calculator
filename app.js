@@ -807,6 +807,8 @@ Strategic Mortgage Planner - Application Logic
 
     function resetForm() {
         const defaults = { loanAmount: "300000", interestRate: "6.5", loanTerm: "30", initialLTV: "90", discountRate: "3.0", appreciationRate: "3.5", annualIncome: "120000", nonMortgageDebt: "800", propertyTax: "3600", insurance: "1200", hoa: "0", pitiEscalationRate: "2.0", pmiRate: "0.5", extraPayment: "100", lumpSumPayment: "5000", lumpSumPeriod: "1", refiPeriod: "60", refiRate: "5.0", refiTerm: "15", refiClosingCosts: "5000", shockRateIncrease: "1.0", annualMaintenance: "1.0", monthlyUtilities: "300", monthlyRent: "2000", rentIncrease: "3.0", investmentReturn: "7.0", closingCosts: "8000", sellingCosts: "6.0", downPaymentAmount: "60000", desiredFrontEndDTI: "28", desiredBackEndDTI: "36", originalLoanAmount: "300000", currentInterestRate: "6.5", newInterestRate: "5.0", newLoanTerm: "30", newClosingCosts: "5000", purchasePrice: "250000", investmentDownPayment: "20", investmentInterestRate: "7.5", investmentLoanTerm: "30", investmentClosingCosts: "4000", monthlyRentalIncome: "2200", vacancyRate: "5", propertyTaxes: "3000", propertyInsurance: "1000", maintenanceCosts: "8", managementFee: "10" };
+        // STATE PERSISTENCE: Clear local storage on reset
+        localStorage.removeItem('mortgageCalculatorState');
         for (const id in defaults) { const el = DOM[id]; if (el) el.value = defaults[id]; }
         if(DOM.loanStartMonth) DOM.loanStartMonth.value = "01";
         if(DOM.loanStartYear) DOM.loanStartYear.value = "2021";
@@ -825,24 +827,62 @@ Strategic Mortgage Planner - Application Logic
         history.replaceState(null, '', '?' + params.toString());
     }
 
-    function populateFormFromURL() {
+    // STATE PERSISTENCE: Save state to Local Storage
+    function saveStateToLocalStorage() {
+        try {
+            const stateToSave = { ...state };
+            localStorage.setItem('mortgageCalculatorState', JSON.stringify(stateToSave));
+        } catch (e) {
+            console.error("Could not save state to local storage:", e);
+        }
+    }
+
+    // STATE PERSISTENCE: Load state from URL or Local Storage
+    function loadStateFromURLOrLocalStorage() {
         const params = new URLSearchParams(window.location.search);
-        if (params.toString().length === 0) return false;
-        allInputIds.forEach(id => { 
-            const el = DOM[id]; 
-            if (el && params.has(id) && id !== 'loanStartMonth' && id !== 'loanStartYear') {
-                el.value = params.get(id); 
+        if (params.toString().length > 0) {
+            // URL params take precedence
+            allInputIds.forEach(id => { 
+                const el = DOM[id]; 
+                if (el && params.has(id) && id !== 'loanStartMonth' && id !== 'loanStartYear') {
+                    el.value = params.get(id); 
+                }
+            });
+            if (params.has('loanStartDate')) {
+                const [year, month] = params.get('loanStartDate').split('-');
+                if (DOM.loanStartYear && DOM.loanStartMonth) {
+                    DOM.loanStartYear.value = year;
+                    DOM.loanStartMonth.value = month;
+                }
             }
-        });
-        if (params.has('loanStartDate')) {
-            const [year, month] = params.get('loanStartDate').split('-');
-            if (DOM.loanStartYear && DOM.loanStartMonth) {
-                DOM.loanStartYear.value = year;
-                DOM.loanStartMonth.value = month;
+            return true; // Indicates data was loaded
+        } else {
+            // Fallback to local storage
+            try {
+                const savedState = localStorage.getItem('mortgageCalculatorState');
+                if (savedState) {
+                    const parsedState = JSON.parse(savedState);
+                    allInputIds.forEach(id => {
+                        if (DOM[id] && parsedState[id] !== undefined) {
+                            DOM[id].value = parsedState[id];
+                        }
+                    });
+                     if (parsedState.loanStartDate) {
+                        const [year, month] = parsedState.loanStartDate.split('-');
+                        if (DOM.loanStartYear && DOM.loanStartMonth) {
+                            DOM.loanStartYear.value = year;
+                            DOM.loanStartMonth.value = month;
+                        }
+                    }
+                    return true;
+                }
+            } catch (e) {
+                console.error("Could not load state from local storage:", e);
             }
         }
-        return true;
+        return false; // No data was loaded
     }
+
 
     function setupModal() {
         DOM.saveButton.addEventListener('click', () => {
@@ -967,10 +1007,21 @@ Strategic Mortgage Planner - Application Logic
         if(DOM.togglePrincipalPaid) DOM.togglePrincipalPaid.addEventListener('change', () => { if (currentResults) renderChart(currentResults.accelerated); });
         if(DOM.toggleInterestPaid) DOM.toggleInterestPaid.addEventListener('change', () => { if (currentResults) renderChart(currentResults.accelerated); });
 
-        loadGuide();
+        // STATE PERSISTENCE: Add event listeners to all inputs to save on change
+        allInputIds.forEach(id => {
+            const el = DOM[id];
+            if (el) {
+                el.addEventListener('change', () => {
+                    updateStateFromDOM();
+                    saveStateToLocalStorage();
+                });
+            }
+        });
 
-        const urlPopulated = populateFormFromURL();
+        loadGuide();
         
+        const dataLoaded = loadStateFromURLOrLocalStorage();
+
         const hash = window.location.hash.substring(1);
         const tabKeyFromHash = hash.replace('-tab', '');
         
@@ -988,11 +1039,10 @@ Strategic Mortgage Planner - Application Logic
         
         updateStateFromDOM();
 
-        // Find the initially visible calculate button to pass to resetForm/handleCalculation
         const initialVisibleButton = document.querySelector('.calculate-button:not([style*="display: none"])') || DOM.calculateButtons[0];
 
-        if (!urlPopulated) {
-             resetForm(initialVisibleButton);
+        if (!dataLoaded) {
+             resetForm();
         } else {
             updateStateFromDOM();
             handleCalculation(false, initialVisibleButton);
