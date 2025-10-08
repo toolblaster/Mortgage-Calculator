@@ -132,8 +132,8 @@
                                     <label for="currency" class="block font-medium text-xs text-gray-700">Currency:</label>
                                     <select id="currency" class="w-full p-1.5 text-sm border border-gray-300 rounded-md h-[34px]">
                                         <option value="USD">USD ($)</option>
-                                        <option value="EUR">EUR (€)</option>
-                                        <option value="GBP">GBP (£)</option>
+                                        <option value="EUR">EUR (â‚¬)</option>
+                                        <option value="GBP">GBP (Â£)</option>
                                         <option value="CAD">CAD (C$)</option>
                                         <option value="AUD">AUD (A$)</option>
                                     </select>
@@ -248,8 +248,8 @@
                             <span class="tooltip-container">Amortisation Schedule <span class="tooltip-icon">?</span><span class="tooltip-text">A detailed breakdown of every payment over the life of the loan.</span></span>
                         </h2>
                         <div class="flex items-center gap-2 mt-2 sm:mt-0">
-                             <button id="downloadPDF" class="text-xs font-semibold text-primary hover:underline p-2 rounded-md hover:bg-gray-100">📥 Download PDF</button>
-                             <button id="downloadCSV" class="text-xs font-semibold text-primary hover:underline p-2 rounded-md hover:bg-gray-100">📥 Download CSV</button>
+                             <button id="downloadPDF" class="text-xs font-semibold text-primary hover:underline p-2 rounded-md hover:bg-gray-100">ðŸ“¥ Download PDF</button>
+                             <button id="downloadCSV" class="text-xs font-semibold text-primary hover:underline p-2 rounded-md hover:bg-gray-100">ðŸ“¥ Download CSV</button>
                         </div>
                     </div>
                     <div class="schedule-container border rounded-lg">
@@ -268,10 +268,11 @@
                         </table>
                     </div>
                 </div>
-            </div>
+              </div>
         </div>
     </main>
     <script src="../global-elements.js" defer></script>
+    <script src="../js/utils.js" defer></script>
     <script src="mortgage-amortisation-calculator.js" defer></script>
 </body>
 </html>
