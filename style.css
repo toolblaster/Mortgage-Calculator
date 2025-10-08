@@ -199,6 +199,13 @@ input, select {
   }
 }
 
+/* ADVANCED CHARTING: Styles for chart toggle switches */
+.toggle-checkbox:checked + .toggle-bg {
+    background-color: #166534; /* accent color */
+}
+.toggle-checkbox:checked + .toggle-bg + .dot {
+    transform: translateX(100%);
+}
 
 /* UPDATED AND ENHANCED PRINT STYLES */
 @media print {
