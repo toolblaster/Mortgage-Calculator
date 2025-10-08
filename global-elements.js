@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const homePath = rootPath;
     const quizPath = `${rootPath}Refinance-Readiness-Quiz.html`;
     const equityCalcPath = `${rootPath}calculators/home-equity-calculator.html`;
-    const legalPath = `${rootPath}legal.html`;
+    const legalPath = `${rootPath}contact-us-and-legal.html`; // UPDATED: Changed file name
     const blogPath = `${rootPath}blog/`;
     
     const logoIconPath = '#logo-icon';
