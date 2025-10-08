@@ -492,13 +492,38 @@
                                 </div>
                             </div>
                             
+                            <!-- UI/UX UPDATE: New Prominent Savings Summary -->
+                            <div id="savings-summary" class="savings-summary-pop-in bg-accent/10 p-3 rounded-lg border-2 border-accent/30 shadow-lg text-center my-3">
+                                <h3 class="text-base font-extrabold text-accent flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
+                                    Accelerated Payoff Savings
+                                </h3>
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-2 text-sm">
+                                    <div class="bg-white/50 p-2 rounded-md">
+                                        <p class="font-semibold text-gray-700">Interest Saved</p>
+                                        <p id="interestSaved" class="text-xl font-bold text-accent" data-value="0">$0</p>
+                                    </div>
+                                    <div class="bg-white/50 p-2 rounded-md">
+                                        <p class="font-semibold text-gray-700">Time Saved</p>
+                                        <p id="timeSaved" class="text-xl font-bold text-accent">0y 0m</p>
+                                    </div>
+                                    <div class="bg-white/50 p-2 rounded-md">
+                                        <p class="font-semibold text-gray-700">
+                                            <span class="tooltip-container">NPV (True) Savings
+                                                <span class="tooltip-icon" tabindex="0" aria-label="NPV Savings tooltip">?</span>
+                                                <span class="tooltip-text" role="tooltip">The actual value of your interest savings in today's dollars, considering inflation/investment returns.</span>
+                                            </span>
+                                        </p>
+                                        <p id="npvSaved" class="text-xl font-bold text-npv" data-value="0">$0</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
                             <h3 class="text-sm py-1 font-bold text-gray-800">Estimated Initial Monthly Payment (PITI + PMI): <span id="totalMonthlyPaymentPITI" class="text-primary"></span></h3>
 
                             <div class="mt-2 p-2 text-center bg-primary/10 rounded-lg border-2 border-primary/50 shadow">
-                                <!-- ACCESSIBILITY UPDATE: Changed text-primary to darker text-sky-900 -->
                                 <h3 class="text-sm font-bold text-sky-900">Total Monthly Cost of Ownership</h3>
                                 <p id="totalOwnershipCost" class="text-xl font-extrabold text-primary"></p>
-                                <!-- ACCESSIBILITY UPDATE: Changed text-gray-700 to darker text-sky-800 -->
                                 <p class="text-xs text-sky-800">(PITI + Maintenance + Utilities)</p>
                             </div>
                             
@@ -556,14 +581,6 @@
                                     <p class="text-npv font-bold">NPV of Interest Cost: <span id="npvNew" data-value="0"></span></p>
                                 </div>
                             </div>
-                            
-                            <p class="text-sm mt-3 p-2 bg-accent/10 rounded-lg text-center font-medium">
-                                You saved <span class="text-accent font-extrabold" id="interestSaved" data-value="0"></span> in Nominal Interest and shaved off <span class="text-accent font-extrabold" id="timeSaved"></span> from the loan term!
-                            </p>
-                            
-                            <p class="text-sm mt-2 p-2 bg-npv/10 rounded-lg text-center font-medium border-l-4 border-npv">
-                                 NPV Savings: <span class="text-npv font-extrabold" id="npvSaved" data-value="0"></span> (The true value saved in today's dollars).
-                            </p>
                         </div>
                         
                         <div id="shock-results" class="p-3 bg-red-100 rounded-lg shadow-inner border border-red-300" style="display: none;" aria-live="assertive" aria-atomic="true">
