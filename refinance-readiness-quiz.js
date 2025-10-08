@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function() {
         else if (credit === 'good') params.set('newInterestRate', '6.0');
         else if (credit === 'fair') params.set('newInterestRate', '7.0');
         
-        const calculatorUrl = `index.html#refinance-tab?${params.toString()}`;
+        const calculatorUrl = `./#refinance-tab?${params.toString()}`;
         let cta = `<a href="${calculatorUrl}" class="inline-block w-full sm:w-auto bg-accent text-white font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-green-800 transition-transform transform hover:scale-105">Analyze My Refinance &rarr;</a>`;
         
         // --- Special Case Handling ---
@@ -94,12 +94,12 @@ document.addEventListener('DOMContentLoaded', function() {
             title = "Let's Figure Out Your Budget!";
             subtitle = "It's smart to start by understanding your financial picture. Here's our recommendation:";
             content = `<p>Since you're exploring your options, the best place to start is our <strong>Home Affordability Calculator</strong>. This tool will help you understand how a mortgage fits into your budget and what you might qualify for.</p>`;
-            cta = `<a href="index.html#affordability-tab" class="inline-block w-full sm:w-auto bg-accent text-white font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-green-800 transition-transform transform hover:scale-105">Calculate My Affordability &rarr;</a>`;
+            cta = `<a href="./#affordability-tab" class="inline-block w-full sm:w-auto bg-accent text-white font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-green-800 transition-transform transform hover:scale-105">Calculate My Affordability &rarr;</a>`;
         } else if (credit === 'poor') {
              title = "Let's Build a Plan for the Future";
              subtitle = "Refinancing might be challenging right now, but here's a recommended path forward."
              content = `<p>With a credit score that needs improvement, the best first step is to focus on strengthening your financial profile. This will put you in a much stronger position to get the best rates in the future.</p><h3 class="font-bold mt-4">Recommended Actions:</h3><ul class="list-disc list-inside space-y-2 pl-4"><li>Review your credit report for any errors.</li><li>Focus on making all payments on time.</li><li>Work on paying down high-interest credit card balances.</li></ul>`;
-             cta = `<a href="index.html#mortgage-tab" class="inline-block w-full sm:w-auto bg-primary text-white font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-sky-700 transition-transform transform hover:scale-105">Explore Scenarios &rarr;</a>`;
+             cta = `<a href="./#mortgage-tab" class="inline-block w-full sm:w-auto bg-primary text-white font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-sky-700 transition-transform transform hover:scale-105">Explore Scenarios &rarr;</a>`;
         } else {
             // --- Weighted Scoring Logic ---
             const weights = {
