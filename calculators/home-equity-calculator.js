@@ -28,10 +28,6 @@ document.addEventListener('DOMContentLoaded', function() {
     let comparisonChart = null;
 
     // --- Helper Functions ---
-    const formatCurrency = (amount) => {
-        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }).format(amount);
-    };
-
     function animateValue(el, endValue, duration = 500) {
         if (!el) return;
         let startValue = parseFloat(el.dataset.value) || 0;
@@ -42,22 +38,14 @@ document.addEventListener('DOMContentLoaded', function() {
             const timeElapsed = currentTime - startTime;
             const progress = Math.min(timeElapsed / duration, 1);
             const currentValue = startValue + (endValue - startValue) * progress;
-            el.textContent = formatCurrency(currentValue);
+            el.textContent = window.mortgageUtils.formatCurrency(currentValue);
             if (progress < 1) requestAnimationFrame(animation);
-            else el.textContent = formatCurrency(endValue);
+            else el.textContent = window.mortgageUtils.formatCurrency(endValue);
         }
         requestAnimationFrame(animation);
     }
     
     // --- Core Calculation Logic ---
-    function calculatePayment(principal, annualRate, termYears) {
-        if (principal <= 0 || annualRate <= 0 || termYears <= 0) return 0;
-        const monthlyRate = annualRate / 12 / 100;
-        const numberOfPayments = termYears * 12;
-        const payment = principal * monthlyRate * Math.pow(1 + monthlyRate, numberOfPayments) / (Math.pow(1 + monthlyRate, numberOfPayments) - 1);
-        return isFinite(payment) ? payment : 0;
-    }
-
     function calculateEquity() {
         const homeValue = parseFloat(DOM.homeValue.value) || 0;
         const mortgageBalance = parseFloat(DOM.mortgageBalance.value) || 0;
@@ -76,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // HELOC Calculation
         const helocRate = parseFloat(DOM.helocRateSlider.value);
         const helocTerm = parseFloat(DOM.helocTerm.value);
-        const helocPayment = calculatePayment(availableEquity, helocRate, helocTerm);
+        const helocPayment = window.mortgageUtils.calculatePayment(availableEquity, helocRate, 12, helocTerm * 12);
         const helocTotalInterest = (helocPayment * helocTerm * 12) - availableEquity;
         
         // Cash-Out Refinance Calculation
@@ -85,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const newLoanAmount = mortgageBalance + availableEquity + closingCosts;
         const refiRate = parseFloat(DOM.refiRateSlider.value);
         const refiTerm = parseFloat(DOM.refiTerm.value);
-        const refiPayment = calculatePayment(newLoanAmount, refiRate, refiTerm);
+        const refiPayment = window.mortgageUtils.calculatePayment(newLoanAmount, refiRate, 12, refiTerm * 12);
         const refiTotalInterest = (refiPayment * refiTerm * 12) - newLoanAmount;
 
         return {
@@ -137,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 maintainAspectRatio: false,
                 plugins: {
                     legend: { position: 'bottom' },
-                    tooltip: { callbacks: { label: c => `${c.label}: ${formatCurrency(c.raw)}` } }
+                    tooltip: { callbacks: { label: c => `${c.label}: ${window.mortgageUtils.formatCurrency(c.raw)}` } }
                 }
             }
         });
@@ -170,13 +158,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 indexAxis: 'y',
                 plugins: {
                     legend: { position: 'bottom' },
-                    tooltip: { callbacks: { label: c => `${c.dataset.label}: ${formatCurrency(c.raw)}` } }
+                    tooltip: { callbacks: { label: c => `${c.dataset.label}: ${window.mortgageUtils.formatCurrency(c.raw)}` } }
                 },
                 scales: {
                     x: {
                         beginAtZero: true,
                         ticks: {
-                            callback: value => formatCurrency(value)
+                            callback: value => window.mortgageUtils.formatCurrency(value)
                         }
                     }
                 }
