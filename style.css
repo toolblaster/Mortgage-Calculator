@@ -184,6 +184,21 @@ input, select {
 .results-animate-in { animation: fadeInSlideUp 0.6s ease-out forwards; }
 @keyframes fadeInSlideUp { 0% { opacity: 0; transform: translateY(15px); } 100% { opacity: 1; transform: translateY(0); } }
 
+/* UI/UX UPDATE: Animation for the new savings summary card */
+.savings-summary-pop-in {
+    animation: pop-in 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s both; /* Added a small delay */
+}
+@keyframes pop-in {
+  0% {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
 /* UPDATED AND ENHANCED PRINT STYLES */
 @media print {
     /* Hide non-essential elements */
