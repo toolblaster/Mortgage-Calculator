@@ -67,6 +67,9 @@ Strategic Mortgage Planner - Application Logic
         shareModal: document.getElementById('shareModal'), closeModalButton: document.getElementById('closeModalButton'),
         copyUrlButton: document.getElementById('copyUrlButton'), shareUrlInput: document.getElementById('shareUrlInput'),
         copyFeedback: document.getElementById('copyFeedback'),
+        chartOptions: document.getElementById('chart-options'),
+        togglePrincipalPaid: document.getElementById('togglePrincipalPaid'),
+        toggleInterestPaid: document.getElementById('toggleInterestPaid'),
     };
     
     const allInputIds = Object.keys(DOM).filter(key => 
@@ -155,7 +158,8 @@ Strategic Mortgage Planner - Application Logic
         const symbolSpanIds = [
             'mc-loan-currency', 'mc-tax-currency', 'mc-ins-currency', 'mc-hoa-currency', 'mc-util-currency', 'mc-extra-currency',
             'mc-lump-currency', 'mc-refi-currency', 'dti-income-currency', 'dti-debt-currency', 'afford-down-payment-currency',
-            'rvb-rent-currency', 'rvb-closing-costs-currency', 'refi-orig-currency', 'refi-costs-currency'
+            'rvb-rent-currency', 'rvb-closing-costs-currency', 'refi-orig-currency', 'refi-costs-currency',
+            'inv-purchase-currency', 'inv-closing-costs-currency', 'inv-rent-currency', 'inv-tax-currency', 'inv-ins-currency'
         ];
         symbolSpanIds.forEach(id => {
             const el = document.getElementById(id);
@@ -219,14 +223,14 @@ Strategic Mortgage Planner - Application Logic
     }
     
     function createScheduleEntry(state, paymentDetails, pmiPayment, periodicDiscountRate, periodsPerYear) {
-        const { period, currentPropertyValue, currentBalance, currentAnnualTax, currentAnnualInsurance, currentMonthlyHoa, currentRate } = state;
+        const { period, currentPropertyValue, currentBalance, currentAnnualTax, currentAnnualInsurance, currentMonthlyHoa, currentRate, cumulativeInterest, cumulativePrincipal } = state;
         const { interest, principalFromPni, extraPrincipal, totalPrincipalPaid } = paymentDetails;
         const pvInterest = interest / Math.pow(1 + periodicDiscountRate, period);
         const newBalance = Math.max(0, currentBalance - totalPrincipalPaid);
         const totalEquity = Math.max(0, currentPropertyValue - newBalance);
         const periodicPITI = (currentAnnualTax / periodsPerYear) + (currentAnnualInsurance / periodsPerYear) + currentMonthlyHoa + pmiPayment;
         return {
-            entry: { period, interest: Math.max(0, interest), principalPaid: Math.max(0, totalPrincipalPaid), balance: newBalance, propertyValue: currentPropertyValue, totalEquity, pniPrincipal: Math.max(0, principalFromPni), extraPayment: extraPrincipal, pmi: pmiPayment, rate: currentRate * 100, periodicPITI, pvInterest },
+            entry: { period, interest: Math.max(0, interest), principalPaid: Math.max(0, totalPrincipalPaid), balance: newBalance, propertyValue: currentPropertyValue, totalEquity, pniPrincipal: Math.max(0, principalFromPni), extraPayment: extraPrincipal, pmi: pmiPayment, rate: currentRate * 100, periodicPITI, pvInterest, cumulativeInterest, cumulativePrincipal },
             newBalance, pvInterest
         };
     }
@@ -245,6 +249,7 @@ Strategic Mortgage Planner - Application Logic
             payoffPeriod: 0, pmiDropPeriod: null, amortizationSchedule: [],
             currentPropertyValue: initialPropertyValue, isPMIActive: (initialLTV > 80), hasRefinanced: false,
             currentAnnualTax: propertyTax, currentAnnualInsurance: insurance, currentMonthlyHoa: hoa,
+            cumulativeInterest: 0, cumulativePrincipal: 0
         };
         for (let period = 1; loanState.currentBalance > 0 && period <= 50 * periodsPerYear; period++) {
             loanState.period = period;
@@ -255,6 +260,10 @@ Strategic Mortgage Planner - Application Logic
             const pmiResult = calculatePmiForPeriod(loanState, pmiRate, periodsPerYear, pmiStopThreshold);
             loanState.isPMIActive = pmiResult.isPMIActive;
             loanState.pmiDropPeriod = pmiResult.pmiDropPeriod || loanState.pmiDropPeriod;
+            
+            loanState.cumulativeInterest += paymentDetails.interest;
+            loanState.cumulativePrincipal += paymentDetails.totalPrincipalPaid;
+
             const scheduleUpdate = createScheduleEntry(loanState, paymentDetails, pmiResult.pmiPayment, periodicDiscountRate, periodsPerYear);
             loanState.currentBalance = scheduleUpdate.newBalance;
             loanState.totalPVInterestPaid += scheduleUpdate.pvInterest;
@@ -509,12 +518,45 @@ Strategic Mortgage Planner - Application Logic
     function renderChart(acceleratedResults) {
         const ctx = document.getElementById('comparisonChart').getContext('2d');
         if (mortgageChart) mortgageChart.destroy();
+        
         const schedule = acceleratedResults.schedule;
         const step = Math.ceil(schedule.length / 50);
         const chartData = schedule.filter((_, index) => index % step === 0 || index === schedule.length - 1);
         const labels = chartData.map(d => `Yr ${Math.ceil(d.period / 12)}`);
+
+        let datasets = [
+            { label: 'Property Value', data: chartData.map(d => d.propertyValue), borderColor: '#166534', borderWidth: 3, fill: false, tension: 0.3, pointRadius: 2 },
+            { label: 'Total Home Equity', data: chartData.map(d => d.totalEquity), borderColor: '#34d399', backgroundColor: 'rgba(52, 211, 153, 0.1)', borderWidth: 2, fill: 'origin', tension: 0.3, pointRadius: 1 },
+            { label: 'Loan Balance', data: chartData.map(d => d.balance), borderColor: '#1C768F', borderWidth: 3, fill: false, tension: 0.3, pointRadius: 2 }
+        ];
+
+        if (DOM.togglePrincipalPaid && DOM.togglePrincipalPaid.checked) {
+            datasets.push({
+                label: 'Total Principal Paid',
+                data: chartData.map(d => d.cumulativePrincipal),
+                borderColor: '#8b5cf6', // purple-500
+                borderWidth: 2,
+                borderDash: [5, 5],
+                fill: false,
+                tension: 0.3,
+                pointRadius: 0
+            });
+        }
+        if (DOM.toggleInterestPaid && DOM.toggleInterestPaid.checked) {
+            datasets.push({
+                label: 'Total Interest Paid',
+                data: chartData.map(d => d.cumulativeInterest),
+                borderColor: '#dc2626', // red-600
+                borderWidth: 2,
+                borderDash: [5, 5],
+                fill: false,
+                tension: 0.3,
+                pointRadius: 0
+            });
+        }
+
         mortgageChart = new Chart(ctx, {
-            type: 'line', data: { labels: labels, datasets: [ { label: 'Property Value', data: chartData.map(d => d.propertyValue), borderColor: '#166534', borderWidth: 3, fill: false, tension: 0.3, pointRadius: 2 }, { label: 'Total Home Equity', data: chartData.map(d => d.totalEquity), borderColor: '#34d399', backgroundColor: 'rgba(52, 211, 153, 0.1)', borderWidth: 2, fill: 'origin', tension: 0.3, pointRadius: 1 }, { label: 'Loan Balance', data: chartData.map(d => d.balance), borderColor: '#1C768F', borderWidth: 3, fill: false, tension: 0.3, pointRadius: 2 } ] },
+            type: 'line', data: { labels: labels, datasets: datasets },
             options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { callback: value => window.mortgageUtils.formatCurrency(value, state.currency).replace(/[,.€$£]/g, '') } } }, plugins: { title: { display: true, text: 'Equity Accumulation vs. Debt Payoff', font: { size: 14, weight: '600' } }, tooltip: { mode: 'index', intersect: false, callbacks: { label: c => `${c.dataset.label}: ${window.mortgageUtils.formatCurrency(c.parsed.y, state.currency)}` } } } }
         });
     }
@@ -683,6 +725,17 @@ Strategic Mortgage Planner - Application Logic
         DOM.scheduleWrapper.style.opacity = 1; DOM.shockResults.style.display = 'none';
         const original = generateAmortization(originalParams);
         const accelerated = generateAmortization(acceleratedParams);
+
+        const savingsSummary = document.getElementById('savings-summary');
+        if (savingsSummary) {
+            savingsSummary.classList.remove('hidden', 'savings-summary-pop-in');
+            setTimeout(() => savingsSummary.classList.add('savings-summary-pop-in'), 50);
+        }
+        
+        if (DOM.chartOptions) {
+            DOM.chartOptions.classList.remove('hidden');
+        }
+
         const pniMonthly = original.standardPayment * (12 / periodsPerYear);
         const pmiMonthly = (accelerated.schedule[0] ? accelerated.schedule[0].pmi : 0) * (12 / periodsPerYear);
         const totalPITI = pniMonthly + (state.propertyTax / 12) + (state.insurance / 12) + state.hoa + pmiMonthly;
@@ -911,6 +964,9 @@ Strategic Mortgage Planner - Application Logic
         document.querySelector('.print-button').addEventListener('click', () => window.print());
         document.querySelector('.pdf-button').addEventListener('click', generatePDF);
         
+        if(DOM.togglePrincipalPaid) DOM.togglePrincipalPaid.addEventListener('change', () => { if (currentResults) renderChart(currentResults.accelerated); });
+        if(DOM.toggleInterestPaid) DOM.toggleInterestPaid.addEventListener('change', () => { if (currentResults) renderChart(currentResults.accelerated); });
+
         loadGuide();
 
         const urlPopulated = populateFormFromURL();
