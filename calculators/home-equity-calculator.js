@@ -59,16 +59,34 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         requestAnimationFrame(animation);
     }
+    
+    function updateSliderFill(slider) {
+        if (!slider) return;
+        const min = slider.min || 0;
+        const max = slider.max || 100;
+        const val = slider.value || 0;
+        const percentage = ((val - min) * 100) / (max - min);
+        slider.style.background = `linear-gradient(to right, #2C98C2 ${percentage}%, #e5e7eb ${percentage}%)`;
+    }
 
      function syncSliderAndInput(slider, input) {
+        if (!slider || !input) return;
+        
+        const update = () => {
+            updateSliderFill(slider);
+            updateUI();
+        };
+        
         slider.addEventListener('input', (e) => {
             input.value = e.target.value;
-            updateUI();
+            update();
         });
         input.addEventListener('input', (e) => {
             slider.value = e.target.value;
-            updateUI();
+            update();
         });
+
+        updateSliderFill(slider);
     }
     
     function updateCurrencySymbols() {
@@ -302,11 +320,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
         DOM.helocRateSlider.addEventListener('input', (e) => {
             DOM.helocRateValue.textContent = `${parseFloat(e.target.value).toFixed(1)}%`;
+            updateSliderFill(e.target);
             updateUI();
         });
         
         DOM.refiRateSlider.addEventListener('input', (e) => {
             DOM.refiRateValue.textContent = `${parseFloat(e.target.value).toFixed(1)}%`;
+            updateSliderFill(e.target);
             updateUI();
         });
 
@@ -391,6 +411,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         setupEventListeners();
         updateCurrencySymbols();
+        [DOM.homeValueSlider, DOM.mortgageBalanceSlider, DOM.helocRateSlider, DOM.refiRateSlider].forEach(updateSliderFill);
         updateUI(); // Initial calculation
     }
 
