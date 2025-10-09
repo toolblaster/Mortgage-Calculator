@@ -7,7 +7,7 @@
     
     <!-- Primary Meta Tags -->
     <meta name="description" content="Compare a HELOC vs. a cash-out refinance. Calculate your available home equity, estimate monthly payments for both options, and see which is right for you.">
-    <meta name="keywords" content="home equity calculator, heloc calculator, cash-out refinance calculator, compare heloc vs cash-out, home equity line of credit, calculate home equity">
+    <meta name="keywords" content="home equity calculator, heloc calculator, cash-out refinance calculator, compare heloc vs cash-out, home equity line of credit, calculate home equity, opportunity cost, cash-out refinance vs home equity loan, when to use HELOC, how to tap home equity, refinance or equity loan, HELOC interest rates, refinance savings calculator">
     <meta name="author" content="Vikas Rana">
     <link rel="icon" href="data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100' height='100' rx='20' fill='%231C768F'/%3E%3Cpath d='M50 25L25 45V75H41.6667V58.3333H58.3333V75H75V45L50 25Z' stroke='white' stroke-width='5' stroke-linejoin='round'/%3E%3Cpath d='M40 65L50 55L60 65' stroke='white' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M50 55V45' stroke='white' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
     <link rel="canonical" href="https://mortgageplanner.toolblaster.com/calculators/home-equity-calculator.html" />
@@ -35,7 +35,7 @@
             theme: {
                 extend: {
                     colors: {
-                        'primary': '#1C768F', 'accent': '#166534'
+                        'primary': '#1C768F', 'accent': '#166534', 'secondary': '#b45309'
                     },
                     fontFamily: { sans: ['Inter', 'sans-serif'] }
                 }
@@ -48,7 +48,12 @@
 
     <!-- Page-specific styles -->
     <style>
-        /* Custom Range Slider */
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-in-out;
+        }
+         /* Custom Range Slider */
         .range-slider {
           -webkit-appearance: none;
           width: 100%;
@@ -83,13 +88,6 @@
           border: 2px solid white;
           box-shadow: 0 0 5px rgba(0,0,0,0.2);
         }
-
-        /* Improved FAQ Styles */
-        .faq-answer {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease-in-out;
-        }
     </style>
 
     <!-- Schema Markup -->
@@ -111,6 +109,20 @@
           }
         },
         {
+            "@type": "MathSolver",
+            "name": "Home Equity Calculator",
+            "description": "Calculates available home equity and compares the financial outcomes of a HELOC versus a cash-out refinance.",
+            "toolType": "HomeEquityCalculator",
+            "url": "https://mortgageplanner.toolblaster.com/calculators/home-equity-calculator.html",
+            "variable": [
+                { "name": "Current Home Value", "variableType": "https://schema.org/Price" },
+                { "name": "Mortgage Balance", "variableType": "https://schema.org/Price" },
+                { "name": "Lender's LTV Ratio", "variableType": "https://schema.org/Number" },
+                { "name": "HELOC Interest Rate", "variableType": "https://schema.org/Number" },
+                { "name": "Cash-Out Refinance Interest Rate", "variableType": "https://schema.org/Number" }
+            ]
+        },
+        {
           "@type": "BreadcrumbList",
           "itemListElement": [{
             "@type": "ListItem",
@@ -118,8 +130,13 @@
             "name": "Home",
             "item": "https://mortgageplanner.toolblaster.com/"
           },{
-            "@type": "ListItem",
+             "@type": "ListItem",
             "position": 2,
+            "name": "Calculators",
+            "item": "https://mortgageplanner.toolblaster.com/calculators/"
+          },{
+            "@type": "ListItem",
+            "position": 3,
             "name": "Home Equity Calculator"
           }]
         },
@@ -146,7 +163,7 @@
             {
               "@type": "HowToStep",
               "name": "Step 4: Compare Your Options",
-              "text": "Press the compare button to see a side-by-side breakdown of the estimated monthly payments, total interest costs, and cash received for both a HELOC and a cash-out refinance."
+              "text": "The calculator instantly shows a side-by-side breakdown of the estimated monthly payments, total interest costs, and cash received for both a HELOC and a cash-out refinance."
             }
           ]
         },
@@ -155,18 +172,10 @@
             "mainEntity": [
                 {
                     "@type": "Question",
-                    "name": "Which is better: a HELOC or a cash-out refinance?",
+                    "name": "What is the difference between a cash-out refinance vs home equity loan or HELOC?",
                     "acceptedAnswer": {
                         "@type": "Answer",
-                        "text": "It depends on your goals. A HELOC is great for flexibility and smaller, ongoing projects, as you only borrow what you need. A cash-out refinance is often better for large, one-time expenses and if you can also lower the interest rate on your primary mortgage at the same time."
-                    }
-                },
-                {
-                    "@type": "Question",
-                    "name": "How is a HELOC different from a home equity loan?",
-                    "acceptedAnswer": {
-                        "@type": "Answer",
-                        "text": "A HELOC (Home Equity Line of Credit) is a revolving line of credit you can draw from as needed, similar to a credit card. A traditional home equity loan gives you a one-time lump sum payment that you pay back in fixed installments. A HELOC offers more flexibility."
+                        "text": "A cash-out refinance replaces your entire existing mortgage with a new, larger one, giving you the difference in cash. A home equity loan or HELOC is a second, separate loan that sits on top of your current mortgage. This calculator helps compare the financial impact of a HELOC versus a cash-out refinance."
                     }
                 },
                 {
@@ -195,19 +204,41 @@
                         <p class="mt-1 text-sm text-gray-700">Unlock the value in your home. Compare your options to see which is best for you.</p>
                     </header>
                     
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-6 gap-y-4">
+                    <div class="grid grid-cols-1 lg:grid-cols-5 gap-x-6 gap-y-4">
                         <!-- Input Section -->
-                        <div class="space-y-3">
+                        <div class="lg:col-span-2 space-y-3">
                             <details open class="bg-gray-50 p-3 rounded-lg border">
                                 <summary class="font-bold text-base text-primary cursor-pointer">Your Home & Mortgage</summary>
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
+                                <div class="space-y-4 mt-3">
                                     <div>
-                                        <label for="homeValue" class="block font-medium text-xs sm:text-sm text-gray-700">Current Home Value ($):</label>
-                                        <input type="number" id="homeValue" value="450000" class="w-full mt-1 p-2 text-sm sm:text-base border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
+                                        <div class="flex justify-between items-center">
+                                            <label for="homeValue" class="block font-medium text-xs text-gray-700">Current Home Value:</label>
+                                            <div class="flex items-center">
+                                                <span id="homeValueCurrency" class="text-gray-500 mr-1">$</span>
+                                                <input type="number" id="homeValue" value="450000" class="w-28 p-1 text-sm text-right border border-gray-300 rounded-md">
+                                            </div>
+                                        </div>
+                                        <input type="range" id="homeValueSlider" min="50000" max="2000000" value="450000" step="5000" class="w-full mt-2 range-slider">
                                     </div>
                                     <div>
-                                        <label for="mortgageBalance" class="block font-medium text-xs sm:text-sm text-gray-700">Mortgage Balance ($):</label>
-                                        <input type="number" id="mortgageBalance" value="250000" class="w-full mt-1 p-2 text-sm sm:text-base border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
+                                        <div class="flex justify-between items-center">
+                                            <label for="mortgageBalance" class="block font-medium text-xs text-gray-700">Mortgage Balance:</label>
+                                             <div class="flex items-center">
+                                                <span id="mortgageBalanceCurrency" class="text-gray-500 mr-1">$</span>
+                                                <input type="number" id="mortgageBalance" value="250000" class="w-28 p-1 text-sm text-right border border-gray-300 rounded-md">
+                                            </div>
+                                        </div>
+                                        <input type="range" id="mortgageBalanceSlider" min="0" max="1500000" value="250000" step="5000" class="w-full mt-2 range-slider">
+                                    </div>
+                                    <div>
+                                        <label for="currency" class="block font-medium text-xs text-gray-700">Currency:</label>
+                                        <select id="currency" class="w-full p-1.5 text-sm border border-gray-300 rounded-md h-[34px]">
+                                            <option value="USD">USD ($)</option>
+                                            <option value="EUR">EUR (€)</option>
+                                            <option value="GBP">GBP (£)</option>
+                                            <option value="CAD">CAD (C$)</option>
+                                            <option value="AUD">AUD (A$)</option>
+                                        </select>
                                     </div>
                                 </div>
                             </details>
@@ -243,7 +274,7 @@
                                         <input type="number" id="refiTerm" value="30" class="w-full mt-1 p-2 text-sm sm:text-base border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
                                     </div>
                                     <div>
-                                        <label for="refiClosingCosts" class="block font-medium text-xs sm:text-sm text-gray-700">Closing Costs ($):</label>
+                                        <label for="refiClosingCosts" class="block font-medium text-xs sm:text-sm text-gray-700">Closing Costs (<span id="closingCostsCurrency" class="currency-symbol-small">$</span>):</label>
                                         <input type="number" id="refiClosingCosts" value="5000" class="w-full mt-1 p-2 text-sm sm:text-base border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
                                     </div>
                                 </div>
@@ -252,20 +283,36 @@
                                     <input type="range" id="refiRateSlider" min="3" max="15" value="6.5" step="0.1" class="w-full mt-2 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-slider">
                                 </div>
                             </details>
+                            
+                             <details open class="bg-gray-50 p-3 rounded-lg border">
+                                <summary class="font-bold text-base text-secondary cursor-pointer">Opportunity Cost Analysis</summary>
+                                <div class="mt-3 space-y-3">
+                                    <div>
+                                        <label for="homeAppreciation" class="block font-medium text-xs sm:text-sm text-gray-700">Annual Home Appreciation (%):</label>
+                                        <input type="number" id="homeAppreciation" value="3" class="w-full mt-1 p-2 text-sm sm:text-base border border-gray-300 rounded-md">
+                                    </div>
+                                    <div>
+                                         <label for="investmentReturn" class="block font-medium text-xs sm:text-sm text-gray-700">
+                                            <span class="tooltip-container">Annual Investment Return (%):
+                                                <span class="tooltip-icon" tabindex="0" aria-label="Annual Investment Return tooltip">?</span>
+                                                <span class="tooltip-text" role="tooltip">The average annual return you expect if you invested the cash from your loan.</span>
+                                            </span>
+                                        </label>
+                                        <input type="number" id="investmentReturn" value="7" class="w-full mt-1 p-2 text-sm sm:text-base border border-gray-300 rounded-md">
+                                    </div>
+                                </div>
+                             </details>
 
                             <div class="flex flex-col sm:flex-row gap-3 pt-2">
-                                 <button id="compareOptionsBtn" class="w-full px-4 py-2.5 bg-primary text-white font-semibold rounded-lg shadow-lg hover:bg-sky-700 transition duration-150 text-base">
-                                    Compare Options
-                                </button>
                                  <button id="saveScenario" class="w-full px-4 py-2.5 bg-accent text-white font-semibold rounded-lg shadow-md hover:bg-green-800 transition duration-150 text-base">
-                                    Save Scenario
+                                    Save & Share Scenario
                                 </button>
                             </div>
                             <p id="saveFeedback" class="text-sm text-accent text-center h-5"></p>
                         </div>
 
                         <!-- Results Section -->
-                        <div id="equityResults" class="space-y-3">
+                        <div id="equityResults" class="lg:col-span-3 space-y-3">
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-center">
                                 <div class="p-3 rounded-lg bg-accent/10 border-2 border-accent/50 shadow">
                                     <h2 class="text-sm font-bold text-accent">Total Cash Available</h2>
@@ -313,20 +360,31 @@
                                 </div>
                             </div>
 
-                        </div>
-                    </div>
+                            <!-- Equity Breakdown Chart -->
+                            <div class="mt-6 pt-5 border-t">
+                                 <h2 class="text-base font-bold text-primary text-center">Your Home Equity Breakdown</h2>
+                                 <div class="relative h-48 md:h-56 max-w-xs mx-auto mt-2">
+                                    <canvas id="equityChart"></canvas>
+                                 </div>
+                            </div>
+                            
+                            <!-- Opportunity Cost Section -->
+                            <div id="opportunity-cost-section" class="hidden mt-6 pt-5 border-t">
+                                <h3 class="text-base font-bold text-secondary text-center">Opportunity Cost: Invest vs. Leave Equity</h3>
+                                <div class="relative h-48 sm:h-56 mt-2">
+                                    <canvas id="opportunityCostChart"></canvas>
+                                </div>
+                                <div id="opportunity-cost-summary" class="mt-4 text-sm text-center bg-secondary/10 p-3 rounded-lg">
+                                    <!-- Summary text will be injected here by JS -->
+                                </div>
+                            </div>
 
-                    <!-- Equity Breakdown Chart -->
-                    <div class="mt-6 pt-5 border-t">
-                         <h2 class="text-base font-bold text-primary text-center">Your Home Equity Breakdown</h2>
-                         <div class="relative h-48 md:h-56 max-w-xs mx-auto mt-2">
-                            <canvas id="equityChart"></canvas>
-                         </div>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Share Section -->
-                <div class="bg-white p-4 sm:p-5 rounded-xl shadow-2xl">
+                <div class="bg-white p-4 sm:p-5 rounded-xl shadow-2xl mt-6">
                     <div class="flex flex-col sm:flex-row items-center justify-center gap-4 text-center">
                         <h3 class="text-base font-semibold text-gray-800">Share This Calculator:</h3>
                         <div class="flex items-center gap-3">
@@ -352,7 +410,7 @@
                 </div>
 
                 <!-- SEO Content Section -->
-                <div class="bg-white p-4 sm:p-5 rounded-xl shadow-2xl max-w-none text-gray-800 space-y-6">
+                <div class="bg-white p-4 sm:p-5 rounded-xl shadow-2xl max-w-none text-gray-800 space-y-6 mt-6">
                     <h2 class="text-2xl font-extrabold text-primary !mb-4">A Homeowner's Guide to Understanding and Using Home Equity</h2>
                     
                     <section class="bg-gray-50/70 p-6 rounded-lg border">
@@ -371,40 +429,50 @@
                     </section>
 
                     <section class="bg-gray-50/70 p-6 rounded-lg border">
-                        <h3 class="text-xl font-bold text-gray-800">How to Access Your Home Equity?</h3>
-                        <p class="mt-2">Once you've built up a significant amount of equity, you can borrow against it. This is typically done through two main products:</p>
+                        <h3 class="text-xl font-bold text-gray-800">How to Tap Home Equity: Your Two Main Options</h3>
+                        <p class="mt-2">Once you've built up a significant amount of equity, you can borrow against it. This guide helps you understand <strong>how to tap home equity</strong> by comparing two primary methods:</p>
                         <ul class="space-y-3 mt-4 text-sm">
                             <li class="flex items-start">
-                               <span class="flex-shrink-0 w-6 h-6 mr-3 text-primary"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25-2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3" /></svg></span>
-                               <div><strong>Home Equity Loan:</strong> A lump-sum loan with a fixed interest rate and a set repayment period. It's great for large, one-time expenses.</div>
-                            </li>
-                             <li class="flex items-start">
                                <span class="flex-shrink-0 w-6 h-6 mr-3 text-primary"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" /></svg></span>
-                               <div><strong>Home Equity Line of Credit (HELOC):</strong> A flexible line of credit with a variable interest rate. You can draw and repay funds as needed during a "draw period," making it ideal for ongoing projects or as an emergency fund. Our calculator helps you estimate your potential HELOC limit.</div>
+                               <div><strong>Home Equity Line of Credit (HELOC):</strong> A flexible line of credit, similar to a credit card. You can draw and repay funds as needed. <strong>HELOC interest rates</strong> are typically variable, meaning they can change over time with the market.</div>
+                            </li>
+                            <li class="flex items-start">
+                               <span class="flex-shrink-0 w-6 h-6 mr-3 text-primary"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25-2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3" /></svg></span>
+                               <div><strong>Cash-Out Refinance:</strong> This involves replacing your existing mortgage with a new, larger loan. You receive the difference in a lump sum of cash. It's a single transaction that results in one new mortgage payment.</div>
                             </li>
                         </ul>
                     </section>
-
+                    
                     <section class="bg-gray-50/70 p-6 rounded-lg border">
-                         <h3 class="text-xl font-bold text-gray-800">Smart Ways to Use Your Home Equity</h3>
-                         <p class="mt-2">Leveraging your home equity can be a powerful financial move, but it's important to be strategic. Since you are securing the loan with your home, it's best to use the funds for things that provide a good return on investment.</p>
-                         <ul class="space-y-4 mt-4 text-sm">
-                            <li class="flex items-start">
-                                <span class="flex-shrink-0 w-6 h-6 mr-3 text-primary"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.471-2.471a2.652 2.652 0 000-3.75-2.652 2.652 0 00-3.75 0L7.8 11.25m3.62 3.92l-2.471 2.471a2.652 2.652 0 01-3.75 0-2.652 2.652 0 010-3.75L9.45 12.5" /></svg></span>
-                                <div><strong>Home Renovations:</strong> Using a HELOC to remodel your kitchen or add a bathroom can increase your home's value, effectively paying back some of the investment.</div>
-                            </li>
-                            <li class="flex items-start">
-                                <span class="flex-shrink-0 w-6 h-6 mr-3 text-primary"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 8.25V6a2.25 2.25 0 00-2.25-2.25H6A2.25 2.25 0 003.75 6v8.25A2.25 2.25 0 006 16.5h2.25m8.25-8.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-7.5A2.25 2.25 0 018.25 18v-1.5m8.25-8.25h-6a2.25 2.25 0 00-2.25 2.25v6" />
-                                  </svg></span>
-                                <div><strong>Debt Consolidation:</strong> Pay off high-interest credit cards or personal loans. The interest rate on a HELOC is typically much lower, which can save you a significant amount of money and simplify your monthly bills.</div>
-                            </li>
-                             <li class="flex items-start">
-                                <span class="flex-shrink-0 w-6 h-6 mr-3 text-primary"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path d="M12 14l9-5-9-5-9 5 9 5z" /><path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" /><path d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 8v-7.5l4-2.222" /></svg></span>
-                                <div><strong>Education Expenses:</strong> Funding a college degree or certification can be a smart investment in your or your family's future earning potential.</div>
-                            </li>
-                        </ul>
+                        <h3 class="text-xl font-bold text-gray-800">When to Use a HELOC vs. a Cash-Out Refinance</h3>
+                        <p class="mt-2">Deciding between a <strong>refinance or equity loan</strong> depends entirely on your financial goals. Here’s a quick guide on <strong>when to use a HELOC</strong> versus a cash-out refinance.</p>
+                        <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                            <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                                <h4 class="font-bold text-blue-800 flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>Choose a HELOC if:</h4>
+                                <ul class="list-disc list-inside mt-2 space-y-1 text-gray-700">
+                                    <li>You need flexible access to cash for ongoing projects (e.g., home renovations).</li>
+                                    <li>Your current mortgage has a very low interest rate you don't want to lose.</li>
+                                    <li>You want a financial safety net for emergencies.</li>
+                                </ul>
+                            </div>
+                            <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                                <h4 class="font-bold text-green-800 flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v.01M12 6v.01M12 18v-2m0-2v-2m0-2V7m0 0V6" /></svg>Choose a Cash-Out Refinance if:</h4>
+                                <ul class="list-disc list-inside mt-2 space-y-1 text-gray-700">
+                                    <li>You can also lower the interest rate on your primary mortgage.</li>
+                                    <li>You need a large, one-time lump sum for a major expense (e.g., debt consolidation).</li>
+                                    <li>You prefer the stability of a single, fixed-rate mortgage payment.</li>
+                                </ul>
+                            </div>
+                        </div>
                     </section>
+                    
+                     <div class="bg-accent/10 p-6 rounded-lg text-center shadow-inner border border-accent/20">
+                        <h3 class="text-lg font-bold text-accent">Analyze Your Refinance Savings</h3>
+                        <p class="mt-2 text-gray-700">Is a cash-out refinance the right move? Our comprehensive <strong>refinance savings calculator</strong> can help you determine your break-even point and total lifetime savings.</p>
+                        <a href="../#refinance-tab" class="mt-4 inline-block bg-accent text-white font-bold py-2 px-6 rounded-lg shadow-lg hover:bg-green-800 transition-transform transform hover:scale-105">
+                            Analyze Refinance Savings →
+                        </a>
+                    </div>
 
                     <!-- FAQ Section (Redesigned) -->
                     <section class="py-6">
@@ -413,12 +481,12 @@
                             <!-- FAQ Item 1 -->
                             <div class="faq-item">
                                 <button class="faq-question w-full flex justify-between items-center text-left text-gray-800 font-semibold p-5 hover:bg-gray-50 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">
-                                    <span class="text-base">Which is better: a HELOC or a cash-out refinance?</span>
+                                    <span class="text-base">What is the difference between a cash-out refinance vs home equity loan or HELOC?</span>
                                     <svg class="faq-chevron w-5 h-5 transform transition-transform text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
                                 </button>
                                 <div class="faq-answer">
                                     <div class="p-5 pt-0 text-gray-600 text-sm">
-                                        <p>It depends on your goals. A <strong>HELOC</strong> is great for flexibility and smaller, ongoing projects, as you only borrow what you need. A <strong>cash-out refinance</strong> is often better for large, one-time expenses and if you can also lower the interest rate on your primary mortgage at the same time.</p>
+                                        <p>A <strong>cash-out refinance</strong> replaces your entire existing mortgage with a new, larger one, giving you the difference in cash. A <strong>home equity loan</strong> or <strong>HELOC</strong> is a second, separate loan that sits on top of your current mortgage. This calculator helps compare the financial impact of a HELOC versus a cash-out refinance.</p>
                                     </div>
                                 </div>
                             </div>
