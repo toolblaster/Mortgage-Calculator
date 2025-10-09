@@ -411,24 +411,7 @@
                         <div class="bg-gray-50 p-4 rounded-lg border">
                              <h3 class="font-bold text-lg text-primary border-b-2 border-primary pb-2 mb-4">Related Articles</h3>
                              <ul class="space-y-4">
-                                 <li>
-                                    <a href="how-much-house-can-i-afford.html" class="font-semibold text-primary hover:underline group">
-                                        <span class="block text-sm">How Much House Can I Afford?</span>
-                                        <span class="block text-xs text-gray-500 group-hover:text-accent">Our complete guide to find your budget.</span>
-                                    </a>
-                                 </li>
-                                 <li>
-                                    <a href="first-time-home-buyer-checklist.html" class="font-semibold text-primary hover:underline group">
-                                         <span class="block text-sm">First-Time Home Buyer's Checklist</span>
-                                         <span class="block text-xs text-gray-500 group-hover:text-accent">Your essential 10-step guide.</span>
-                                    </a>
-                                 </li>
-                                  <li>
-                                    <a href="mortgage-amortization-explained.html" class="font-semibold text-primary hover:underline group">
-                                         <span class="block text-sm">Mortgage Amortization Explained</span>
-                                         <span class="block text-xs text-gray-500 group-hover:text-accent">See where your payment really goes.</span>
-                                    </a>
-                                </li>
+                                <!-- Related articles will be dynamically inserted here -->
                              </ul>
                         </div>
                     </div>
@@ -442,21 +425,7 @@
                  <button id="close-mobile-sidebar" class="text-gray-500 hover:text-gray-800 text-2xl font-bold">&times;</button>
             </div>
              <ul class="space-y-3">
-                 <li>
-                    <a href="how-much-house-can-i-afford.html" class="font-semibold text-primary hover:underline group">
-                        <span class="block text-sm">How Much House Can I Afford?</span>
-                    </a>
-                 </li>
-                 <li>
-                    <a href="first-time-home-buyer-checklist.html" class="font-semibold text-primary hover:underline group">
-                         <span class="block text-sm">First-Time Home Buyer's Checklist</span>
-                    </a>
-                </li>
-                 <li>
-                    <a href="mortgage-amortization-explained.html" class="font-semibold text-primary hover:underline group">
-                         <span class="block text-sm">Mortgage Amortization Explained</span>
-                    </a>
-                </li>
+                <!-- Related articles will be dynamically inserted here -->
              </ul>
         </div>
     </main>
@@ -519,17 +488,7 @@
             document.getElementById('share-whatsapp').href = `https://api.whatsapp.com/send?text=${postTitle}%20${postUrl}`;
             document.getElementById('share-email').href = `mailto:?subject=${postTitle}&body=Check out this helpful guide: ${postUrl}`;
 
-            // --- Mobile Related Articles Logic ---
-            const mobileSidebar = document.getElementById('mobile-related-articles');
-            const closeButton = document.getElementById('close-mobile-sidebar');
-            let sidebarShown = false;
-
-            if (mobileSidebar && closeButton) {
-                const showSidebar = () => { if (!sidebarShown) { mobileSidebar.classList.remove('translate-y-full'); sidebarShown = true; } };
-                const hideSidebar = () => { mobileSidebar.classList.add('translate-y-full'); sidebarShown = false; };
-                closeButton.addEventListener('click', hideSidebar);
-                window.addEventListener('scroll', () => { if (!sidebarShown && (window.innerHeight + window.scrollY) >= document.body.offsetHeight - 200) { showSidebar(); } }, { passive: true });
-            }
+            // --- Mobile Related Articles Logic has been moved to global-elements.js ---
         });
     </script>
 </body>
