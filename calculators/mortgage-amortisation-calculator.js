@@ -26,10 +26,18 @@ document.addEventListener('DOMContentLoaded', function () {
         downloadPDF: document.getElementById('downloadPDF'),
         downloadCSV: document.getElementById('downloadCSV'),
         currencySymbol: document.getElementById('currency-symbol'),
-        currencySymbolSmalls: document.querySelectorAll('.currency-symbol-small')
+        currencySymbolSmalls: document.querySelectorAll('.currency-symbol-small'),
+        
+        // SEO Content Elements
+        exampleAmortizationChart: document.getElementById('exampleAmortizationChart'),
+        termTabsContainer: document.getElementById('term-tabs-container'),
+        termComparisonChart: document.getElementById('termComparisonChart'),
+        termComparisonSummary: document.getElementById('term-comparison-summary'),
     };
 
     let amortizationChart = null;
+    let exampleChart = null;
+    let termComparisonChart = null;
     let standardSchedule = [], acceleratedSchedule = [];
 
     // --- Helper Functions ---
@@ -43,6 +51,9 @@ document.addEventListener('DOMContentLoaded', function () {
     // --- Core Calculation Logic ---
     function calculateAmortization(loanAmount, annualRate, years, extraMonthly, oneTimePayment, oneTimePaymentMonth) {
         const totalMonths = years * 12;
+        if (loanAmount <= 0 || annualRate <= 0 || years <= 0) {
+            return { schedule: [], monthlyPayment: 0, totalInterest: 0 };
+        }
         const monthlyPayment = window.mortgageUtils.calculatePayment(loanAmount, annualRate, 12, totalMonths);
         const monthlyRate = annualRate / 12 / 100;
 
@@ -154,7 +165,7 @@ document.addEventListener('DOMContentLoaded', function () {
         amortizationChart = new Chart(DOM.amortizationChart, {
             type: 'line',
             data: {
-                labels: standardSchedule.map(p => p.month),
+                labels: standardSchedule.map(p => p.month -1),
                 datasets: datasets
             },
             options: {
@@ -168,11 +179,14 @@ document.addEventListener('DOMContentLoaded', function () {
                     x: {
                          ticks: {
                             callback: function(value, index, values) {
-                                // Display label for every 12 months (1 year)
-                                return (value + 1) % 12 === 0 ? `Year ${(value + 1) / 12}` : null;
+                                const month = value + 1;
+                                if (month % 12 === 0 && month > 0) {
+                                    return `Year ${month / 12}`;
+                                }
+                                return undefined;
                             },
-                             autoSkip: false,
-                             maxRotation: 0,
+                             autoSkip: true,
+                             maxRotation: 45,
                              minRotation: 0
                         }
                     }
@@ -226,6 +240,59 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         return true;
     }
+    
+    function renderTermComparison(activeTerm) {
+        if (!DOM.termComparisonChart) return;
+
+        const loanAmount = parseFloat(DOM.loanAmount.value) || 300000;
+        const interestRate = parseFloat(DOM.interestRate.value) || 6.5;
+        const currency = DOM.currency.value;
+
+        const terms = [15, 20, 30];
+        const results = terms.map(term => {
+            const { totalInterest, monthlyPayment } = calculateAmortization(loanAmount, interestRate, term, 0, 0, 0);
+            return { term, totalInterest, monthlyPayment };
+        });
+
+        const activeResult = results.find(r => r.term == activeTerm);
+
+        if (termComparisonChart) {
+            termComparisonChart.destroy();
+        }
+
+        termComparisonChart = new Chart(DOM.termComparisonChart, {
+            type: 'bar',
+            data: {
+                labels: results.map(r => `${r.term} Years`),
+                datasets: [{
+                    label: 'Total Interest Paid',
+                    data: results.map(r => r.totalInterest),
+                    backgroundColor: results.map(r => r.term == activeTerm ? '#166534' : '#a7f3d0'),
+                    borderColor: '#166534',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    title: { display: true, text: 'Total Interest Paid by Loan Term' },
+                    tooltip: { callbacks: { label: c => `Total Interest: ${window.mortgageUtils.formatCurrency(c.raw, currency)}` } }
+                },
+                scales: {
+                    y: { beginAtZero: true, ticks: { callback: v => window.mortgageUtils.formatCurrency(v, currency) } }
+                }
+            }
+        });
+
+        if (activeResult) {
+            const savingsComparedTo30 = results.find(r => r.term === 30).totalInterest - activeResult.totalInterest;
+            DOM.termComparisonSummary.innerHTML = `
+                A <strong>${activeResult.term}-year</strong> mortgage has a monthly payment of <strong>${window.mortgageUtils.formatCurrency(activeResult.monthlyPayment, currency, 2)}</strong>. 
+                Compared to a 30-year term, you could save <strong>${window.mortgageUtils.formatCurrency(savingsComparedTo30, currency)}</strong> in interest over the life of the loan.
+            `;
+        }
+    }
 
     // --- Event Handlers ---
     function handleCalculate() {
@@ -245,9 +312,11 @@ document.addEventListener('DOMContentLoaded', function () {
         acceleratedSchedule = acceleratedResult.schedule;
 
         renderResults();
+        renderTermComparison(loanTerm); // Also update the comparison chart
     }
 
     function downloadPDF() {
+        if (typeof jsPDF === 'undefined') return;
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
         const schedule = DOM.compareToggle.checked ? acceleratedSchedule : standardSchedule;
@@ -294,19 +363,111 @@ document.addEventListener('DOMContentLoaded', function () {
         link.click();
         document.body.removeChild(link);
     }
+    
+    function renderExampleChart() {
+        if (!DOM.exampleAmortizationChart) return;
+        const schedule = calculateAmortization(300000, 6.5, 30, 0, 0, 0).schedule;
+        const principalData = [];
+        const interestData = [];
+        let cumulativePrincipal = 0;
+        let cumulativeInterest = 0;
+        
+        schedule.forEach(p => {
+            cumulativePrincipal += p.principal;
+            cumulativeInterest += p.interest;
+            if (p.month % 12 === 0) { // Plot one point per year
+                principalData.push(cumulativePrincipal);
+                interestData.push(cumulativeInterest);
+            }
+        });
+
+        const labels = Array.from({ length: 30 }, (_, i) => `Year ${i + 1}`);
+
+        if (exampleChart) exampleChart.destroy();
+        exampleChart = new Chart(DOM.exampleAmortizationChart, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Total Interest Paid',
+                    data: interestData,
+                    borderColor: '#3b82f6',
+                    backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                    fill: 'origin',
+                    tension: 0.4,
+                }, {
+                    label: 'Total Principal Paid',
+                    data: principalData,
+                    borderColor: '#16a34a',
+                    backgroundColor: 'rgba(22, 163, 74, 0.2)',
+                    fill: 'origin',
+                    tension: 0.4,
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                scales: { x: { stacked: true }, y: { stacked: true, beginAtZero: true, ticks: { callback: (value) => window.mortgageUtils.formatCurrency(value, 'USD') } } },
+                plugins: { tooltip: { mode: 'index', intersect: false } }
+            },
+        });
+    }
+
+    function setupFaq() {
+        const faqItems = document.querySelectorAll('.faq-item');
+        faqItems.forEach(item => {
+            const question = item.querySelector('.faq-question');
+            const answer = item.querySelector('.faq-answer');
+            const chevron = item.querySelector('.faq-chevron');
+
+            question.addEventListener('click', () => {
+                const isOpen = answer.style.maxHeight && answer.style.maxHeight !== '0px';
+                
+                faqItems.forEach(otherItem => {
+                    if (otherItem !== item) {
+                        otherItem.querySelector('.faq-answer').style.maxHeight = '0px';
+                        otherItem.querySelector('.faq-chevron').classList.remove('rotate-180');
+                    }
+                });
+
+                if (isOpen) {
+                    answer.style.maxHeight = '0px';
+                    chevron.classList.remove('rotate-180');
+                } else {
+                    answer.style.maxHeight = answer.scrollHeight + 'px';
+                    chevron.classList.add('rotate-180');
+                }
+            });
+        });
+    }
 
     // --- Initialization ---
-    DOM.calculateBtn.addEventListener('click', handleCalculate);
-    DOM.compareToggle.addEventListener('change', renderResults);
-    DOM.downloadPDF.addEventListener('click', downloadPDF);
-    DOM.downloadCSV.addEventListener('click', downloadCSV);
-    DOM.currency.addEventListener('change', () => {
-        updateCurrencySymbols();
-        if (standardSchedule.length > 0) { // Re-render if results are visible
-            renderResults();
-        }
-    });
+    function init() {
+        DOM.calculateBtn.addEventListener('click', handleCalculate);
+        DOM.compareToggle.addEventListener('change', renderResults);
+        DOM.downloadPDF.addEventListener('click', downloadPDF);
+        DOM.downloadCSV.addEventListener('click', downloadCSV);
+        DOM.currency.addEventListener('change', () => {
+            updateCurrencySymbols();
+            if (standardSchedule.length > 0) { // Re-render if results are visible
+                handleCalculate();
+            }
+        });
+        
+        DOM.termTabsContainer.addEventListener('click', (e) => {
+            const button = e.target.closest('.term-tab');
+            if (!button) return;
 
-    updateCurrencySymbols(); // Initial call
-    handleCalculate(); // Initial calculation on page load
+            DOM.termTabsContainer.querySelectorAll('.term-tab').forEach(tab => tab.classList.remove('active'));
+            button.classList.add('active');
+            const term = button.dataset.term;
+            renderTermComparison(term);
+        });
+
+        updateCurrencySymbols(); // Initial call
+        handleCalculate(); // Initial calculation on page load
+        renderExampleChart();
+        setupFaq();
+    }
+
+    init();
 });
