@@ -56,17 +56,34 @@ document.addEventListener('DOMContentLoaded', function () {
         if (DOM.currencySymbol) DOM.currencySymbol.textContent = symbol;
         DOM.currencySymbolSmalls.forEach(span => span.textContent = symbol);
     };
+
+    function updateSliderFill(slider) {
+        if (!slider) return;
+        const min = slider.min || 0;
+        const max = slider.max || 100;
+        const val = slider.value || 0;
+        const percentage = ((val - min) * 100) / (max - min);
+        slider.style.background = `linear-gradient(to right, #2C98C2 ${percentage}%, #e5e7eb ${percentage}%)`;
+    }
     
-    // --- Two-way data binding for sliders and inputs ---
-    function syncSliderAndInput(slider, input, isCurrency = false) {
+    function syncSliderAndInput(slider, input) {
+        if (!slider || !input) return;
+        
+        const update = () => {
+            updateSliderFill(slider);
+            handleCalculate();
+        };
+
         slider.addEventListener('input', (e) => {
             input.value = e.target.value;
-            handleCalculate(); // Recalculate in real-time
+            update();
         });
         input.addEventListener('input', (e) => {
             slider.value = e.target.value;
-            handleCalculate(); // Recalculate in real-time
+            update();
         });
+
+        updateSliderFill(slider);
     }
 
 
@@ -151,7 +168,6 @@ document.addEventListener('DOMContentLoaded', function () {
         renderTable(displaySchedule);
         renderOpportunityCost();
         DOM.resultsSummary.classList.remove('hidden');
-        DOM.tableSection.classList.remove('hidden');
     }
 
     function renderChart() {
@@ -392,6 +408,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     // --- Event Handlers ---
+    const debouncedCalculate = debounce(handleCalculate, 250);
+
     function handleCalculate() {
         if (!validateInputs()) return;
 
@@ -536,6 +554,15 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
     }
+    
+    function debounce(func, delay) {
+        let timeout;
+        return function(...args) {
+            const context = this;
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(context, args), delay);
+        };
+    }
 
     // --- Initialization ---
     function init() {
@@ -548,7 +575,7 @@ document.addEventListener('DOMContentLoaded', function () {
         
         // Add listeners for other inputs to recalculate on change
         [DOM.extraMonthly, DOM.oneTimePayment, DOM.oneTimePaymentMonth, DOM.propertyTax, DOM.homeInsurance, DOM.investmentReturn].forEach(el => {
-            el.addEventListener('input', handleCalculate);
+           if(el) el.addEventListener('input', debouncedCalculate);
         });
 
         DOM.compareToggle.addEventListener('change', renderResults);
