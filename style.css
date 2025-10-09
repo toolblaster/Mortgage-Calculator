@@ -146,7 +146,7 @@ details[open] summary ~ * { animation: sweep .5s ease-in-out; }
 
 /* Quiz Option Selected Style */
 .quiz-option.selected {
-    border-color: #1C768F;
+    border-color: #2C98C2;
     background-color: #f0f9ff; /* sky-50 */
     box-shadow: 0 4px 10px rgba(0,0,0,0.08);
     transform: translateY(-2px);
@@ -249,6 +249,18 @@ input, select {
     overflow: hidden;
     transition: max-height 0.3s ease-in-out;
 }
+
+/* Modern Quiz Animations */
+@keyframes question-fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes question-fade-out {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-10px); }
+}
+.question-in { animation: question-fade-in 0.4s ease-out forwards; }
+.question-out { animation: question-fade-out 0.3s ease-in forwards; }
 
 
 /* UPDATED AND ENHANCED PRINT STYLES */
