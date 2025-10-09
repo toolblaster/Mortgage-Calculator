@@ -7,11 +7,11 @@ document.addEventListener('DOMContentLoaded', function() {
         rootPath = '../';
     }
 
-    // UPDATED: Removed index.html from homePath
+    // UPDATED: Removed index.html from homePath and added calculatorHubPath
     const homePath = rootPath;
+    const calculatorHubPath = `${rootPath}calculators/`;
     const quizPath = `${rootPath}Refinance-Readiness-Quiz.html`;
-    const equityCalcPath = `${rootPath}calculators/home-equity-calculator.html`;
-    const legalPath = `${rootPath}contact-us-and-legal.html`; // UPDATED: Changed file name
+    const legalPath = `${rootPath}contact-us-and-legal.html`; 
     const blogPath = `${rootPath}blog/`;
     
     const logoIconPath = '#logo-icon';
@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <!-- Desktop Menu -->
                     <div class="hidden md:flex items-center space-x-4">
                         <a href="${homePath}" class="text-sm font-semibold text-primary hover:underline">All-in-One Planner</a>
-                        <a href="${equityCalcPath}" class="text-sm font-semibold text-primary hover:underline">Home Equity Calc</a>
+                        <a href="${calculatorHubPath}" class="text-sm font-semibold text-primary hover:underline">Calculator Hub</a>
                         <a href="${quizPath}" class="text-sm font-semibold text-primary hover:underline">Refinance Quiz</a>
                         <a href="${blogPath}" class="text-sm font-semibold text-primary hover:underline">Blog</a>
                         <a href="${legalPath}" class="text-sm font-semibold text-primary hover:underline">Contact & Legal</a>
@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="md:hidden hidden" id="mobile-menu">
                 <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
                     <a href="${homePath}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50">All-in-One Planner</a>
-                    <a href="${equityCalcPath}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50">Home Equity Calc</a>
+                    <a href="${calculatorHubPath}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50">Calculator Hub</a>
                     <a href="${quizPath}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50">Refinance Quiz</a>
                     <a href="${blogPath}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50">Blog</a>
                     <a href="${legalPath}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50">Contact & Legal</a>
@@ -115,4 +115,77 @@ document.addEventListener('DOMContentLoaded', function() {
             close.classList.toggle('hidden');
         });
     }
+
+    // --- NEW: Centralized Related Articles Logic ---
+    function setupRelatedArticles() {
+        const desktopSidebar = document.querySelector('aside .sticky ul');
+        const mobileSidebar = document.getElementById('mobile-related-articles');
+
+        // If neither sidebar exists on the page, do nothing.
+        if (!desktopSidebar && !mobileSidebar) {
+            return;
+        }
+
+        const allArticles = [
+            { url: 'home-equity-vs-refinance.html', title: 'Home Equity vs. Refinance', description: 'Decide how to best tap into your home\'s value.' },
+            { url: 'hidden-costs-of-buying-a-home.html', title: 'Hidden Costs of Buying a Home', description: 'Discover the closing fees, taxes, and maintenance to plan for.' },
+            { url: 'how-to-buy-your-first-home-guide.html', title: 'First-Time Home Buyer Guide', description: 'A step-by-step guide from start to finish.' },
+            { url: 'mortgage-amortization-explained.html', title: 'Mortgage Amortization Explained', description: 'See where your payment really goes.' },
+            { url: 'fixed-vs-variable-mortgage-guide.html', title: 'Fixed vs. Variable Mortgage', description: 'Choose the right loan type for you.' },
+            { url: 'how-much-house-can-i-afford.html', title: 'How Much House Can I Afford?', description: 'A deep dive into budgeting for a home.' },
+            { url: 'first-time-home-buyer-checklist.html', title: 'First-Time Home Buyer\'s Checklist', description: 'Your essential 10-step guide to success.' },
+        ];
+
+        const currentPage = window.location.pathname.split('/').pop();
+        
+        // Filter out the current article and shuffle the rest
+        const relatedArticles = allArticles
+            .filter(article => article.url !== currentPage)
+            .sort(() => 0.5 - Math.random())
+            .slice(0, 3); // Show up to 3 related articles
+
+        const articlesHtml = relatedArticles.map(article => `
+            <li>
+                <a href="${article.url}" class="font-semibold text-primary hover:underline group">
+                    <span class="block text-sm">${article.title}</span>
+                    <span class="block text-xs text-gray-500 group-hover:text-accent">${article.description}</span>
+                </a>
+            </li>
+        `).join('');
+        
+        // Populate Desktop Sidebar if it exists
+        if (desktopSidebar) {
+            desktopSidebar.innerHTML = articlesHtml;
+        }
+
+        // Populate and manage Mobile Sidebar if it exists
+        if (mobileSidebar) {
+            const mobileList = mobileSidebar.querySelector('ul');
+            if(mobileList) {
+                mobileList.innerHTML = relatedArticles.map(article => `
+                     <li>
+                        <a href="${article.url}" class="font-semibold text-primary hover:underline group">
+                            <span class="block text-sm">${article.title}</span>
+                        </a>
+                     </li>`).join('');
+            }
+
+            const closeButton = document.getElementById('close-mobile-sidebar');
+            let sidebarShown = false;
+
+            const showSidebar = () => { if (!sidebarShown) { mobileSidebar.classList.remove('translate-y-full'); sidebarShown = true; } };
+            const hideSidebar = () => { mobileSidebar.classList.add('translate-y-full'); sidebarShown = false; };
+            
+            if(closeButton) closeButton.addEventListener('click', hideSidebar);
+            
+            window.addEventListener('scroll', () => { 
+                if (!sidebarShown && (window.innerHeight + window.scrollY) >= document.body.offsetHeight - 200) { 
+                    showSidebar(); 
+                } 
+            }, { passive: true });
+        }
+    }
+
+    setupRelatedArticles();
+
 });
