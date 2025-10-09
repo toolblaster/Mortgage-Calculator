@@ -11,7 +11,9 @@ This file handles UI, event listeners, and state management.
     // --- DOM Element Cache ---
     const DOM = {
         // Input Fields
-        loanAmount: document.getElementById('loanAmount'), interestRate: document.getElementById('interestRate'), loanTerm: document.getElementById('loanTerm'),
+        loanAmount: document.getElementById('loanAmount'), loanAmountSlider: document.getElementById('loanAmountSlider'),
+        interestRate: document.getElementById('interestRate'), interestRateSlider: document.getElementById('interestRateSlider'),
+        loanTerm: document.getElementById('loanTerm'), loanTermSlider: document.getElementById('loanTermSlider'),
         initialLTV: document.getElementById('initialLTV'), discountRate: document.getElementById('discountRate'), appreciationRate: document.getElementById('appreciationRate'),
         annualIncome: document.getElementById('annualIncome'), nonMortgageDebt: document.getElementById('nonMortgageDebt'), propertyTax: document.getElementById('propertyTax'),
         insurance: document.getElementById('insurance'), hoa: document.getElementById('hoa'), pitiEscalationRate: document.getElementById('pitiEscalationRate'),
@@ -157,7 +159,7 @@ This file handles UI, event listeners, and state management.
             return { text: 'High Risk (>43%)', color: 'dti-critical' };
         };
         const applyStatus = (element, statusElement, status) => {
-            element.className = `text-lg font-extrabold text-${status.color}`;
+            element.className = `text-base font-extrabold text-${status.color}`;
             statusElement.textContent = status.text;
             statusElement.className = `text-xs font-semibold mt-1 text-${status.color}`;
         };
@@ -312,6 +314,7 @@ This file handles UI, event listeners, and state management.
             }
         });
         updateStateFromDOM();
+        
         setTimeout(() => {
             try { 
                 if (validateInputs()) {
@@ -331,7 +334,7 @@ This file handles UI, event listeners, and state management.
                     calculateButton.textContent = originalButtonText;
                 }
             }
-        }, 250);
+        }, 50); // Reduced delay for better responsiveness with sliders
     }
 
     function runRentVsBuyAnalysis() {
@@ -475,6 +478,9 @@ This file handles UI, event listeners, and state management.
         for (const id in defaults) { const el = DOM[id]; if (el) el.value = defaults[id]; }
         if(DOM.loanStartMonth) DOM.loanStartMonth.value = "01";
         if(DOM.loanStartYear) DOM.loanStartYear.value = "2021";
+        if (DOM.loanAmountSlider) DOM.loanAmountSlider.value = defaults.loanAmount;
+        if (DOM.interestRateSlider) DOM.interestRateSlider.value = defaults.interestRate;
+        if (DOM.loanTermSlider) DOM.loanTermSlider.value = defaults.loanTerm;
         DOM.repaymentFrequency.value = "12"; DOM.currency.value = "USD";
         updateStateFromDOM();
         history.pushState(null, '', window.location.pathname);
@@ -612,6 +618,8 @@ This file handles UI, event listeners, and state management.
         if(history.replaceState) {
             history.replaceState(null, null, `#${tab}-tab`);
         }
+        
+        handleCalculation();
     }
 
     function setupTabs() {
@@ -628,6 +636,46 @@ This file handles UI, event listeners, and state management.
             }
         }
     }
+    
+    function updateSliderFill(slider) {
+        if (!slider) return;
+        const min = slider.min || 0;
+        const max = slider.max || 100;
+        const val = slider.value || 0;
+        const percentage = ((val - min) * 100) / (max - min);
+        slider.style.background = `linear-gradient(to right, #2C98C2 ${percentage}%, #e5e7eb ${percentage}%)`;
+    }
+
+    function syncSliderAndInput(slider, input) {
+        if (!slider || !input) return;
+        const debouncedCalc = debounce(() => handleCalculation(false), 250);
+        
+        const update = () => {
+            updateSliderFill(slider);
+            debouncedCalc();
+        };
+        
+        slider.addEventListener('input', () => {
+            input.value = slider.value;
+            update();
+        });
+        input.addEventListener('change', () => {
+            slider.value = input.value;
+            update();
+        });
+        
+        updateSliderFill(slider); // Initial fill
+    }
+
+    function debounce(func, delay) {
+        let timeout;
+        return function(...args) {
+            const context = this;
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(context, args), delay);
+        };
+    }
+
 
     function init() {
         if (window.ChartAnnotation) {
@@ -639,6 +687,12 @@ This file handles UI, event listeners, and state management.
         setupTabs();
         setupModal();
         
+        syncSliderAndInput(DOM.loanAmountSlider, DOM.loanAmount);
+        syncSliderAndInput(DOM.interestRateSlider, DOM.interestRate);
+        syncSliderAndInput(DOM.loanTermSlider, DOM.loanTerm);
+        
+        document.body.style.opacity = '0'; // Hide body to prevent FOUC
+
         window.addEventListener('beforeprint', () => {
             if (Chart && Chart.defaults) Chart.defaults.animation = false;
         });
@@ -666,11 +720,14 @@ This file handles UI, event listeners, and state management.
 
         allInputIds.forEach(id => {
             const el = DOM[id];
-            if (el) {
-                el.addEventListener('change', () => {
+            if (el && !['loanAmount', 'interestRate', 'loanTerm'].includes(id)) {
+                 const debouncedSave = debounce(() => {
                     updateStateFromDOM();
                     saveStateToLocalStorage();
-                });
+                    handleCalculation();
+                }, 400);
+
+                el.addEventListener('input', debouncedSave);
             }
         });
 
@@ -704,6 +761,13 @@ This file handles UI, event listeners, and state management.
             handleCalculation(false, initialVisibleButton);
         }
         updateCurrencySymbols();
+        [DOM.loanAmountSlider, DOM.interestRateSlider, DOM.loanTermSlider].forEach(s => {
+            if(s) updateSliderFill(s);
+        });
+        
+        document.body.style.transition = 'opacity 0.5s';
+        document.body.style.opacity = '1';
+
         
         const backToTopButton = document.getElementById('back-to-top');
         window.addEventListener('scroll', () => {
