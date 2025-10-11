@@ -126,8 +126,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="flex flex-col sm:flex-row items-center justify-center gap-4 text-center">
                         <h3 class="text-xs font-semibold text-gray-800">Found this helpful? Share it:</h3>
                         <div class="flex items-center gap-3">
-                            <a id="global-share-twitter" href="#" target="_blank" rel="noopener noreferrer" title="Share on Twitter" class="p-2 bg-[#1DA1F2] text-white rounded-full hover:bg-[#0c85d0] transition-colors shadow-md">
-                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.223.085a4.93 4.93 0 004.6 3.419A9.9 9.9 0 010 17.54a13.94 13.94 0 007.547 2.21c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg>
+                            <a id="global-share-twitter" href="#" target="_blank" rel="noopener noreferrer" title="Share on X" class="p-2 bg-black text-white rounded-full hover:bg-gray-800 transition-colors shadow-md">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 16 16"><path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75z"/></svg>
                             </a>
                             <a id="global-share-facebook" href="#" target="_blank" rel="noopener noreferrer" title="Share on Facebook" class="p-2 bg-[#1877F2] text-white rounded-full hover:bg-[#166fe5] transition-colors shadow-md">
                                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clip-rule="evenodd"/></svg>
@@ -152,7 +152,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const pageTitle = encodeURIComponent(document.title);
         const pageSource = "Strategic Mortgage Planner";
 
-        document.getElementById('global-share-twitter').href = `https://twitter.com/intent/tweet?url=${pageUrl}&text=${pageTitle}`;
+        document.getElementById('global-share-twitter').href = `https://x.com/intent/tweet?url=${pageUrl}&text=${pageTitle}`;
         document.getElementById('global-share-facebook').href = `https://www.facebook.com/sharer/sharer.php?u=${pageUrl}`;
         document.getElementById('global-share-linkedin').href = `https://www.linkedin.com/shareArticle?mini=true&url=${pageUrl}&title=${pageTitle}&source=${pageSource}`;
         document.getElementById('global-share-whatsapp').href = `https://api.whatsapp.com/send?text=${pageTitle}%20${pageUrl}`;
