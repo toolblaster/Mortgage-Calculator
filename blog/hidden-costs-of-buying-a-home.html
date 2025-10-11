@@ -317,28 +317,16 @@
                                 </a>
                             </div>
                         </section>
+                        <div id="share-section-placeholder" class="mt-6 border-t pt-6"></div>
                     </div>
                 </article>
 
                 <!-- Desktop Sidebar -->
-                <aside class="hidden lg:block absolute top-0 left-full ml-8 w-72">
-                    <div class="sticky top-24">
-                        <div class="bg-gray-50 p-4 rounded-lg border">
-                             <h3 class="font-bold text-lg text-primary border-b-2 border-primary pb-2 mb-4">Related Guides</h3>
-                             <ul class="space-y-4">
-                                <!-- Related articles will be dynamically inserted here -->
-                             </ul>
-                        </div>
-                    </div>
-                </aside>
+                <aside id="desktop-sidebar-placeholder" class="hidden lg:block absolute top-0 left-full ml-8 w-72"></aside>
             </div>
         </div>
+        <div id="mobile-sidebar-placeholder"></div>
     </main>
     <script src="../global-elements.js" defer></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Mobile sidebar logic is handled by global-elements.js
-        });
-    </script>
 </body>
 </html>
