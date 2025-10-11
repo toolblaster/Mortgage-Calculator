@@ -348,41 +348,22 @@
                             </div>
                         </section>
                         
+                        <div id="share-section-placeholder" class="mt-6 border-t pt-6"></div>
                     </div>
                 </article>
 
                 <!-- Desktop Sidebar -->
-                <aside class="hidden lg:block absolute top-0 left-full ml-8 w-72">
-                    <div class="sticky top-24">
-                        <div class="bg-gray-50 p-4 rounded-lg border">
-                             <h3 class="font-bold text-lg text-primary border-b-2 border-primary pb-2 mb-4">Related Guides</h3>
-                             <ul class="space-y-4">
-                                <!-- Related articles will be dynamically inserted here -->
-                             </ul>
-                        </div>
-                    </div>
-                </aside>
+                <aside id="desktop-sidebar-placeholder" class="hidden lg:block absolute top-0 left-full ml-8 w-72"></aside>
             </div>
         </div>
 
         <!-- Mobile Related Articles Banner -->
-        <div id="mobile-related-articles" class="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg transform translate-y-full transition-transform duration-300 ease-in-out z-40">
-            <div class="flex justify-between items-center mb-3">
-                 <h3 class="font-bold text-md text-primary">Related Guides</h3>
-                 <button id="close-mobile-sidebar" class="text-gray-500 hover:text-gray-800 text-2xl font-bold">&times;</button>
-            </div>
-             <ul class="space-y-3">
-                <!-- Related articles will be dynamically inserted here -->
-             </ul>
-        </div>
+        <div id="mobile-sidebar-placeholder"></div>
     </main>
     <script src="../global-elements.js" defer></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // --- Social Sharing Links ---
-            const postUrl = encodeURIComponent(window.location.href);
-            const postTitle = encodeURIComponent(document.title);
-            // Social sharing links can be added here if needed
+            // --- Social Sharing Links --- are now handled by global-elements.js
             
             // --- Mobile Related Articles Logic has been moved to global-elements.js ---
         });
