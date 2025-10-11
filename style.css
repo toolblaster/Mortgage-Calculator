@@ -170,6 +170,12 @@ input, select {
     box-shadow: 0 0 0 1px #ef4444;
 }
 
+.inline-error-message {
+    color: #ef4444;
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+}
+
 
 /* Visual Feedback Animation */
 .flash-highlight {
