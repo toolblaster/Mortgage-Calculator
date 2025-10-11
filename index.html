@@ -224,14 +224,17 @@
                                 <div class="space-y-1">
                                     <label for="downPaymentAmount" class="block font-medium text-xs text-gray-700">Down Payment (<span id="afford-down-payment-currency"></span>):</label>
                                     <input type="number" id="downPaymentAmount" value="60000" min="0" step="1000" class="w-full p-1.5 text-xs border border-gray-300 rounded-md">
+                                    <span class="inline-error-message" id="downPaymentAmount-error"></span>
                                 </div>
                                 <div class="space-y-1">
                                     <label for="desiredFrontEndDTI" class="block font-medium text-xs text-gray-700">Desired Housing DTI (%):</label>
                                     <input type="number" id="desiredFrontEndDTI" value="28" min="10" max="50" step="1" class="w-full p-1.5 text-xs border border-gray-300 rounded-md">
+                                    <span class="inline-error-message" id="desiredFrontEndDTI-error"></span>
                                 </div>
                                 <div class="space-y-1 sm:col-span-2">
                                     <label for="desiredBackEndDTI" class="block font-medium text-xs text-gray-700">Desired Total DTI (%):</label>
                                     <input type="number" id="desiredBackEndDTI" value="36" min="10" max="50" step="1" class="w-full p-1.5 text-xs border border-gray-300 rounded-md">
+                                    <span class="inline-error-message" id="desiredBackEndDTI-error"></span>
                                 </div>
                             </div>
                         </details>
@@ -290,6 +293,7 @@
                                         <input type="number" id="loanAmount" value="300000" min="1000" step="1000" class="w-24 p-1 text-xs text-right border border-gray-300 rounded-md">
                                     </div>
                                     <input type="range" id="loanAmountSlider" min="10000" max="1000000" value="300000" step="1000" class="w-full mt-2 range-slider">
+                                    <span class="inline-error-message" id="loanAmount-error"></span>
                                 </div>
                                 <div class="space-y-1">
                                     <div class="flex justify-between items-center">
@@ -297,6 +301,7 @@
                                         <input type="number" id="interestRate" value="6.5" min="0.1" max="25" step="0.1" class="w-24 p-1 text-xs text-right border border-gray-300 rounded-md">
                                     </div>
                                     <input type="range" id="interestRateSlider" min="1" max="15" value="6.5" step="0.1" class="w-full mt-2 range-slider">
+                                    <span class="inline-error-message" id="interestRate-error"></span>
                                 </div>
                                 <div class="space-y-1">
                                     <div class="flex justify-between items-center">
@@ -304,6 +309,7 @@
                                         <input type="number" id="loanTerm" value="30" min="5" max="50" class="w-24 p-1 text-xs text-right border border-gray-300 rounded-md">
                                     </div>
                                     <input type="range" id="loanTermSlider" min="5" max="40" value="30" step="1" class="w-full mt-2 range-slider">
+                                    <span class="inline-error-message" id="loanTerm-error"></span>
                                 </div>
                                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                                     <div class="space-y-1">
@@ -324,6 +330,7 @@
                                             </span>
                                         </label>
                                         <input type="number" id="initialLTV" value="90" min="5" max="100" step="1" class="w-full p-1.5 text-xs border border-gray-300 rounded-md">
+                                        <span class="inline-error-message" id="initialLTV-error"></span>
                                     </div>
                                     <div class="space-y-1">
                                         <label for="repaymentFrequency" class="block font-medium text-xs text-gray-700">Frequency:</label>
@@ -346,10 +353,12 @@
                                 <div class="space-y-1">
                                     <label for="annualIncome" class="block font-medium text-xs text-gray-700">Annual Gross Income (<span id="dti-income-currency"></span>):</label>
                                     <input type="number" id="annualIncome" value="120000" min="0" step="1000" class="w-full p-1.5 text-xs border border-gray-300 rounded-md">
+                                    <span class="inline-error-message" id="annualIncome-error"></span>
                                 </div>
                                 <div class="space-y-1">
                                     <label for="nonMortgageDebt" class="block font-medium text-xs text-gray-700">Monthly Non-Mortgage Debt (<span id="dti-debt-currency"></span>):</label>
                                     <input type="number" id="nonMortgageDebt" value="800" min="0" step="50" class="w-full p-1.5 text-xs border border-gray-300 rounded-md">
+                                    <span class="inline-error-message" id="nonMortgageDebt-error"></span>
                                     <p class="text-[10px] text-gray-700 mt-1">Car, student, CC payments.</p>
                                 </div>
                             </div>
@@ -363,6 +372,7 @@
                                 <div class="space-y-1 col-span-1 sm:col-span-2 bg-accent/10 p-2 rounded-md border border-accent/30">
                                     <label for="appreciationRate" class="block font-bold text-xs text-accent">Annual Property Appreciation (%):</label>
                                     <input type="number" id="appreciationRate" value="3.5" min="0" max="15" step="0.1" class="w-full p-1.5 text-xs border border-accent/50 rounded-md">
+                                    <span class="inline-error-message" id="appreciationRate-error"></span>
                                 </div>
                                 <div class="space-y-1 col-span-1 sm:col-span-2 bg-npv/10 p-2 rounded-md border border-npv/30">
                                     <label for="discountRate" class="block font-bold text-xs text-npv">
@@ -372,6 +382,7 @@
                                         </span>
                                     </label>
                                     <input type="number" id="discountRate" value="3.0" min="0" max="20" step="0.1" class="w-full p-1.5 text-xs border border-npv/50 rounded-md">
+                                    <span class="inline-error-message" id="discountRate-error"></span>
                                 </div>
                                 <div class="space-y-1">
                                     <label for="pitiEscalationRate" class="block font-medium text-xs text-red-700">
@@ -381,22 +392,27 @@
                                         </span>
                                     </label>
                                     <input type="number" id="pitiEscalationRate" value="2.0" min="0" max="10" step="0.1" class="w-full p-1.5 text-xs border border-red-300 rounded-md">
+                                    <span class="inline-error-message" id="pitiEscalationRate-error"></span>
                                 </div>
                                 <div class="space-y-1">
                                     <label for="pmiRate" class="block font-medium text-xs text-gray-700">Annual PMI Rate (%):</label>
                                     <input type="number" id="pmiRate" value="0.5" min="0" max="5" step="0.05" class="w-full p-1.5 text-xs border border-gray-300 rounded-md">
+                                    <span class="inline-error-message" id="pmiRate-error"></span>
                                 </div>
                                 <div class="space-y-1">
                                     <label for="propertyTax" class="block font-medium text-xs text-gray-700">Annual Property Tax (<span id="mc-tax-currency"></span>):</label>
                                     <input type="number" id="propertyTax" value="3600" min="0" step="10" class="w-full p-1.5 text-xs border border-gray-300 rounded-md">
+                                    <span class="inline-error-message" id="propertyTax-error"></span>
                                 </div>
                                 <div class="space-y-1">
                                     <label for="insurance" class="block font-medium text-xs text-gray-700">Annual Home Insurance (<span id="mc-ins-currency"></span>):</label>
                                     <input type="number" id="insurance" value="1200" min="0" step="10" class="w-full p-1.5 text-xs border border-gray-300 rounded-md">
+                                    <span class="inline-error-message" id="insurance-error"></span>
                                 </div>
                                 <div class="space-y-1">
                                     <label for="hoa" class="block font-medium text-xs text-gray-700">Monthly HOA Dues (<span id="mc-hoa-currency"></span>):</label>
                                     <input type="number" id="hoa" value="0" min="0" step="10" class="w-full p-1.5 text-xs border border-gray-300 rounded-md">
+                                    <span class="inline-error-message" id="hoa-error"></span>
                                 </div>
                                 <div class="space-y-1">
                                     <label for="annualMaintenance" class="block font-medium text-xs text-gray-700">
@@ -406,22 +422,27 @@
                                         </span>
                                     </label>
                                     <input type="number" id="annualMaintenance" value="1.0" min="0" max="10" step="0.1" class="w-full p-1.5 text-xs border border-gray-300 rounded-md">
+                                    <span class="inline-error-message" id="annualMaintenance-error"></span>
                                 </div>
                                  <div class="space-y-1">
                                     <label for="monthlyUtilities" class="block font-medium text-xs text-gray-700">Monthly Utilities (<span id="mc-util-currency"></span>):</label>
                                     <input type="number" id="monthlyUtilities" value="300" min="0" step="10" class="w-full p-1.5 text-xs border border-gray-300 rounded-md">
+                                    <span class="inline-error-message" id="monthlyUtilities-error"></span>
                                 </div>
                                 <div class="space-y-1">
                                     <label for="extraPayment" class="block font-medium text-xs text-gray-700">Extra Principal (<span id="mc-extra-currency"></span>):</label>
                                     <input type="number" id="extraPayment" value="100" min="0" step="10" class="w-full p-1.5 text-xs border border-gray-300 rounded-md">
+                                    <span class="inline-error-message" id="extraPayment-error"></span>
                                 </div>
                                 <div class="space-y-1">
                                     <label for="lumpSumPayment" class="block font-medium text-xs text-gray-700">One-Time Lump Sum (<span id="mc-lump-currency"></span>):</label>
                                     <input type="number" id="lumpSumPayment" value="5000" min="0" step="500" class="w-full p-1.5 text-xs border border-gray-300 rounded-md">
+                                    <span class="inline-error-message" id="lumpSumPayment-error"></span>
                                 </div>
                                 <div class="space-y-1">
                                     <label for="lumpSumPeriod" class="block font-medium text-xs text-gray-700">Lump Sum Applied at Period:</label>
                                     <input type="number" id="lumpSumPeriod" value="1" min="1" max="360" class="w-full p-1.5 text-xs border border-gray-300 rounded-md">
+                                    <span class="inline-error-message" id="lumpSumPeriod-error"></span>
                                 </div>
                             </div>
                         </details>
@@ -434,18 +455,22 @@
                                 <div class="space-y-1">
                                     <label for="refiPeriod" class="block font-medium text-xs text-gray-700">Refinance at Period:</label>
                                     <input type="number" id="refiPeriod" value="60" min="1" max="360" step="12" class="w-full p-1.5 text-xs border border-gray-300 rounded-md">
+                                    <span class="inline-error-message" id="refiPeriod-error"></span>
                                 </div>
                                 <div class="space-y-1">
                                     <label for="refiClosingCosts" class="block font-medium text-xs text-red-700">Refi Closing Costs (<span id="mc-refi-currency"></span>):</label>
                                     <input type="number" id="refiClosingCosts" value="5000" min="0" step="100" class="w-full p-1.5 text-xs border border-red-300 rounded-md">
+                                    <span class="inline-error-message" id="refiClosingCosts-error"></span>
                                 </div>
                                 <div class="space-y-1">
                                     <label for="refiRate" class="block font-medium text-xs text-gray-700">New Annual Rate (%):</label>
                                     <input type="number" id="refiRate" value="5.0" min="0.1" max="20" step="0.1" class="w-full p-1.5 text-xs border border-gray-300 rounded-md">
+                                    <span class="inline-error-message" id="refiRate-error"></span>
                                 </div>
                                 <div class="space-y-1">
                                     <label for="refiTerm" class="block font-medium text-xs text-gray-700">New Term (Years):</label>
                                     <input type="number" id="refiTerm" value="15" min="1" max="30" step="1" class="w-full p-1.5 text-xs border border-gray-300 rounded-md">
+                                    <span class="inline-error-message" id="refiTerm-error"></span>
                                 </div>
                             </div>
                         </details>
@@ -463,6 +488,7 @@
                                             Run Shock Test
                                         </button>
                                     </div>
+                                    <span class="inline-error-message" id="shockRateIncrease-error"></span>
                                 </div>
                             </div>
                         </details>
@@ -648,10 +674,12 @@
                                 <div class="space-y-1">
                                     <label for="monthlyRent" class="block font-medium text-xs text-gray-700">Equivalent Monthly Rent (<span id="rvb-rent-currency"></span>):</label>
                                     <input type="number" id="monthlyRent" value="2000" min="100" step="100" class="w-full p-1.5 text-xs border border-gray-300 rounded-md">
+                                    <span class="inline-error-message" id="monthlyRent-error"></span>
                                 </div>
                                 <div class="space-y-1">
                                     <label for="rentIncrease" class="block font-medium text-xs text-gray-700">Annual Rent Increase (%):</label>
                                     <input type="number" id="rentIncrease" value="3.0" min="0" max="15" step="0.1" class="w-full p-1.5 text-xs border border-gray-300 rounded-md">
+                                    <span class="inline-error-message" id="rentIncrease-error"></span>
                                 </div>
                                 <div class="space-y-1 sm:col-span-2">
                                     <label for="investmentReturn" class="block font-medium text-xs text-gray-700">
@@ -661,14 +689,17 @@
                                         </span>
                                     </label>
                                     <input type="number" id="investmentReturn" value="7.0" min="0" max="20" step="0.1" class="w-full p-1.5 text-xs border border-gray-300 rounded-md">
+                                    <span class="inline-error-message" id="investmentReturn-error"></span>
                                 </div>
                                  <div class="space-y-1">
                                     <label for="closingCosts" class="block font-medium text-xs text-gray-700">Upfront Buying Costs (<span id="rvb-closing-costs-currency"></span>):</label>
                                     <input type="number" id="closingCosts" value="8000" min="0" step="100" class="w-full p-1.5 text-xs border border-gray-300 rounded-md">
+                                    <span class="inline-error-message" id="closingCosts-error"></span>
                                 </div>
                                 <div class="space-y-1">
                                     <label for="sellingCosts" class="block font-medium text-xs text-gray-700">Home Selling Costs (%):</label>
                                     <input type="number" id="sellingCosts" value="6.0" min="0" max="15" step="0.1" class="w-full p-1.5 text-xs border border-gray-300 rounded-md">
+                                    <span class="inline-error-message" id="sellingCosts-error"></span>
                                 </div>
                             </div>
                         </details>
@@ -723,10 +754,12 @@
                                 <div class="space-y-1">
                                     <label for="originalLoanAmount" class="block font-medium text-xs text-gray-700">Original Loan Amount (<span id="refi-orig-currency"></span>):</label>
                                     <input type="number" id="originalLoanAmount" value="300000" min="1000" step="1000" class="w-full p-1.5 text-xs border border-gray-300 rounded-md">
+                                    <span class="inline-error-message" id="originalLoanAmount-error"></span>
                                 </div>
                                 <div class="space-y-1">
                                     <label for="currentInterestRate" class="block font-medium text-xs text-gray-700">Current Interest Rate (%):</label>
                                     <input type="number" id="currentInterestRate" value="6.5" min="0.1" max="25" step="0.1" class="w-full p-1.5 text-xs border border-gray-300 rounded-md">
+                                    <span class="inline-error-message" id="currentInterestRate-error"></span>
                                 </div>
                                 <div class="space-y-1 sm:col-span-2">
                                     <label class="block font-medium text-xs text-gray-700">Loan Start Date:</label>
@@ -748,14 +781,17 @@
                                 <div class="space-y-1">
                                     <label for="newInterestRate" class="block font-medium text-xs text-gray-700">New Interest Rate (%):</label>
                                     <input type="number" id="newInterestRate" value="5.0" min="0.1" max="25" step="0.1" class="w-full p-1.5 text-xs border border-gray-300 rounded-md">
+                                    <span class="inline-error-message" id="newInterestRate-error"></span>
                                 </div>
                                 <div class="space-y-1">
                                     <label for="newLoanTerm" class="block font-medium text-xs text-gray-700">New Loan Term (Years):</label>
                                     <input type="number" id="newLoanTerm" value="30" min="5" max="50" class="w-full p-1.5 text-xs border border-gray-300 rounded-md">
+                                    <span class="inline-error-message" id="newLoanTerm-error"></span>
                                 </div>
                                 <div class="space-y-1 sm:col-span-2">
                                     <label for="newClosingCosts" class="block font-medium text-xs text-gray-700">Closing Costs (<span id="refi-costs-currency"></span>):</label>
                                     <input type="number" id="newClosingCosts" value="5000" min="0" step="100" class="w-full p-1.5 text-xs border border-gray-300 rounded-md">
+                                    <span class="inline-error-message" id="newClosingCosts-error"></span>
                                 </div>
                             </div>
                         </details>
@@ -810,22 +846,27 @@
                                 <div class="space-y-1">
                                     <label for="purchasePrice" class="block font-medium text-xs text-gray-700">Purchase Price (<span id="inv-purchase-currency"></span>):</label>
                                     <input type="number" id="purchasePrice" value="250000" class="w-full p-1.5 text-xs border border-gray-300 rounded-md">
+                                    <span class="inline-error-message" id="purchasePrice-error"></span>
                                 </div>
                                 <div class="space-y-1">
                                     <label for="investmentDownPayment" class="block font-medium text-xs text-gray-700">Down Payment (%):</label>
                                     <input type="number" id="investmentDownPayment" value="20" class="w-full p-1.5 text-xs border border-gray-300 rounded-md">
+                                    <span class="inline-error-message" id="investmentDownPayment-error"></span>
                                 </div>
                                 <div class="space-y-1">
                                     <label for="investmentInterestRate" class="block font-medium text-xs text-gray-700">Interest Rate (%):</label>
                                     <input type="number" id="investmentInterestRate" value="7.5" class="w-full p-1.5 text-xs border border-gray-300 rounded-md">
+                                    <span class="inline-error-message" id="investmentInterestRate-error"></span>
                                 </div>
                                  <div class="space-y-1">
                                     <label for="investmentLoanTerm" class="block font-medium text-xs text-gray-700">Loan Term (Years):</label>
                                     <input type="number" id="investmentLoanTerm" value="30" class="w-full p-1.5 text-xs border border-gray-300 rounded-md">
+                                    <span class="inline-error-message" id="investmentLoanTerm-error"></span>
                                 </div>
                                 <div class="space-y-1 sm:col-span-2">
                                     <label for="investmentClosingCosts" class="block font-medium text-xs text-gray-700">Upfront Closing Costs (<span id="inv-closing-costs-currency"></span>):</label>
                                     <input type="number" id="investmentClosingCosts" value="4000" class="w-full p-1.5 text-xs border border-gray-300 rounded-md">
+                                    <span class="inline-error-message" id="investmentClosingCosts-error"></span>
                                 </div>
                             </div>
                         </details>
@@ -837,26 +878,32 @@
                                 <div class="space-y-1">
                                     <label for="monthlyRentalIncome" class="block font-medium text-xs text-gray-700">Gross Monthly Rent (<span id="inv-rent-currency"></span>):</label>
                                     <input type="number" id="monthlyRentalIncome" value="2200" class="w-full p-1.5 text-xs border border-gray-300 rounded-md">
+                                    <span class="inline-error-message" id="monthlyRentalIncome-error"></span>
                                 </div>
                                 <div class="space-y-1">
                                     <label for="vacancyRate" class="block font-medium text-xs text-gray-700">Vacancy Rate (%):</label>
                                     <input type="number" id="vacancyRate" value="5" class="w-full p-1.5 text-xs border border-gray-300 rounded-md">
+                                    <span class="inline-error-message" id="vacancyRate-error"></span>
                                 </div>
                                 <div class="space-y-1">
                                     <label for="propertyTaxes" class="block font-medium text-xs text-gray-700">Annual Prop. Taxes (<span id="inv-tax-currency"></span>):</label>
                                     <input type="number" id="propertyTaxes" value="3000" class="w-full p-1.5 text-xs border border-gray-300 rounded-md">
+                                    <span class="inline-error-message" id="propertyTaxes-error"></span>
                                 </div>
                                 <div class="space-y-1">
                                     <label for="propertyInsurance" class="block font-medium text-xs text-gray-700">Annual Insurance (<span id="inv-ins-currency"></span>):</label>
                                     <input type="number" id="propertyInsurance" value="1000" class="w-full p-1.5 text-xs border border-gray-300 rounded-md">
+                                    <span class="inline-error-message" id="propertyInsurance-error"></span>
                                 </div>
                                 <div class="space-y-1">
                                     <label for="maintenanceCosts" class="block font-medium text-xs text-gray-700">Repairs/Maint. (%):</label>
                                     <input type="number" id="maintenanceCosts" value="8" class="w-full p-1.5 text-xs border border-gray-300 rounded-md">
+                                    <span class="inline-error-message" id="maintenanceCosts-error"></span>
                                 </div>
                                 <div class="space-y-1">
                                     <label for="managementFee" class="block font-medium text-xs text-gray-700">Management Fee (%):</label>
                                     <input type="number" id="managementFee" value="10" class="w-full p-1.5 text-xs border border-gray-300 rounded-md">
+                                    <span class="inline-error-message" id="managementFee-error"></span>
                                 </div>
                             </div>
                         </details>
