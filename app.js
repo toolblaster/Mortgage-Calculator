@@ -266,6 +266,11 @@ This file handles UI, event listeners, and state management.
     function validateInputs() {
         const errors = [];
         let fields;
+        
+        // Clear previous inline errors
+        document.querySelectorAll('.inline-error-message').forEach(el => el.textContent = '');
+        allInputIds.forEach(id => { if (DOM[id]) DOM[id].classList.remove('input-error'); });
+
         if (currentTab === 'mortgage') {
              fields = [ { id: 'loanAmount', name: 'Loan Principal', min: 1 }, { id: 'interestRate', name: 'Interest Rate', min: 0.1, max: 100 }, { id: 'loanTerm', name: 'Loan Term', min: 1, max: 50 }, { id: 'initialLTV', name: 'Initial LTV', min: 1, max: 100 }, { id: 'annualIncome', name: 'Annual Income', min: 0 }, { id: 'nonMortgageDebt', name: 'Non-Mortgage Debt', min: 0 }, { id: 'appreciationRate', name: 'Appreciation Rate', min: 0, max: 50 }, { id: 'discountRate', name: 'Discount Rate', min: 0, max: 50 }, { id: 'pitiEscalationRate', name: 'PITI Escalation Rate', min: 0, max: 50 }, { id: 'pmiRate', name: 'PMI Rate', min: 0, max: 10 }, { id: 'propertyTax', name: 'Property Tax', min: 0 }, { id: 'insurance', name: 'Home Insurance', min: 0 }, { id: 'hoa', name: 'HOA Dues', min: 0 }, { id: 'extraPayment', name: 'Extra Payment', min: 0 }, { id: 'lumpSumPayment', name: 'Lump Sum Payment', min: 0 }, { id: 'annualMaintenance', name: 'Annual Maintenance', min: 0, max: 20 }, { id: 'monthlyUtilities', name: 'Monthly Utilities', min: 0 } ];
         } else if (currentTab === 'rent-vs-buy') {
@@ -277,21 +282,33 @@ This file handles UI, event listeners, and state management.
         } else if (currentTab === 'investment') {
             fields = [ {id: 'purchasePrice', name: 'Purchase Price', min: 1}, {id: 'investmentDownPayment', name: 'Down Payment', min: 0, max: 100}, {id: 'investmentInterestRate', name: 'Interest Rate', min: 0}, {id: 'investmentLoanTerm', name: 'Loan Term', min: 1}, {id: 'investmentClosingCosts', name: 'Closing Costs', min: 0}, {id: 'monthlyRentalIncome', name: 'Monthly Rent', min: 0}, {id: 'vacancyRate', name: 'Vacancy Rate', min: 0, max: 100}, {id: 'propertyTaxes', name: 'Property Taxes', min: 0}, {id: 'propertyInsurance', name: 'Insurance', min: 0}, {id: 'maintenanceCosts', name: 'Maintenance', min: 0, max: 100}, {id: 'managementFee', name: 'Management Fee', min: 0, max: 100} ];
         }
-        allInputIds.forEach(id => { if (DOM[id]) DOM[id].classList.remove('input-error'); });
+        
         fields.forEach(field => {
-            const el = DOM[field.id]; if (!el) return; const value = state[field.id]; let hasError = false;
-            if (typeof value === 'undefined' || (typeof value === 'number' && isNaN(value))) { errors.push(`${field.name} must be a number.`); hasError = true; }
-            else {
-                if (field.min !== undefined && value < field.min) { errors.push(`${field.name} must be at least ${field.min}.`); hasError = true; }
-                if (field.max !== undefined && value > field.max) { errors.push(`${field.name} cannot exceed ${field.max}.`); hasError = true; }
+            const el = DOM[field.id]; if (!el) return;
+            const errorEl = document.getElementById(`${field.id}-error`);
+            const value = state[field.id];
+            let errorMessage = '';
+
+            if (typeof value === 'undefined' || (typeof value === 'number' && isNaN(value))) {
+                errorMessage = `${field.name} must be a number.`;
+            } else {
+                if (field.min !== undefined && value < field.min) {
+                    errorMessage = `${field.name} must be at least ${field.min}.`;
+                }
+                if (field.max !== undefined && value > field.max) {
+                    errorMessage = `${field.name} cannot exceed ${field.max}.`;
+                }
             }
-            if (hasError) el.classList.add('input-error');
+
+            if (errorMessage) {
+                errors.push(errorMessage);
+                el.classList.add('input-error');
+                if (errorEl) errorEl.textContent = errorMessage;
+            }
         });
-        if (errors.length > 0) {
-            DOM.errorList.innerHTML = errors.map(e => `<li>${e}</li>`).join('');
-            DOM.errorMessages.classList.remove('hidden'); return false;
-        }
-        DOM.errorMessages.classList.add('hidden'); return true;
+
+        DOM.errorMessages.classList.add('hidden'); // Always hide the top-level error message box.
+        return errors.length === 0;
     }
 
     function handleCalculation(isShockTest = false, button = null) {
