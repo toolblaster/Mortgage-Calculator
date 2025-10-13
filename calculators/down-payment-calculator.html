@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Down Payment Calculator for Home Purchase</title>
+    
+    <!-- SEO & Meta Tags -->
+    <meta name="description" content="Calculate your required down payment, see how it affects your loan amount and monthly payments, and understand concepts like LTV and PMI with our free interactive calculator.">
+    <meta name="keywords" content="down payment calculator, mortgage down payment, how much down payment, LTV calculator, PMI calculator, first-time home buyer, home loan down payment">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100' height='100' rx='20' fill='%231C768F'/%3E%3Cpath d='M50 25L25 45V75H41.6667V58.3333H58.3333V75H75V45L50 25Z' stroke='white' stroke-width='5' stroke-linejoin='round'/%3E%3Cpath d='M40 65L50 55L60 65' stroke='white' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M50 55V45' stroke='white' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+    <link rel="canonical" href="https://mortgageplanner.toolblaster.com/calculators/down-payment-calculator.html" />
+
+    <!-- Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    
+    <!-- App Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#1C768F', 'accent': '#166534', 'secondary': '#b45309'
+                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+
+    <!-- Global & Page-Specific Styles -->
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body class="bg-gray-100 text-sm">
+    <main class="content-wrapper">
+        <div class="w-full max-w-7xl mx-auto my-4 px-2 sm:px-4 space-y-4">
+            <div id="calculator-container" class="bg-white p-3 sm:p-4 rounded-xl shadow-2xl">
+                <!-- Header -->
+                <header class="text-center mb-4 pb-4 border-b">
+                    <h1 class="text-lg md:text-xl font-extrabold text-primary">Down Payment Calculator</h1>
+                    <p class="mt-1 text-xs text-gray-700">See how your down payment impacts your loan and monthly costs.</p>
+                </header>
+
+                <div class="grid grid-cols-1 lg:grid-cols-5 gap-4">
+                    <!-- Input Column -->
+                    <div class="lg:col-span-2 space-y-3">
+                        <div class="bg-gray-50 border rounded-lg p-3">
+                            <h2 class="text-sm font-bold text-primary mb-2">Purchase Details</h2>
+                            <div class="space-y-4">
+                                <!-- Home Price -->
+                                <div>
+                                    <div class="flex justify-between items-center">
+                                        <label for="homePrice" class="block font-medium text-xs text-gray-700">Home Price (<span id="currency-symbol">$</span>):</label>
+                                        <input type="number" id="homePrice" value="450000" class="w-24 p-1 text-xs text-right border border-gray-300 rounded-md">
+                                    </div>
+                                    <input type="range" id="homePriceSlider" min="50000" max="2000000" value="450000" step="5000" class="w-full mt-2 range-slider">
+                                </div>
+                                <!-- Down Payment -->
+                                <div>
+                                    <div class="flex justify-between items-center mb-2">
+                                        <label class="block font-medium text-xs text-gray-700">Down Payment:</label>
+                                        <div class="flex items-center bg-gray-200 rounded-lg p-0.5">
+                                            <button id="dpTypePercent" class="px-2 py-1 text-xs font-bold rounded-md bg-primary text-white">%</button>
+                                            <button id="dpTypeAmount" class="px-2 py-1 text-xs font-bold rounded-md text-gray-600">$</button>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <input type="range" id="downPaymentSlider" min="0" max="50" value="10" step="0.5" class="w-full range-slider">
+                                        <input type="number" id="downPaymentInput" value="10" class="w-20 p-1 text-xs text-right border border-gray-300 rounded-md">
+                                    </div>
+                                </div>
+                                <!-- Currency -->
+                                 <div>
+                                    <label for="currency" class="block font-medium text-xs text-gray-700">Currency:</label>
+                                    <select id="currency" class="w-full p-1.5 text-xs border border-gray-300 rounded-md h-[30px]">
+                                        <option value="USD">USD ($)</option>
+                                        <option value="EUR">EUR (€)</option>
+                                        <option value="GBP">GBP (£)</option>
+                                        <option value="CAD">CAD (C$)</option>
+                                        <option value="AUD">AUD (A$)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-50 border rounded-lg p-3">
+                            <h2 class="text-sm font-bold text-primary mb-2">Loan Assumptions</h2>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div>
+                                    <label for="loanTerm" class="block font-medium text-xs text-gray-700">Loan Term (Years):</label>
+                                    <input type="number" id="loanTerm" value="30" class="w-full p-1.5 text-xs border border-gray-300 rounded-md">
+                                </div>
+                                <div>
+                                    <label for="interestRate" class="block font-medium text-xs text-gray-700">Interest Rate (%):</label>
+                                    <input type="number" id="interestRate" value="6.5" step="0.01" class="w-full p-1.5 text-xs border border-gray-300 rounded-md">
+                                </div>
+                                <div class="sm:col-span-2">
+                                     <label for="loanType" class="block font-medium text-xs text-gray-700">Loan Type:</label>
+                                     <select id="loanType" class="w-full p-1.5 text-xs border border-gray-300 rounded-md h-[30px]">
+                                         <option value="conventional">Conventional</option>
+                                         <option value="fha">FHA</option>
+                                         <option value="va">VA</option>
+                                         <option value="usda">USDA</option>
+                                     </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gray-50 border rounded-lg p-3">
+                            <h2 class="text-sm font-bold text-primary mb-2">Optional Annual Costs</h2>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div>
+                                    <label for="propertyTaxes" class="block font-medium text-xs text-gray-700">Property Taxes (<span class="currency-symbol-small">$</span>):</label>
+                                    <input type="number" id="propertyTaxes" value="4000" class="w-full p-1.5 text-xs border border-gray-300 rounded-md">
+                                </div>
+                                <div>
+                                    <label for="homeInsurance" class="block font-medium text-xs text-gray-700">Home Insurance (<span class="currency-symbol-small">$</span>):</label>
+                                    <input type="number" id="homeInsurance" value="1200" class="w-full p-1.5 text-xs border border-gray-300 rounded-md">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="sticky bottom-2 sm:bottom-4">
+                            <button id="saveScenarioBtn" class="w-full px-4 py-2 bg-accent text-white font-bold rounded-lg shadow-lg hover:bg-green-800 transition duration-150 text-sm">
+                                Save & Share Scenario
+                            </button>
+                            <p id="saveFeedback" class="text-xs text-accent text-center h-5 mt-1"></p>
+                        </div>
+                    </div>
+
+                    <!-- Results Column -->
+                    <div class="lg:col-span-3 space-y-3">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-center">
+                            <div class="p-3 rounded-lg bg-accent/10 border-2 border-accent/50 shadow">
+                                <h3 class="text-xs font-bold text-accent">Down Payment</h3>
+                                <p id="downPaymentAmount" class="text-xl font-extrabold text-accent" data-value="0">$0</p>
+                            </div>
+                            <div class="p-3 rounded-lg bg-gray-100 border shadow">
+                                <h3 class="text-xs font-bold text-gray-800">Loan Amount</h3>
+                                <p id="loanAmount" class="text-xl font-extrabold text-gray-800" data-value="0">$0</p>
+                            </div>
+                            <div class="p-3 rounded-lg bg-primary/10 border-2 border-primary/50 shadow">
+                                <h3 class="text-xs font-bold text-primary">Total Monthly Payment</h3>
+                                <p id="totalMonthlyPayment" class="text-xl font-extrabold text-primary" data-value="0">$0</p>
+                            </div>
+                        </div>
+
+                        <div id="pmiSection" class="hidden p-3 rounded-lg bg-red-50/70 border-2 border-red-300 shadow text-center">
+                            <h3 class="text-sm font-bold text-red-700">Estimated Private Mortgage Insurance (PMI)</h3>
+                            <p id="pmiAmount" class="text-lg font-extrabold text-red-600" data-value="0">~$0 / month</p>
+                            <p class="text-xs text-red-800">Required because your Loan-to-Value (LTV) is over 80%.</p>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                             <div class="p-3 bg-gray-50 rounded-lg shadow-inner border border-gray-200">
+                                <h3 class="font-bold text-primary text-center text-sm">Loan Breakdown</h3>
+                                <div class="relative h-48 md:h-56 mt-2">
+                                    <canvas id="loanPieChart"></canvas>
+                                </div>
+                            </div>
+                             <div class="p-3 bg-gray-50 rounded-lg shadow-inner border border-gray-200">
+                                <h3 class="font-bold text-primary text-center text-sm">Payment & Ratio Details</h3>
+                                <div class="space-y-3 mt-4 text-center">
+                                    <div>
+                                        <p class="text-xs font-medium text-gray-600">Principal & Interest (P&I)</p>
+                                        <p id="piPayment" class="text-base font-extrabold text-gray-700" data-value="0">$0</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-medium text-gray-600">Taxes & Insurance</p>
+                                        <p id="tiPayment" class="text-base font-extrabold text-gray-700" data-value="0">$0</p>
+                                    </div>
+                                     <div>
+                                        <p class="text-xs font-medium text-gray-600">
+                                            <span class="tooltip-container">Loan-to-Value (LTV) Ratio
+                                                <span class="tooltip-icon" tabindex="0" aria-label="LTV tooltip">?</span>
+                                                <span class="tooltip-text" role="tooltip">The percentage of the home's price that is covered by the loan. Lenders use this to assess risk.</span>
+                                            </span>
+                                        </p>
+                                        <p id="ltvRatio" class="text-lg font-extrabold text-primary" data-value="0">0%</p>
+                                    </div>
+                                     <div>
+                                        <p class="text-xs font-medium text-gray-600">Estimated Closing Costs (2-5%)</p>
+                                        <p id="closingCosts" class="text-base font-extrabold text-gray-700" data-value="0">$0</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 text-center p-4 bg-accent/10 border border-accent/20 rounded-lg">
+                            <h3 class="font-bold text-accent">Ready for the next step?</h3>
+                            <p class="text-xs text-gray-700 mt-1">See how this down payment fits into your overall budget with our full affordability analysis.</p>
+                             <a href="../#affordability-tab" class="mt-2 inline-block text-sm font-semibold text-primary hover:underline">
+                                Go to the Affordability Calculator &rarr;
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+             <div id="share-section-placeholder" class="mt-4"></div>
+        </div>
+    </main>
+    <script src="../js/utils.js" defer></script>
+    <script src="../global-elements.js" defer></script>
+    <script src="down-payment-calculator.js" defer></script>
+</body>
+</html>
