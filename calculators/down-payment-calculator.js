@@ -16,6 +16,13 @@ document.addEventListener('DOMContentLoaded', function() {
         saveScenarioBtn: document.getElementById('saveScenarioBtn'),
         saveFeedback: document.getElementById('saveFeedback'),
 
+        // New Advanced Features
+        targetDownPayment: document.getElementById('targetDownPayment'),
+        monthlySavings: document.getElementById('monthlySavings'),
+        savingsGoalResult: document.getElementById('savingsGoalResult'),
+        compare15yrPayment: document.getElementById('compare15yrPayment'),
+        compare15yrInterestSaved: document.getElementById('compare15yrInterestSaved'),
+
         // Currency Symbols
         currencySymbol: document.getElementById('currency-symbol'),
         currencySymbolSmalls: document.querySelectorAll('.currency-symbol-small'),
@@ -96,25 +103,25 @@ document.addEventListener('DOMContentLoaded', function() {
         let dpValue = parseFloat(DOM.downPaymentInput.value) || 0;
 
         // --- 2. Calculate Core Values ---
-        let downPaymentAmount = 0;
+        let downPaymentAmountValue = 0;
         if (dpInputType === '%') {
-            downPaymentAmount = homePrice * (dpValue / 100);
+            downPaymentAmountValue = homePrice * (dpValue / 100);
         } else {
-            downPaymentAmount = dpValue;
+            downPaymentAmountValue = dpValue;
         }
 
-        const loanAmount = homePrice - downPaymentAmount;
-        const ltv = homePrice > 0 ? (loanAmount / homePrice) * 100 : 0;
+        const loanAmountValue = homePrice - downPaymentAmountValue;
+        const ltv = homePrice > 0 ? (loanAmountValue / homePrice) * 100 : 0;
 
         // --- 3. Calculate Payments ---
-        const piPayment = window.mortgageUtils.calculatePayment(loanAmount, interestRate, 12, loanTerm * 12);
+        const piPayment = window.mortgageUtils.calculatePayment(loanAmountValue, interestRate, 12, loanTerm * 12);
         const tiPayment = (annualTaxes + annualInsurance) / 12;
 
         // PMI Calculation
         let pmiPayment = 0;
         const pmiRate = 0.005; // 0.5% annual rate, a common estimate
         if (ltv > 80 && DOM.loanType.value === 'conventional') {
-            pmiPayment = (loanAmount * pmiRate) / 12;
+            pmiPayment = (loanAmountValue * pmiRate) / 12;
             DOM.pmiSection.classList.remove('hidden');
             DOM.pmiAmount.textContent = `~${window.mortgageUtils.formatCurrency(pmiPayment, DOM.currency.value)} / month`;
         } else {
@@ -125,8 +132,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const estimatedClosingCosts = homePrice * 0.035; // Average of 2-5%
 
         // --- 4. Render Outputs ---
-        animateValue(DOM.downPaymentAmount, downPaymentAmount);
-        animateValue(DOM.loanAmount, loanAmount);
+        animateValue(DOM.downPaymentAmount, downPaymentAmountValue);
+        animateValue(DOM.loanAmount, loanAmountValue);
         animateValue(DOM.totalMonthlyPayment, totalMonthlyPayment);
         animateValue(DOM.piPayment, piPayment);
         animateValue(DOM.tiPayment, tiPayment);
@@ -134,7 +141,52 @@ document.addEventListener('DOMContentLoaded', function() {
         animateValue(DOM.ltvRatio, ltv, 500, true);
 
         // --- 5. Render Chart ---
-        renderChart(downPaymentAmount, loanAmount);
+        renderChart(downPaymentAmountValue, loanAmountValue);
+        
+        // --- 6. Advanced Calculations & Rendering ---
+        calculateSavingsGoal(homePrice, downPaymentAmountValue);
+        calculateLoanComparison(loanAmountValue, interestRate, loanTerm, piPayment);
+    }
+
+    function calculateSavingsGoal(homePrice, currentDownPayment) {
+        const targetDP = parseFloat(DOM.targetDownPayment.value) || 0;
+        const monthlySavings = parseFloat(DOM.monthlySavings.value) || 0;
+
+        if (homePrice > 0 && targetDP > 0 && monthlySavings > 0) {
+            const targetAmount = homePrice * (targetDP / 100);
+            const amountToSave = targetAmount - currentDownPayment;
+
+            if (amountToSave <= 0) {
+                DOM.savingsGoalResult.classList.remove('hidden');
+                DOM.savingsGoalResult.innerHTML = `<h3 class="text-sm font-bold text-secondary">Savings Goal Reached!</h3><p class="text-xs">You've already saved enough for your ${targetDP}% down payment goal.</p>`;
+                return;
+            }
+
+            const monthsToSave = amountToSave / monthlySavings;
+            const years = Math.floor(monthsToSave / 12);
+            const months = Math.ceil(monthsToSave % 12);
+            
+            DOM.savingsGoalResult.classList.remove('hidden');
+            DOM.savingsGoalResult.innerHTML = `<h3 class="text-sm font-bold text-secondary">Savings Goal Projection</h3><p class="text-xs">To reach your <strong>${targetDP}%</strong> down payment goal, it will take you approximately <strong>${years > 0 ? `${years} years and ` : ''}${months} months</strong> of saving.</p>`;
+        } else {
+            DOM.savingsGoalResult.classList.add('hidden');
+        }
+    }
+    
+    function calculateLoanComparison(loanAmount, interestRate, currentTerm, currentPIPayment) {
+        if (loanAmount <= 0 || interestRate <= 0 || currentTerm <= 15) {
+             DOM.compare15yrPayment.textContent = 'N/A';
+             DOM.compare15yrInterestSaved.textContent = 'N/A';
+            return;
+        }
+
+        const payment15yr = window.mortgageUtils.calculatePayment(loanAmount, interestRate, 12, 15 * 12);
+        const totalInterestCurrent = (currentPIPayment * currentTerm * 12) - loanAmount;
+        const totalInterest15yr = (payment15yr * 15 * 12) - loanAmount;
+        const interestSaved = totalInterestCurrent - totalInterest15yr;
+
+        DOM.compare15yrPayment.textContent = window.mortgageUtils.formatCurrency(payment15yr, DOM.currency.value);
+        DOM.compare15yrInterestSaved.textContent = window.mortgageUtils.formatCurrency(interestSaved, DOM.currency.value);
     }
     
     function renderChart(downPayment, loanAmount) {
@@ -167,7 +219,8 @@ document.addEventListener('DOMContentLoaded', function() {
     function setupEventListeners() {
         const inputs = [
             DOM.homePrice, DOM.homePriceSlider, DOM.downPaymentInput, DOM.downPaymentSlider,
-            DOM.loanTerm, DOM.interestRate, DOM.propertyTaxes, DOM.homeInsurance, DOM.loanType
+            DOM.loanTerm, DOM.interestRate, DOM.propertyTaxes, DOM.homeInsurance, DOM.loanType,
+            DOM.targetDownPayment, DOM.monthlySavings
         ];
         inputs.forEach(input => input.addEventListener('input', calculateAndRender));
 
@@ -186,11 +239,12 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // --- Down Payment Type Toggle ---
         function setDpType(type) {
+            const previousType = dpInputType;
             dpInputType = type;
             const homePrice = parseFloat(DOM.homePrice.value) || 0;
             const dpInputVal = parseFloat(DOM.downPaymentInput.value) || 0;
 
-            if (type === '%') {
+            if (type === '%' && previousType === '$') {
                 DOM.dpTypePercent.classList.add('bg-primary', 'text-white');
                 DOM.dpTypePercent.classList.remove('text-gray-600');
                 DOM.dpTypeAmount.classList.remove('bg-primary', 'text-white');
@@ -205,7 +259,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     DOM.downPaymentSlider.value = newPercent.toFixed(1);
                 }
 
-            } else { // type === '$'
+            } else if (type === '$' && previousType === '%') {
                 DOM.dpTypeAmount.classList.add('bg-primary', 'text-white');
                 DOM.dpTypeAmount.classList.remove('text-gray-600');
                 DOM.dpTypePercent.classList.remove('bg-primary', 'text-white');
@@ -236,7 +290,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 pt: DOM.propertyTaxes.value,
                 hi: DOM.homeInsurance.value,
                 cur: DOM.currency.value,
-                ltype: DOM.loanType.value
+                ltype: DOM.loanType.value,
+                tdp: DOM.targetDownPayment.value,
+                ms: DOM.monthlySavings.value
             });
             const newUrl = `${window.location.pathname}?${params.toString()}`;
             window.history.pushState({ path: newUrl }, '', newUrl);
@@ -265,24 +321,12 @@ document.addEventListener('DOMContentLoaded', function() {
             question.addEventListener('click', () => {
                 const isOpen = answer.style.maxHeight && answer.style.maxHeight !== '0px';
                 
-                // Close all other items if you want only one open at a time
-                // faqItems.forEach(otherItem => {
-                //     if (otherItem !== item) {
-                //         otherItem.querySelector('.faq-answer').style.maxHeight = '0px';
-                //         otherItem.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
-                //         otherItem.querySelector('.faq-chevron').classList.remove('rotate-180');
-                //     }
-                // });
-
-                // Toggle the clicked item
                 if (isOpen) {
                     answer.style.maxHeight = '0px';
                     question.setAttribute('aria-expanded', 'false');
-                    chevron.classList.remove('rotate-180');
                 } else {
                     answer.style.maxHeight = answer.scrollHeight + 'px';
                     question.setAttribute('aria-expanded', 'true');
-                    chevron.classList.add('rotate-180');
                 }
             });
         });
@@ -300,6 +344,8 @@ document.addEventListener('DOMContentLoaded', function() {
             DOM.homeInsurance.value = params.get('hi');
             DOM.currency.value = params.get('cur') || 'USD';
             DOM.loanType.value = params.get('ltype') || 'conventional';
+            DOM.targetDownPayment.value = params.get('tdp') || '20';
+            DOM.monthlySavings.value = params.get('ms') || '500';
             
             // Set DP type and sync sliders from URL
             const dpType = params.get('dpt') || '%';
