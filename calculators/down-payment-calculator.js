@@ -254,6 +254,38 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (correspondingSlider) updateSliderFill(correspondingSlider);
             });
         });
+
+        // --- FAQ Accordion ---
+        const faqItems = document.querySelectorAll('.faq-item');
+        faqItems.forEach(item => {
+            const question = item.querySelector('.faq-question');
+            const answer = item.querySelector('.faq-answer');
+            const chevron = item.querySelector('.faq-chevron');
+
+            question.addEventListener('click', () => {
+                const isOpen = answer.style.maxHeight && answer.style.maxHeight !== '0px';
+                
+                // Close all other items if you want only one open at a time
+                // faqItems.forEach(otherItem => {
+                //     if (otherItem !== item) {
+                //         otherItem.querySelector('.faq-answer').style.maxHeight = '0px';
+                //         otherItem.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+                //         otherItem.querySelector('.faq-chevron').classList.remove('rotate-180');
+                //     }
+                // });
+
+                // Toggle the clicked item
+                if (isOpen) {
+                    answer.style.maxHeight = '0px';
+                    question.setAttribute('aria-expanded', 'false');
+                    chevron.classList.remove('rotate-180');
+                } else {
+                    answer.style.maxHeight = answer.scrollHeight + 'px';
+                    question.setAttribute('aria-expanded', 'true');
+                    chevron.classList.add('rotate-180');
+                }
+            });
+        });
     }
 
     // --- Initialization ---
