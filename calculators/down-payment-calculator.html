@@ -6,8 +6,9 @@
     <title>Advanced Down Payment Calculator for Home Purchase</title>
     
     <!-- SEO & Meta Tags -->
-    <meta name="description" content="Calculate your required down payment, see how it affects your loan amount and monthly payments, and understand concepts like LTV and PMI with our free interactive calculator.">
-    <meta name="keywords" content="down payment calculator, mortgage down payment, how much down payment, LTV calculator, PMI calculator, first-time home buyer, home loan down payment, down payment savings goal">
+    <meta name="description" content="Calculate your home down payment, see its impact on monthly payments and loan terms, and plan your savings goal. Our advanced estimator helps you understand LTV, PMI, and more.">
+    <meta name="keywords" content="down payment calculator, mortgage down payment calculator, home down payment estimator, how much down payment do I need, down payment savings calculator, home loan calculator, PMI calculator, LTV calculator">
+    <meta name="author" content="Vikas Rana">
     <link rel="icon" href="data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100' height='100' rx='20' fill='%231C768F'/%3E%3Cpath d='M50 25L25 45V75H41.6667V58.3333H58.3333V75H75V45L50 25Z' stroke='white' stroke-width='5' stroke-linejoin='round'/%3E%3Cpath d='M40 65L50 55L60 65' stroke='white' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M50 55V45' stroke='white' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
     <link rel="canonical" href="https://mortgageplanner.toolblaster.com/calculators/down-payment-calculator.html" />
 
@@ -44,7 +45,125 @@
         .faq-item button[aria-expanded="true"] .faq-chevron {
             transform: rotate(180deg);
         }
+        details summary::-webkit-details-marker { display: none; }
+        details[open] summary svg { transform: rotate(180deg); }
     </style>
+    
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "name": "Advanced Down Payment Calculator",
+          "description": "Calculate your home down payment, see its impact on monthly payments and loan terms, and plan your savings goal with our advanced estimator.",
+          "applicationCategory": "FinanceApplication",
+          "operatingSystem": "Any (Web Application)",
+          "url": "https://mortgageplanner.toolblaster.com/calculators/down-payment-calculator.html",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [{
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://mortgageplanner.toolblaster.com/"
+          },{
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Calculators",
+            "item": "https://mortgageplanner.toolblaster.com/calculators/"
+          },{
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Down Payment Calculator"
+          }]
+        },
+        {
+          "@type": "HowTo",
+          "name": "How to Use the Advanced Down Payment Calculator",
+          "step": [
+            {
+              "@type": "HowToStep",
+              "name": "Step 1: Enter the Home Price",
+              "text": "Start by inputting the total price of the home you are considering. You can use the slider for quick adjustments or type in a precise number."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Step 2: Set Your Down Payment",
+              "text": "Use the toggle to switch between a percentage (%) of the home price or a specific dollar amount ($). Adjust the slider to see how different down payment amounts affect your loan."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Step 3: Adjust Loan Assumptions",
+              "text": "Enter your expected loan term (e.g., 30 or 15 years) and the interest rate you anticipate. This is crucial for calculating your monthly payment."
+            },
+            {
+                "@type": "HowToStep",
+                "name": "Step 4: Plan Your Savings Goal (Optional)",
+                "text": "In the 'Advanced Features' section, enter your target down payment percentage and how much you can save each month to see a projection of how long it will take to reach your goal."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Step 5: Analyze Your Results",
+              "text": "Review the output section to see your final down payment, loan amount, total monthly payment (including PMI, taxes, and insurance), and key metrics like the LTV ratio."
+            }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "How much should I put down on a house?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "While 20% is the traditional goal to avoid Private Mortgage Insurance (PMI) and secure better loan terms, it is not always required. Many first-time buyers use programs like FHA loans (3.5% down) or conventional loans (3-5% down). The right amount depends on your savings, the loan type you qualify for, and your comfort with the monthly payment."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is the minimum down payment for a mortgage?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The minimum down payment depends on the loan type. VA and USDA loans can be 0% for eligible borrowers. FHA loans require as little as 3.5% down. Some conventional loan programs for first-time homebuyers offer 3% down options. Our mortgage down payment calculator can help you model these different scenarios."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Do I need 20% down to avoid PMI?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "For conventional loans, yes. A down payment of less than 20% (resulting in a Loan-to-Value ratio over 80%) typically requires you to pay Private Mortgage Insurance (PMI). This is an extra monthly fee that protects the lender. Government-backed loans like VA do not have PMI, and FHA loans have their own form of mortgage insurance."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Does a higher down payment lower my monthly payment?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes, absolutely. A higher down payment means you are borrowing less money, which directly reduces the principal and interest portion of your monthly payment. It can also help you avoid PMI, further lowering your total monthly housing cost."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What’s included in a mortgage payment besides principal and interest?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Your total monthly housing payment is often called 'PITI.' It includes Principal, Interest, Taxes (property taxes), and Insurance (homeowner's insurance). Your lender often collects the tax and insurance portions in an escrow account and pays them on your behalf. Our main Mortgage Calculator allows you to input all these costs for a complete picture."
+              }
+            }
+          ]
+        }
+      ]
+    }
+    </script>
 </head>
 <body class="bg-gray-100 text-sm">
     <main class="content-wrapper">
@@ -62,7 +181,7 @@
                         <details open class="bg-gray-50 border rounded-lg">
                             <summary class="p-3 font-bold text-base text-primary cursor-pointer list-none flex justify-between items-center">
                                 Purchase Details
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transform transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transform transition-transform" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
                             </summary>
                             <div class="p-3 border-t">
                                 <div class="space-y-4">
@@ -106,7 +225,7 @@
                         <details open class="bg-gray-50 border rounded-lg">
                              <summary class="p-3 font-bold text-base text-primary cursor-pointer list-none flex justify-between items-center">
                                 Loan Assumptions
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transform transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transform transition-transform" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
                             </summary>
                             <div class="p-3 border-t">
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -134,7 +253,7 @@
                         <details open class="bg-gray-50 border rounded-lg">
                             <summary class="p-3 font-bold text-base text-primary cursor-pointer list-none flex justify-between items-center">
                                 Advanced Features
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transform transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transform transition-transform" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
                             </summary>
                              <div class="p-3 border-t space-y-3">
                                 <div>
@@ -315,6 +434,34 @@
                         <h3 class="text-base font-bold text-accent">See the Big Picture</h3>
                         <p class="mt-2 text-xs text-gray-700">Wondering how your down payment fits into your total buying power? Our <a href="../#affordability-tab" class="font-bold hover:underline">Affordability Calculator</a> helps you connect the dots between your savings, income, and dream home price.</p>
                     </div>
+                </section>
+                
+                <!-- NEW HOW-TO SECTION -->
+                <section class="bg-gray-50/70 p-4 rounded-lg border">
+                    <h3 class="text-lg font-bold text-gray-800">How to Use the Advanced Down Payment Calculator</h3>
+                    <p class="mt-2 text-xs">This tool is designed to be interactive and insightful. Follow these steps to get the most out of it:</p>
+                    <ul class="space-y-3 mt-3 text-xs">
+                        <li class="flex items-start">
+                           <span class="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center mr-3 font-bold">1</span>
+                            <div><strong class="font-semibold text-primary block">Enter the Home Price:</strong> Start by inputting the total price of the home you are considering. You can use the slider for quick adjustments or type in a precise number.</div>
+                        </li>
+                         <li class="flex items-start">
+                           <span class="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center mr-3 font-bold">2</span>
+                            <div><strong class="font-semibold text-primary block">Set Your Down Payment:</strong> Use the toggle to switch between a percentage (%) of the home price or a specific dollar amount ($). Adjust the slider to see how different down payment amounts affect your loan in real-time.</div>
+                        </li>
+                         <li class="flex items-start">
+                           <span class="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center mr-3 font-bold">3</span>
+                            <div><strong class="font-semibold text-primary block">Adjust Loan Assumptions:</strong> Enter your expected loan term (e.g., 30 or 15 years) and the interest rate you anticipate. This is crucial for calculating your monthly payment.</div>
+                        </li>
+                         <li class="flex items-start">
+                           <span class="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center mr-3 font-bold">4</span>
+                            <div><strong class="font-semibold text-primary block">Plan Your Savings Goal (Optional):</strong> In the 'Advanced Features' section, enter your target down payment percentage and how much you can save each month to see a projection of how long it will take to reach your goal.</div>
+                        </li>
+                         <li class="flex items-start">
+                           <span class="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center mr-3 font-bold">5</span>
+                            <div><strong class="font-semibold text-primary block">Analyze Your Results:</strong> Review the output section to see your final down payment, loan amount, total monthly payment (including PMI, taxes, and insurance), and key metrics like the LTV ratio.</div>
+                        </li>
+                    </ul>
                 </section>
 
                 <!-- FAQ Section -->
