@@ -416,11 +416,18 @@ This file handles UI, event listeners, and state management.
         DOM.scheduleWrapper.style.opacity = 1; DOM.shockResults.style.display = 'none';
         const original = window.plannerCore.generateAmortization(originalParams);
         const accelerated = window.plannerCore.generateAmortization(acceleratedParams);
+        
         const savingsSummary = document.getElementById('savings-summary');
+        const interestSavedOnScenario = original.totalInterest - accelerated.totalInterest;
         if (savingsSummary) {
-            savingsSummary.classList.remove('hidden', 'savings-summary-pop-in');
-            setTimeout(() => savingsSummary.classList.add('savings-summary-pop-in'), 50);
+            // Show the savings summary if extra payments are made or interest is saved.
+            if (interestSavedOnScenario > 0 || state.extraPayment > 0 || state.lumpSumPayment > 0) {
+                 savingsSummary.classList.remove('hidden');
+            } else {
+                 savingsSummary.classList.add('hidden');
+            }
         }
+
         if (DOM.chartOptions) DOM.chartOptions.classList.remove('hidden');
         const pniMonthly = original.standardPayment * (12 / periodsPerYear);
         const pmiMonthly = (accelerated.schedule[0] ? accelerated.schedule[0].pmi : 0) * (12 / periodsPerYear);
