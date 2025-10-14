@@ -351,7 +351,7 @@ This file handles UI, event listeners, and state management.
                     calculateButton.textContent = originalButtonText;
                 }
             }
-        }, 50); // Reduced delay for better responsiveness with sliders
+        }, 50);
     }
 
     function runRentVsBuyAnalysis() {
@@ -744,7 +744,8 @@ This file handles UI, event listeners, and state management.
 
         allInputIds.forEach(id => {
             const el = DOM[id];
-            if (el && !['loanAmount', 'interestRate', 'loanTerm'].includes(id)) {
+            // FIX: Exclude sliders handled by syncSliderAndInput to prevent double event listeners.
+            if (el && !['loanAmount', 'interestRate', 'loanTerm', 'loanAmountSlider', 'interestRateSlider', 'loanTermSlider'].includes(id)) {
                  const debouncedSave = debounce(() => {
                     updateStateFromDOM();
                     saveStateToLocalStorage();
