@@ -173,11 +173,11 @@ document.addEventListener('DOMContentLoaded', function() {
         ];
 
         const currentPage = window.location.pathname.split('/').pop();
-        const relatedArticles = articles.filter(article => article.href !== currentPage).slice(0, 3);
+        const relatedArticles = articles.filter(article => article.href !== currentPage).slice(0, 4); // Show 4 articles
 
         if (relatedArticles.length === 0) return;
 
-        const generateLinksHTML = (articles) => {
+        const generateDesktopLinksHTML = (articles) => {
             return articles.map(article => `
                 <li>
                     <a href="${article.href}" class="font-semibold text-primary hover:underline group">
@@ -193,20 +193,45 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="sticky top-24">
                     <div class="sidebar-widget">
                          <h3 class="sidebar-title">Related Guides</h3>
-                         <ul class="space-y-4">${generateLinksHTML(relatedArticles)}</ul>
+                         <ul class="space-y-4">${generateDesktopLinksHTML(relatedArticles)}</ul>
                     </div>
                 </div>
             `;
         }
 
         if (mobilePlaceholder) {
+            const generateMobileLinksHTML = (articles) => {
+                const icons = {
+                    "how-to-buy-your-first-home-guide.html": `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z" /></svg>`,
+                    "mortgage-amortization-explained.html": `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" /><path stroke-linecap="round" stroke-linejoin="round" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" /></svg>`,
+                    "fixed-vs-variable-mortgage-guide.html": `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" /></svg>`,
+                    "how-much-house-can-i-afford.html": `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>`,
+                    "first-time-home-buyer-checklist.html": `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" /></svg>`
+                };
+                const defaultIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l5.447 2.724A1 1 0 0021 16.382V5.618a1 1 0 00-1.447-.894L15 7m-6 13v-8.5" /></svg>`;
+
+                return articles.map(article => {
+                    const iconSVG = icons[article.href] || defaultIcon;
+                    return `
+                        <a href="${article.href}" class="mobile-article-card group">
+                            <div class="flex items-center justify-center h-10 w-10 rounded-lg bg-primary/10 text-primary mb-2 transition-colors group-hover:bg-primary group-hover:text-white">
+                                ${iconSVG}
+                            </div>
+                            <span class="block text-xs font-bold text-gray-800 group-hover:text-primary">${article.title}</span>
+                        </a>
+                    `;
+                }).join('');
+            };
+
             mobilePlaceholder.innerHTML = `
-                <div id="mobile-related-articles" class="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg transform translate-y-full transition-transform duration-300 ease-in-out z-40">
-                    <div class="flex justify-between items-center mb-3">
-                         <h3 class="font-bold text-md text-primary">Related Articles</h3>
+                <div id="mobile-related-articles" class="lg:hidden fixed bottom-0 left-0 right-0 bg-gray-100/95 backdrop-blur-sm border-t border-gray-200 p-3 shadow-top-lg transform translate-y-full transition-transform duration-500 ease-in-out z-40">
+                    <div class="flex justify-between items-center mb-3 px-1">
+                         <h3 class="font-bold text-sm text-gray-800">Continue Reading...</h3>
                          <button id="close-mobile-sidebar" class="text-gray-500 hover:text-gray-800 text-2xl font-bold">&times;</button>
                     </div>
-                     <ul class="space-y-3">${generateLinksHTML(relatedArticles)}</ul>
+                    <div class="flex space-x-3 overflow-x-auto pb-2 -mx-3 px-3 scrollable-tabs">
+                        ${generateMobileLinksHTML(relatedArticles)}
+                    </div>
                 </div>
             `;
 
@@ -217,7 +242,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 const showSidebar = () => { if (!sidebarShown) { mobileSidebar.classList.remove('translate-y-full'); sidebarShown = true; } };
                 const hideSidebar = () => { mobileSidebar.classList.add('translate-y-full'); sidebarShown = false; };
                 closeButton.addEventListener('click', hideSidebar);
-                window.addEventListener('scroll', () => { if (!sidebarShown && (window.innerHeight + window.scrollY) >= document.body.offsetHeight - 200) { showSidebar(); } }, { passive: true });
+                // Show the bar when user scrolls towards the bottom 75% of the page
+                window.addEventListener('scroll', () => { if (!sidebarShown && window.scrollY > (document.body.scrollHeight * 0.6)) { showSidebar(); } }, { passive: true });
             }
         }
     }
