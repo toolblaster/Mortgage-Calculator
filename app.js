@@ -324,12 +324,18 @@ This file handles UI, event listeners, and state management.
             calculateButton.disabled = true;
             calculateButton.textContent = 'Calculating...';
         }
+        
+        // [MODIFICATION] - Removed the block that was hiding result containers on every calculation to prevent flickering.
+        // The initial fade-in is handled by the `opacity-0` class in the HTML, which is removed only on the first calculation within each tab's render function.
+        /*
         [DOM.results, DOM.affordabilityResults, DOM.rentVsBuyResults, DOM.refinanceResults, DOM.investmentResults].forEach(el => {
             if (el) {
                 el.classList.remove('results-animate-in');
                 el.classList.add('opacity-0');
             }
         });
+        */
+       
         updateStateFromDOM();
         
         setTimeout(() => {
@@ -509,6 +515,11 @@ This file handles UI, event listeners, and state management.
         updateStateFromDOM();
         history.pushState(null, '', window.location.pathname);
         handleCalculation(false, DOM.calculateButtons[0]);
+        
+        [DOM.loanAmountSlider, DOM.interestRateSlider, DOM.loanTermSlider].forEach(s => {
+            if(s) updateSliderFill(s);
+        });
+
         updateCurrencySymbols();
     }
 
@@ -683,7 +694,7 @@ This file handles UI, event listeners, and state management.
             input.value = slider.value;
             update();
         });
-        input.addEventListener('change', () => {
+        input.addEventListener('input', () => {
             slider.value = input.value;
             update();
         });
@@ -744,8 +755,8 @@ This file handles UI, event listeners, and state management.
 
         allInputIds.forEach(id => {
             const el = DOM[id];
-            // FIX: Exclude sliders handled by syncSliderAndInput to prevent double event listeners.
-            if (el && !['loanAmount', 'interestRate', 'loanTerm', 'loanAmountSlider', 'interestRateSlider', 'loanTermSlider'].includes(id)) {
+            // FIX: Exclude sliders and chart toggles handled by their own listeners to prevent double event firing.
+            if (el && !['loanAmount', 'interestRate', 'loanTerm', 'loanAmountSlider', 'interestRateSlider', 'loanTermSlider', 'togglePrincipalPaid', 'toggleInterestPaid'].includes(id)) {
                  const debouncedSave = debounce(() => {
                     updateStateFromDOM();
                     saveStateToLocalStorage();
