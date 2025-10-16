@@ -2,13 +2,16 @@ document.addEventListener('DOMContentLoaded', function () {
     // --- DOM Element Cache ---
     const DOM = {
         homePrice: document.getElementById('homePrice'),
+        homePriceSlider: document.getElementById('homePriceSlider'),
         downPayment: document.getElementById('downPayment'),
         downPaymentType: document.getElementById('downPaymentType'),
         loanAmount: document.getElementById('loanAmount'),
         interestRate: document.getElementById('interestRate'),
+        interestRateSlider: document.getElementById('interestRateSlider'),
         loanTerm: document.getElementById('loanTerm'),
         currency: document.getElementById('currency'),
         extraMonthlyPayment: document.getElementById('extraMonthlyPayment'),
+        extraMonthlyPaymentSlider: document.getElementById('extraMonthlyPaymentSlider'),
         oneTimePayment: document.getElementById('oneTimePayment'),
         oneTimePaymentMonth: document.getElementById('oneTimePaymentMonth'),
         calculateBtn: document.getElementById('calculateBtn'),
@@ -17,11 +20,22 @@ document.addEventListener('DOMContentLoaded', function () {
         // Results
         resultsSummary: document.getElementById('results-summary'),
         interestSaved: document.getElementById('interestSaved'),
+        timeSaved: document.getElementById('timeSaved'),
         newPayoffDate: document.getElementById('newPayoffDate'),
         originalPayoffDate: document.getElementById('originalPayoffDate'),
         payoffChart: document.getElementById('payoffChart'),
         scheduleSection: document.getElementById('schedule-section'),
         amortizationTableBody: document.getElementById('amortizationTableBody'),
+
+        // New Summary Fields
+        standardMonthlyPayment: document.getElementById('standardMonthlyPayment'),
+        standardTotalInterest: document.getElementById('standardTotalInterest'),
+        standardTotalPaid: document.getElementById('standardTotalPaid'),
+        acceleratedMonthlyPayment: document.getElementById('acceleratedMonthlyPayment'),
+        acceleratedTotalInterest: document.getElementById('acceleratedTotalInterest'),
+        acceleratedTotalPaid: document.getElementById('acceleratedTotalPaid'),
+        newPayoffDateSummary: document.getElementById('newPayoffDateSummary'),
+
 
         // Currency Symbols
         currencySymbolSmalls: document.querySelectorAll('.currency-symbol-small'),
@@ -34,6 +48,11 @@ document.addEventListener('DOMContentLoaded', function () {
         const symbols = { 'USD': '$', 'EUR': '€', 'GBP': '£', 'CAD': 'C$', 'AUD': 'A$' };
         const symbol = symbols[DOM.currency.value] || '$';
         DOM.currencySymbolSmalls.forEach(span => span.textContent = symbol);
+        
+        const amountOption = DOM.downPaymentType.querySelector('option[value="amount"]');
+        if (amountOption) {
+            amountOption.textContent = symbol;
+        }
     };
     
     const animateValue = (el, endValue, duration = 500) => {
@@ -53,6 +72,32 @@ document.addEventListener('DOMContentLoaded', function () {
         requestAnimationFrame(animation);
     };
 
+    function updateSliderFill(slider) {
+        if (!slider) return;
+        const min = parseFloat(slider.min) || 0;
+        const max = parseFloat(slider.max) || 100;
+        const val = parseFloat(slider.value) || 0;
+        const percentage = val > 0 ? ((val - min) * 100) / (max - min) : 0;
+        slider.style.background = `linear-gradient(to right, #2C98C2 ${percentage}%, #e5e7eb ${percentage}%)`;
+    }
+    
+    function syncSliderAndInput(slider, input) {
+        if (!slider || !input) return;
+        
+        slider.addEventListener('input', (e) => {
+            input.value = e.target.value;
+            updateSliderFill(slider);
+            debouncedCalculate();
+        });
+        input.addEventListener('input', (e) => {
+            slider.value = e.target.value;
+            updateSliderFill(slider);
+            debouncedCalculate();
+        });
+
+        updateSliderFill(slider);
+    }
+    
     const getLoanAmount = () => {
         const homePrice = parseFloat(DOM.homePrice.value) || 0;
         const dpValue = parseFloat(DOM.downPayment.value) || 0;
@@ -73,57 +118,87 @@ document.addEventListener('DOMContentLoaded', function () {
     function calculateAmortization(loanAmount, annualRate, years, extraMonthly, oneTimePayment, oneTimePaymentMonth) {
         const totalMonths = years * 12;
         if (loanAmount <= 0 || annualRate < 0 || years <= 0) {
-            return { schedule: [], totalInterest: 0 };
+            return { schedule: [], totalInterest: 0, monthlyPayment: 0 };
         }
         const monthlyPayment = window.mortgageUtils.calculatePayment(loanAmount, annualRate, 12, totalMonths);
+        if (monthlyPayment <= 0) {
+            return { schedule: [], totalInterest: 0, monthlyPayment: 0 };
+        }
         const monthlyRate = annualRate / 12 / 100;
 
         let balance = loanAmount;
         let schedule = [];
         let totalInterest = 0;
+        let month = 1;
 
-        for (let month = 1; month <= totalMonths && balance > 0; month++) {
-            const interest = balance * monthlyRate;
-            let principal = monthlyPayment - interest;
+        while (balance > 0.01) {
+            const interestForMonth = balance * monthlyRate;
+            let principalFromPayment = monthlyPayment - interestForMonth;
+            if (principalFromPayment < 0) principalFromPayment = 0;
+            
             let currentExtra = extraMonthly;
-
             if (month === oneTimePaymentMonth) {
                 currentExtra += oneTimePayment;
             }
             
-            let principalPaid = principal + currentExtra;
+            let totalPrincipalToPay = principalFromPayment + currentExtra;
 
-            // Adjust final payment
-            if (balance < principalPaid + interest) {
-                 principalPaid = balance;
-                 balance = 0;
+            if (balance <= totalPrincipalToPay) {
+                totalInterest += interestForMonth > 0 ? interestForMonth : 0;
+                balance = 0;
             } else {
-                 balance -= principalPaid;
+                balance -= totalPrincipalToPay;
+                totalInterest += interestForMonth;
             }
-            
-            totalInterest += interest;
 
-            schedule.push({
-                month,
-                balance: balance > 0 ? balance : 0
-            });
+            schedule.push({ month, balance });
+            
+            if (month > totalMonths * 2) break; // Safety break
+            month++;
         }
-        return { schedule, totalInterest };
+        return { schedule, totalInterest, monthlyPayment };
     }
 
+
     // --- UI Update & Rendering ---
-    function renderResults(standard, accelerated) {
+    function renderResults(standard, accelerated, loanAmount) {
         const interestSavedValue = standard.totalInterest - accelerated.totalInterest;
         animateValue(DOM.interestSaved, interestSavedValue > 0 ? interestSavedValue : 0);
 
         const formatDate = (totalMonths) => {
+            if (totalMonths === 0) return "-";
             const date = new Date();
             date.setMonth(date.getMonth() + totalMonths);
             return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
         };
 
-        DOM.originalPayoffDate.textContent = formatDate(standard.schedule.length);
-        DOM.newPayoffDate.textContent = formatDate(accelerated.schedule.length);
+        const timeSavedMonths = standard.schedule.length - accelerated.schedule.length;
+        if (timeSavedMonths > 0) {
+            const years = Math.floor(timeSavedMonths / 12);
+            const months = timeSavedMonths % 12;
+            DOM.timeSaved.textContent = `${years}y ${months}m`;
+        } else {
+            DOM.timeSaved.textContent = "0y 0m";
+        }
+
+        const originalPayoffDateStr = formatDate(standard.schedule.length);
+        const newPayoffDateStr = formatDate(accelerated.schedule.length);
+
+        DOM.originalPayoffDate.textContent = originalPayoffDateStr;
+        DOM.newPayoffDate.textContent = newPayoffDateStr;
+
+        // Populate new summary fields
+        DOM.standardMonthlyPayment.textContent = window.mortgageUtils.formatCurrency(standard.monthlyPayment, DOM.currency.value, 2);
+        DOM.standardTotalInterest.textContent = window.mortgageUtils.formatCurrency(standard.totalInterest, DOM.currency.value, 2);
+        DOM.standardTotalPaid.textContent = window.mortgageUtils.formatCurrency(loanAmount + standard.totalInterest, DOM.currency.value, 2);
+        
+        const extraMonthly = parseFloat(DOM.extraMonthlyPayment.value) || 0;
+        DOM.acceleratedMonthlyPayment.textContent = window.mortgageUtils.formatCurrency(standard.monthlyPayment + extraMonthly, DOM.currency.value, 2);
+        DOM.acceleratedTotalInterest.textContent = window.mortgageUtils.formatCurrency(accelerated.totalInterest, DOM.currency.value, 2);
+        DOM.acceleratedTotalPaid.textContent = window.mortgageUtils.formatCurrency(loanAmount + accelerated.totalInterest, DOM.currency.value, 2);
+        
+        DOM.newPayoffDateSummary.textContent = newPayoffDateStr;
+
 
         renderChart(standard.schedule, accelerated.schedule);
         renderTable(standard.schedule, accelerated.schedule);
@@ -133,14 +208,13 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function renderChart(standardSchedule, acceleratedSchedule) {
-        const labels = Array.from({ length: standardSchedule.length }, (_, i) => i + 1);
+        const standardLabels = standardSchedule.map(p => p.month);
+        const maxMonths = standardLabels.length;
+
         const standardData = standardSchedule.map(p => p.balance);
         const acceleratedData = acceleratedSchedule.map(p => p.balance);
         
-        // Ensure accelerated data array is same length as labels for charting
-        while (acceleratedData.length < standardData.length) {
-            acceleratedData.push(0);
-        }
+        const labels = Array.from({ length: maxMonths }, (_, i) => i + 1);
 
         const datasets = [{
             label: 'Standard Loan Balance',
@@ -176,7 +250,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         ticks: {
                             callback: (value, index, values) => {
                                 const month = labels[index];
-                                return (month % 12 === 0 && month > 0) ? `Year ${month / 12}` : null;
+                                return (month % 12 === 1 && month > 1) || month === 1 ? `Yr ${Math.floor(month/12)}` : null;
                             },
                             autoSkip: true,
                             maxRotation: 0,
@@ -195,15 +269,15 @@ document.addEventListener('DOMContentLoaded', function () {
         const maxRows = standardSchedule.length;
         for (let i = 0; i < maxRows; i++) {
             const standardBalance = standardSchedule[i] ? standardSchedule[i].balance : 0;
-            const acceleratedBalance = acceleratedSchedule[i] ? acceleratedSchedule[i].balance : 0;
+            const acceleratedBalance = i < acceleratedSchedule.length ? acceleratedSchedule[i].balance : 0;
              html += `
                 <tr class="hover:bg-gray-50">
                     <td class="p-2">${i + 1}</td>
                     <td class="p-2 text-right">${window.mortgageUtils.formatCurrency(standardBalance, DOM.currency.value, 0)}</td>
-                    <td class="p-2 text-right font-semibold text-accent">${window.mortgageUtils.formatCurrency(acceleratedBalance, DOM.currency.value, 0)}</td>
+                    <td class="p-2 text-right font-semibold text-accent">${acceleratedBalance > 0 || i < acceleratedSchedule.length ? window.mortgageUtils.formatCurrency(acceleratedBalance, DOM.currency.value, 0) : 'Paid Off'}</td>
                 </tr>
             `;
-            if (acceleratedBalance <= 0 && i > acceleratedSchedule.length) break;
+            if (acceleratedBalance <= 0 && i >= acceleratedSchedule.length -1) break;
         }
         DOM.amortizationTableBody.innerHTML = html;
     }
@@ -237,8 +311,12 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // --- Event Handler ---
-    function handleCalculate() {
-        if (!validateInputs()) return;
+    const handleCalculate = () => {
+        if (!validateInputs()) {
+            DOM.resultsSummary.classList.add('hidden');
+            DOM.scheduleSection.classList.add('hidden');
+            return;
+        };
 
         const loanAmount = getLoanAmount();
         const interestRate = parseFloat(DOM.interestRate.value);
@@ -250,24 +328,42 @@ document.addEventListener('DOMContentLoaded', function () {
         const standard = calculateAmortization(loanAmount, interestRate, loanTerm, 0, 0, 0);
         const accelerated = calculateAmortization(loanAmount, interestRate, loanTerm, extraMonthly, oneTimePayment, oneTimePaymentMonth);
 
-        renderResults(standard, accelerated);
-    }
+        renderResults(standard, accelerated, loanAmount);
+    };
+    
+    const debounce = (func, delay) => {
+        let timeout;
+        return function(...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(this, args), delay);
+        };
+    };
+    const debouncedCalculate = debounce(handleCalculate, 300);
 
     // --- Initialization ---
     function init() {
-        const inputs = [
-            DOM.homePrice, DOM.downPayment, DOM.downPaymentType, DOM.interestRate,
-            DOM.loanTerm, DOM.extraMonthlyPayment, DOM.oneTimePayment, DOM.oneTimePaymentMonth
+        syncSliderAndInput(DOM.homePriceSlider, DOM.homePrice);
+        syncSliderAndInput(DOM.interestRateSlider, DOM.interestRate);
+        syncSliderAndInput(DOM.extraMonthlyPaymentSlider, DOM.extraMonthlyPayment);
+
+        const inputsToRecalculate = [
+            DOM.downPayment, DOM.downPaymentType, DOM.loanTerm, 
+            DOM.oneTimePayment, DOM.oneTimePaymentMonth
         ];
-        inputs.forEach(el => el.addEventListener('input', getLoanAmount));
+        inputsToRecalculate.forEach(el => el.addEventListener('input', () => {
+             getLoanAmount(); // Update loan amount display instantly
+             debouncedCalculate();
+        }));
         
         DOM.calculateBtn.addEventListener('click', handleCalculate);
+        
         DOM.currency.addEventListener('change', () => {
             updateCurrencySymbols();
             handleCalculate();
         });
 
         updateCurrencySymbols();
+        getLoanAmount();
         handleCalculate(); // Initial calculation on page load
     }
 
