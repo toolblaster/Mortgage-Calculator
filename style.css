@@ -431,3 +431,32 @@ input, select {
 .back-to-top:hover {
   background-color: #166534;
 }
+
+/* Modern Mobile Related Articles */
+.shadow-top-lg {
+    box-shadow: 0 -4px 15px -3px rgb(0 0 0 / 0.1), 0 -2px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+.mobile-article-card {
+    display: block;
+    flex-shrink: 0;
+    width: 160px; /* w-40 */
+    background-color: white;
+    border: 1px solid #e5e7eb; /* gray-200 */
+    border-radius: 0.75rem; /* rounded-lg */
+    padding: 0.75rem; /* p-3 */
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1); /* shadow-sm */
+    transition: all 0.2s ease-in-out;
+    text-align: center;
+}
+
+.mobile-article-card:hover {
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); /* shadow-md */
+    border-color: #1C768F; /* primary color */
+    transform: translateY(-3px);
+}
+
+.mobile-article-card .flex {
+    margin-left: auto;
+    margin-right: auto;
+}
