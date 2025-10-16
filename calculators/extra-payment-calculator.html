@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mortgage Extra Payment Calculator - Pay Off Your Loan Faster</title>
+    
+    <!-- SEO & Meta Tags -->
+    <meta name="description" content="See how extra mortgage payments can shorten your loan term and save you thousands in interest. Our calculator visualizes your accelerated payoff and total savings.">
+    <meta name="keywords" content="mortgage extra payment calculator, extra payment mortgage calculator, pay off mortgage faster, mortgage payoff calculator, loan amortization with extra payments, principal payment calculator">
+    <meta name="author" content="Vikas Rana">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100' height='100' rx='20' fill='%231C768F'/%3E%3Cpath d='M50 25L25 45V75H41.6667V58.3333H58.3333V75H75V45L50 25Z' stroke='white' stroke-width='5' stroke-linejoin='round'/%3E%3Cpath d='M40 65L50 55L60 65' stroke='white' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M50 55V45' stroke='white' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+    <link rel="canonical" href="https://mortgageplanner.toolblaster.com/calculators/extra-payment-calculator.html" />
+
+    <!-- Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    
+    <!-- App Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#1C768F', 'accent': '#166534', 'secondary': '#b45309'
+                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+
+    <!-- Global & Page-Specific Styles -->
+    <link rel="stylesheet" href="../style.css">
+    
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Mortgage Extra Payment Calculator",
+      "description": "See how extra mortgage payments can shorten your loan term and save you thousands in interest. Our calculator visualizes your accelerated payoff and total savings.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Any (Web Application)",
+      "url": "https://mortgageplanner.toolblaster.com/calculators/extra-payment-calculator.html",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
+</head>
+<body class="bg-gray-100 text-sm">
+    <main class="content-wrapper">
+        <div class="w-full max-w-7xl mx-auto my-4 px-2 sm:px-4 space-y-4">
+            <div id="calculator-container" class="bg-white p-3 sm:p-4 rounded-xl shadow-2xl">
+                <!-- Header -->
+                <header class="text-center mb-4 pb-4 border-b">
+                    <h1 class="text-xl md:text-2xl font-extrabold text-primary">Mortgage Extra Payment Calculator</h1>
+                    <p class="mt-1 text-xs text-gray-700">Find out how quickly you can pay off your mortgage and how much interest you'll save.</p>
+                </header>
+
+                <div id="error-messages" class="hidden p-3 mb-3 text-sm text-red-800 rounded-lg bg-red-50" role="alert"></div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-5 gap-4">
+                    <!-- Input Column -->
+                    <div class="lg:col-span-2 space-y-3">
+                        <details open class="bg-gray-50 border rounded-lg">
+                             <summary class="p-3 font-bold text-base text-primary cursor-pointer list-none flex justify-between items-center">
+                                Basic Loan Details
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transform transition-transform" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                            </summary>
+                            <div class="p-3 border-t space-y-4">
+                                <!-- Home Price -->
+                                <div>
+                                    <label for="homePrice" class="block font-medium text-xs text-gray-700">Home Price (<span class="currency-symbol-small">$</span>)</label>
+                                    <input type="number" id="homePrice" value="400000" class="w-full mt-1 p-1.5 text-xs border border-gray-300 rounded-md">
+                                </div>
+                                <!-- Down Payment -->
+                                <div>
+                                    <label class="block font-medium text-xs text-gray-700">Down Payment</label>
+                                    <div class="flex items-center space-x-2 mt-1">
+                                        <input type="number" id="downPayment" value="20" class="w-full p-1.5 text-xs border border-gray-300 rounded-md">
+                                        <select id="downPaymentType" class="p-1.5 text-xs border border-gray-300 rounded-md h-[30px]">
+                                            <option value="percent" selected>%</option>
+                                            <option value="amount">$</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                 <!-- Loan Amount -->
+                                <div>
+                                    <label class="block font-medium text-xs text-gray-700">Loan Amount (<span class="currency-symbol-small">$</span>)</label>
+                                    <input type="text" id="loanAmount" readonly class="w-full mt-1 p-1.5 text-xs border border-gray-200 bg-gray-200 rounded-md font-bold">
+                                </div>
+                                <!-- Interest Rate -->
+                                <div>
+                                    <label for="interestRate" class="block font-medium text-xs text-gray-700">Interest Rate (%)</label>
+                                    <input type="number" id="interestRate" value="6.5" step="0.01" class="w-full mt-1 p-1.5 text-xs border border-gray-300 rounded-md">
+                                </div>
+                                <!-- Loan Term -->
+                                <div>
+                                    <label for="loanTerm" class="block font-medium text-xs text-gray-700">Loan Term</label>
+                                    <select id="loanTerm" class="w-full mt-1 p-1.5 text-xs border border-gray-300 rounded-md h-[30px]">
+                                        <option value="30">30 Years</option>
+                                        <option value="20">20 Years</option>
+                                        <option value="15">15 Years</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="currency" class="block font-medium text-xs text-gray-700">Currency:</label>
+                                    <select id="currency" class="w-full p-1.5 text-xs border border-gray-300 rounded-md h-[30px]">
+                                        <option value="USD">USD ($)</option>
+                                        <option value="EUR">EUR (€)</option>
+                                        <option value="GBP">GBP (£)</option>
+                                        <option value="CAD">CAD (C$)</option>
+                                        <option value="AUD">AUD (A$)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </details>
+                        
+                        <details open class="bg-gray-50 border rounded-lg">
+                            <summary class="p-3 font-bold text-base text-primary cursor-pointer list-none flex justify-between items-center">
+                                Extra Payment Options
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transform transition-transform" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                            </summary>
+                            <div class="p-3 border-t grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div>
+                                    <label for="extraMonthlyPayment" class="block font-medium text-xs text-gray-700">Extra Monthly (<span class="currency-symbol-small">$</span>)</label>
+                                    <input type="number" id="extraMonthlyPayment" value="100" class="w-full mt-1 p-1.5 text-xs border border-gray-300 rounded-md">
+                                </div>
+                                <div>
+                                    <label for="oneTimePayment" class="block font-medium text-xs text-gray-700">One-Time Lump Sum (<span class="currency-symbol-small">$</span>)</label>
+                                    <input type="number" id="oneTimePayment" value="0" class="w-full mt-1 p-1.5 text-xs border border-gray-300 rounded-md">
+                                </div>
+                                <div class="sm:col-span-2">
+                                    <label for="oneTimePaymentMonth" class="block font-medium text-xs text-gray-700">Apply Lump Sum in Month #</label>
+                                    <input type="number" id="oneTimePaymentMonth" value="1" min="1" class="w-full mt-1 p-1.5 text-xs border border-gray-300 rounded-md">
+                                </div>
+                            </div>
+                        </details>
+                         <div class="sticky bottom-2 sm:bottom-4">
+                             <button id="calculateBtn" class="w-full px-4 py-2 bg-primary text-white font-bold rounded-lg shadow-lg hover:bg-sky-700 transition duration-150 text-sm">
+                                Calculate Savings
+                            </button>
+                        </div>
+                    </div>
+                     <!-- Results Column -->
+                    <div class="lg:col-span-3 space-y-3">
+                        <div id="results-summary" class="hidden">
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-center">
+                               <div class="p-3 rounded-lg bg-accent/10 border-2 border-accent/50 shadow">
+                                    <h3 class="text-xs font-bold text-accent">Total Interest Saved</h3>
+                                    <p id="interestSaved" class="text-xl font-extrabold text-accent" data-value="0">$0</p>
+                                </div>
+                                <div class="p-3 rounded-lg bg-primary/10 border-2 border-primary/50 shadow">
+                                    <h3 class="text-xs font-bold text-primary">New Payoff Date</h3>
+                                    <p id="newPayoffDate" class="text-xl font-extrabold text-primary">-</p>
+                                </div>
+                                <div class="p-3 rounded-lg bg-gray-100 border shadow">
+                                    <h3 class="text-xs font-bold text-gray-800">Original Payoff Date</h3>
+                                    <p id="originalPayoffDate" class="text-lg font-extrabold text-gray-600">-</p>
+                                </div>
+                            </div>
+
+                            <div class="mt-3 bg-white border rounded-lg p-3">
+                                <h3 class="text-base font-bold text-primary text-center">Loan Balance Payoff: Standard vs. Accelerated</h3>
+                                <div class="relative h-64 md:h-72 mt-2">
+                                    <canvas id="payoffChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                 <!-- Amortization Table -->
+                <details id="schedule-section" class="hidden bg-white rounded-xl shadow-lg border group mt-4">
+                     <summary class="p-4 cursor-pointer flex justify-between items-center list-none">
+                        <h2 class="text-base font-bold text-primary">View Amortization Schedule</h2>
+                        <svg class="w-5 h-5 text-primary transform transition-transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                    </summary>
+                    <div class="border-t p-4">
+                        <div class="schedule-container overflow-x-auto">
+                            <table class="min-w-full text-xs">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="p-2 text-left">Month</th>
+                                        <th class="p-2 text-right">Standard Balance</th>
+                                        <th class="p-2 text-right text-accent">Accelerated Balance</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="amortizationTableBody" class="divide-y"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </details>
+
+                 <div class="mt-6 text-center p-4 bg-accent/10 border border-accent/20 rounded-lg">
+                    <h3 class="font-bold text-accent">Want a more detailed analysis?</h3>
+                    <p class="text-xs text-gray-700 mt-1">Explore NPV, DTI, equity growth, and more with our main planner.</p>
+                     <a href="../#mortgage-tab" class="mt-2 inline-block text-sm font-semibold text-primary hover:underline">
+                        Go to the All-in-One Mortgage Planner &rarr;
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="../global-elements.js" defer></script>
+    <script src="../js/utils.js" defer></script>
+    <script src="extra-payment-calculator.js" defer></script>
+</body>
+</html>
