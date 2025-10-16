@@ -68,6 +68,20 @@
           }
         },
         {
+          "@type": "Calculator",
+          "name": "Advanced Down Payment Calculator",
+          "description": "Calculates the down payment amount, total loan principal, and estimated monthly payments based on home price and down payment percentage or amount.",
+          "toolType": "DownPaymentCalculator",
+          "url": "https://mortgageplanner.toolblaster.com/calculators/down-payment-calculator.html",
+          "variable": [
+            { "name": "Home Price", "variableType": "https://schema.org/Price" },
+            { "name": "Down Payment Percentage", "variableType": "https://schema.org/Number" },
+            { "name": "Down Payment Amount", "variableType": "https://schema.org/Price" },
+            { "name": "Loan Term", "variableType": "https://schema.org/Duration" },
+            { "name": "Interest Rate", "variableType": "https://schema.org/Number" }
+          ]
+        },
+        {
           "@type": "BreadcrumbList",
           "itemListElement": [{
             "@type": "ListItem",
@@ -257,7 +271,7 @@
                             </summary>
                              <div class="p-3 border-t space-y-3">
                                 <div>
-                                    <h3 class="text-sm font-bold text-secondary mb-2">Down Payment Savings Goal</h3>
+                                    <h2 class="text-sm font-bold text-secondary mb-2">Down Payment Savings Goal</h2>
                                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                         <div>
                                             <label for="targetDownPayment" class="block font-medium text-xs text-gray-700">Target DP (%):</label>
@@ -270,7 +284,7 @@
                                     </div>
                                 </div>
                                 <div>
-                                    <h3 class="text-sm font-bold text-primary mb-2">Optional Annual Costs</h3>
+                                    <h2 class="text-sm font-bold text-primary mb-2">Optional Annual Costs</h2>
                                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                         <div>
                                             <label for="propertyTaxes" class="block font-medium text-xs text-gray-700">Property Taxes (<span class="currency-symbol-small">$</span>):</label>
@@ -322,13 +336,13 @@
                         
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                              <div class="p-3 bg-gray-50 rounded-lg shadow-inner border border-gray-200">
-                                <h3 class="font-bold text-primary text-center text-base">Loan Breakdown</h3>
+                                <h2 class="font-bold text-primary text-center text-base">Loan Breakdown</h2>
                                 <div class="relative h-48 md:h-56 mt-2">
                                     <canvas id="loanPieChart"></canvas>
                                 </div>
                             </div>
                              <div class="p-3 bg-gray-50 rounded-lg shadow-inner border border-gray-200">
-                                <h3 class="font-bold text-primary text-center text-base">Payment & Ratio Details</h3>
+                                <h2 class="font-bold text-primary text-center text-base">Payment & Ratio Details</h2>
                                 <div class="space-y-3 mt-4 text-center">
                                     <div>
                                         <p class="text-xs font-medium text-gray-600">Principal & Interest (P&I)</p>
@@ -356,7 +370,7 @@
                         </div>
                         
                         <div class="p-3 bg-gray-50 rounded-lg shadow-inner border border-gray-200">
-                            <h3 class="font-bold text-primary text-center text-base">Quick Loan Comparison</h3>
+                            <h2 class="font-bold text-primary text-center text-base">Quick Loan Comparison</h2>
                             <div class="text-center mt-2">
                                 <p class="text-xs">Switching to a <strong>15-year term</strong> could change your payment and savings:</p>
                                 <div class="grid grid-cols-2 gap-2 mt-2">
