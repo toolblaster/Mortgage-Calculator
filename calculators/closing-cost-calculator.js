@@ -148,14 +148,28 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+    
+    // --- [NEW] Function to update all currency symbols on the page ---
+    function updateCurrencySymbols() {
+        const symbols = { 'USD': '$', 'EUR': '€', 'GBP': '£', 'CAD': 'C$', 'AUD': 'A$' };
+        const symbol = symbols[DOM.currency.value] || '$';
+        if (DOM.currencySymbol) DOM.currencySymbol.textContent = symbol;
+        if (DOM.dpTypeAmount) DOM.dpTypeAmount.textContent = symbol; // This line fixes the issue
+    }
 
     function setupEventListeners() {
-        const inputs = [DOM.homePrice, DOM.homePriceSlider, DOM.downPaymentInput, DOM.downPaymentSlider, DOM.loanTerm, DOM.location, DOM.currency];
+        const inputs = [DOM.homePrice, DOM.homePriceSlider, DOM.downPaymentInput, DOM.downPaymentSlider, DOM.loanTerm, DOM.location];
         inputs.forEach(input => input.addEventListener('input', () => {
             updateSliderFill(DOM.homePriceSlider);
             updateSliderFill(DOM.downPaymentSlider);
             calculateAndRender();
         }));
+        
+        // --- [UPDATED] Currency listener to also update symbols ---
+        DOM.currency.addEventListener('input', () => {
+            updateCurrencySymbols();
+            calculateAndRender();
+        });
 
         DOM.typePurchase.addEventListener('click', () => setTransactionType('purchase'));
         DOM.typeRefinance.addEventListener('click', () => setTransactionType('refinance'));
@@ -278,17 +292,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         setupEventListeners();
-        updateCurrencySymbols();
+        updateCurrencySymbols(); // Initial symbol setup
         updateSliderFill(DOM.homePriceSlider);
         updateSliderFill(DOM.downPaymentSlider);
         calculateAndRender();
-    }
-    
-    function updateCurrencySymbols() {
-        const symbols = { 'USD': '$', 'EUR': '€', 'GBP': '£', 'CAD': 'C$', 'AUD': 'A$' };
-        const symbol = symbols[DOM.currency.value] || '$';
-        if (DOM.currencySymbol) DOM.currencySymbol.textContent = symbol;
-        if (DOM.dpTypeAmount) DOM.dpTypeAmount.textContent = symbol;
     }
 
      function updateSliderFill(slider) {
