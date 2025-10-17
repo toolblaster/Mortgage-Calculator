@@ -9,11 +9,13 @@ document.addEventListener('DOMContentLoaded', function() {
         interestRate: document.getElementById('interestRate'),
         interestRateSlider: document.getElementById('interestRateSlider'),
         loanTerm: document.getElementById('loanTerm'),
+        paymentFrequency: document.getElementById('paymentFrequency'),
         currency: document.getElementById('currency'),
         extraMonthlyPayment: document.getElementById('extraMonthlyPayment'),
         extraMonthlyPaymentSlider: document.getElementById('extraMonthlyPaymentSlider'),
         oneTimePayment: document.getElementById('oneTimePayment'),
         oneTimePaymentMonth: document.getElementById('oneTimePaymentMonth'),
+        investmentReturn: document.getElementById('investmentReturn'), // New
         calculateBtn: document.getElementById('calculateBtn'),
         errorMessages: document.getElementById('error-messages'),
 
@@ -44,9 +46,15 @@ document.addEventListener('DOMContentLoaded', function() {
         // Sharing
         saveScenarioBtn: document.getElementById('saveScenarioBtn'),
         saveFeedback: document.getElementById('saveFeedback'),
+        
+        // Opportunity Cost
+        opportunityCostSection: document.getElementById('opportunity-cost-section'),
+        opportunityCostChart: document.getElementById('opportunityCostChart'),
+        opportunityCostSummary: document.getElementById('opportunityCostSummary'),
     };
 
     let payoffChart = null;
+    let opportunityCostChart = null; // New chart instance
 
     // --- Helper Functions ---
     const updateCurrencySymbols = () => {
@@ -54,7 +62,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const symbol = symbols[DOM.currency.value] || '$';
         DOM.currencySymbolSmalls.forEach(span => span.textContent = symbol);
         
-        // Update the down payment type dropdown
         const amountOption = DOM.downPaymentType.querySelector('option[value="amount"]');
         if (amountOption) {
             amountOption.textContent = symbol;
@@ -98,36 +105,52 @@ document.addEventListener('DOMContentLoaded', function() {
             loanAmount,
             interestRate: parseFloat(DOM.interestRate.value) || 0,
             loanTerm: parseInt(DOM.loanTerm.value) || 30,
-            extraMonthly: parseFloat(DOM.extraMonthlyPayment.value) || 0,
+            paymentFrequency: DOM.paymentFrequency.value,
+            extraPerPayment: parseFloat(DOM.extraMonthlyPayment.value) || 0,
             oneTimePayment: parseFloat(DOM.oneTimePayment.value) || 0,
             oneTimePaymentMonth: parseInt(DOM.oneTimePaymentMonth.value) || 1,
+            investmentReturn: parseFloat(DOM.investmentReturn.value) || 0,
         };
     }
 
-    function calculateAmortization(loanAmount, annualRate, years, extraMonthly, oneTimePayment, oneTimePaymentMonth) {
-        const totalMonths = years * 12;
-        if (loanAmount <= 0 || annualRate <= 0 || years <= 0) {
-            return { schedule: [], monthlyPayment: 0, totalInterest: 0, totalPaid: 0, payoffMonth: 0 };
+    function calculateAmortization(loanAmount, annualRate, years, frequency, extraPerPayment, oneTimePayment, oneTimePaymentMonth, investmentReturn) {
+        let periodsPerYear;
+        const monthlyPaymentForCalc = window.mortgageUtils.calculatePayment(loanAmount, annualRate, 12, years * 12);
+        let paymentPerPeriod;
+
+        switch (frequency) {
+            case 'biweekly': periodsPerYear = 26; paymentPerPeriod = monthlyPaymentForCalc * 12 / 26; break;
+            case 'accelerated-biweekly': periodsPerYear = 26; paymentPerPeriod = monthlyPaymentForCalc / 2; break;
+            default: periodsPerYear = 12; paymentPerPeriod = monthlyPaymentForCalc; break;
         }
         
-        const monthlyPayment = window.mortgageUtils.calculatePayment(loanAmount, annualRate, 12, totalMonths);
-        const monthlyRate = annualRate / 12 / 100;
+        const totalPeriods = years * periodsPerYear;
+        if (loanAmount <= 0 || annualRate <= 0 || years <= 0) {
+            return { schedule: [], paymentPerPeriod: 0, totalInterest: 0, totalPaid: 0, payoffPeriod: 0, investmentGrowth: [] };
+        }
+
+        const periodicRate = annualRate / periodsPerYear / 100;
+        const periodicInvestmentRate = investmentReturn / periodsPerYear / 100;
 
         let balance = loanAmount;
         let schedule = [];
         let totalInterest = 0;
-        let payoffMonth = totalMonths;
+        let payoffPeriod = totalPeriods;
+        let investmentPortfolio = 0;
+        let investmentGrowth = [];
 
-        for (let month = 1; month <= totalMonths * 2 && balance > 0; month++) {
-            const interest = balance * monthlyRate;
-            let principal = monthlyPayment - interest;
+        for (let period = 1; period <= totalPeriods * 2 && balance > 0; period++) {
+            const interest = balance * periodicRate;
+            let principal = paymentPerPeriod - interest;
+            let effectiveExtra = extraPerPayment;
             
-            let effectiveExtra = extraMonthly;
-            if (month === oneTimePaymentMonth) {
+            const targetMonth = oneTimePaymentMonth;
+            const targetPeriod = Math.ceil(targetMonth * (periodsPerYear / 12));
+            if (period === targetPeriod) {
                 effectiveExtra += oneTimePayment;
             }
             
-            if (balance < monthlyPayment) {
+            if (balance < paymentPerPeriod) {
                  principal = balance;
                  effectiveExtra = 0;
             }
@@ -141,16 +164,20 @@ document.addEventListener('DOMContentLoaded', function() {
             balance -= totalPrincipalPaid;
             totalInterest += interest;
 
-            schedule.push({ month, balance: Math.max(0, balance) });
+            schedule.push({ period, balance: Math.max(0, balance), extraPayment: effectiveExtra });
+
+            // Investment calculation
+            investmentPortfolio = (investmentPortfolio + effectiveExtra) * (1 + periodicInvestmentRate);
+            investmentGrowth.push({ period, value: investmentPortfolio });
 
             if (balance <= 0) {
-                payoffMonth = month;
+                payoffPeriod = period;
                 break;
             }
         }
         
         const totalPaid = loanAmount + totalInterest;
-        return { schedule, monthlyPayment, totalInterest, totalPaid, payoffMonth };
+        return { schedule, paymentPerPeriod, totalInterest, totalPaid, payoffPeriod, periodsPerYear, investmentGrowth };
     }
 
     // --- UI Update & Rendering ---
@@ -159,12 +186,13 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const inputs = getInputs();
 
-        const standard = calculateAmortization(inputs.loanAmount, inputs.interestRate, inputs.loanTerm, 0, 0, 0);
-        const accelerated = calculateAmortization(inputs.loanAmount, inputs.interestRate, inputs.loanTerm, inputs.extraMonthly, inputs.oneTimePayment, inputs.oneTimePaymentMonth);
+        const standard = calculateAmortization(inputs.loanAmount, inputs.interestRate, inputs.loanTerm, inputs.paymentFrequency, 0, 0, 0, 0);
+        const accelerated = calculateAmortization(inputs.loanAmount, inputs.interestRate, inputs.loanTerm, inputs.paymentFrequency, inputs.extraPerPayment, inputs.oneTimePayment, inputs.oneTimePaymentMonth, inputs.investmentReturn);
 
         renderResults(standard, accelerated, inputs);
         renderChart(standard.schedule, accelerated.schedule);
         renderAmortizationTable(standard.schedule, accelerated.schedule);
+        renderOpportunityCostChart(standard.schedule, accelerated.schedule, accelerated.investmentGrowth);
     }
     
     function renderResults(standard, accelerated, inputs) {
@@ -174,27 +202,29 @@ document.addEventListener('DOMContentLoaded', function() {
         const interestSaved = standard.totalInterest - accelerated.totalInterest;
         DOM.interestSaved.textContent = window.mortgageUtils.formatCurrency(interestSaved > 0 ? interestSaved : 0, DOM.currency.value);
 
-        const monthsSaved = standard.payoffMonth - accelerated.payoffMonth;
-        const yearsSaved = Math.floor(monthsSaved / 12);
-        const remainingMonths = monthsSaved % 12;
+        const periodsSaved = standard.payoffPeriod - accelerated.payoffPeriod;
+        const yearsSaved = Math.floor(periodsSaved / standard.periodsPerYear);
+        const remainingMonths = Math.round((periodsSaved % standard.periodsPerYear) / (standard.periodsPerYear / 12));
         DOM.timeSaved.textContent = `${yearsSaved}y ${remainingMonths}m`;
 
-        const getPayoffDate = (months) => {
+        const getPayoffDate = (periods, periodsPerYear) => {
+            const totalMonths = Math.ceil(periods / (periodsPerYear / 12));
             const date = new Date();
-            date.setMonth(date.getMonth() + months);
+            date.setMonth(date.getMonth() + totalMonths);
             return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
         };
         
-        DOM.newPayoffDate.textContent = getPayoffDate(accelerated.payoffMonth);
-        DOM.originalPayoffDate.textContent = getPayoffDate(standard.payoffMonth);
-        DOM.newPayoffDateSummary.textContent = getPayoffDate(accelerated.payoffMonth);
+        DOM.newPayoffDate.textContent = getPayoffDate(accelerated.payoffPeriod, accelerated.periodsPerYear);
+        DOM.originalPayoffDate.textContent = getPayoffDate(standard.payoffPeriod, standard.periodsPerYear);
+        DOM.newPayoffDateSummary.textContent = getPayoffDate(accelerated.payoffPeriod, accelerated.periodsPerYear);
 
         // Update Cards
-        DOM.standardMonthlyPayment.textContent = window.mortgageUtils.formatCurrency(standard.monthlyPayment, DOM.currency.value);
+        const freqText = inputs.paymentFrequency.replace('-', ' ');
+        DOM.standardMonthlyPayment.textContent = `${window.mortgageUtils.formatCurrency(standard.paymentPerPeriod, DOM.currency.value)} / ${freqText}`;
         DOM.standardTotalInterest.textContent = window.mortgageUtils.formatCurrency(standard.totalInterest, DOM.currency.value);
         DOM.standardTotalPaid.textContent = window.mortgageUtils.formatCurrency(standard.totalPaid, DOM.currency.value);
         
-        DOM.acceleratedMonthlyPayment.textContent = window.mortgageUtils.formatCurrency(standard.monthlyPayment + inputs.extraMonthly, DOM.currency.value);
+        DOM.acceleratedMonthlyPayment.textContent = `${window.mortgageUtils.formatCurrency(standard.paymentPerPeriod + inputs.extraPerPayment, DOM.currency.value)} / ${freqText}`;
         DOM.acceleratedTotalInterest.textContent = window.mortgageUtils.formatCurrency(accelerated.totalInterest, DOM.currency.value);
         DOM.acceleratedTotalPaid.textContent = window.mortgageUtils.formatCurrency(accelerated.totalPaid, DOM.currency.value);
     }
@@ -203,8 +233,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const ctx = DOM.payoffChart.getContext('2d');
         if (payoffChart) payoffChart.destroy();
         
-        const maxMonths = standardSchedule.length;
-        const labels = Array.from({ length: maxMonths }, (_, i) => i + 1);
+        const maxPeriods = standardSchedule.length;
+        const labels = Array.from({ length: maxPeriods }, (_, i) => i + 1);
 
         payoffChart = new Chart(ctx, {
             type: 'line',
@@ -213,7 +243,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 datasets: [
                     {
                         label: 'Standard Loan Balance',
-                        data: standardSchedule.map(p => ({ x: p.month, y: p.balance })),
+                        data: standardSchedule.map(p => ({ x: p.period, y: p.balance })),
                         borderColor: '#9ca3af', // gray-400
                         borderWidth: 3,
                         pointRadius: 0,
@@ -221,7 +251,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     },
                     {
                         label: 'Accelerated Loan Balance',
-                        data: acceleratedSchedule.map(p => ({ x: p.month, y: p.balance })),
+                        data: acceleratedSchedule.map(p => ({ x: p.period, y: p.balance })),
                         borderColor: '#166534', // accent
                         borderWidth: 3,
                         pointRadius: 0,
@@ -241,12 +271,14 @@ document.addEventListener('DOMContentLoaded', function() {
                         type: 'linear',
                         ticks: {
                             callback: function(value) {
-                                if (value % 60 === 0) return `Year ${value / 12}`;
+                                const freq = DOM.paymentFrequency.value;
+                                const ppy = freq === 'monthly' ? 12 : 26;
+                                if (value > 0 && value % (ppy * 5) === 0) return `Year ${Math.round(value / ppy)}`;
                             },
                             autoSkip: false,
                             maxRotation: 0,
                         },
-                        title: { display: true, text: 'Loan Term in Years' }
+                        title: { display: true, text: 'Loan Term' }
                     }
                 },
                 plugins: {
@@ -255,7 +287,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         intersect: false,
                         callbacks: {
                             label: (context) => `${context.dataset.label}: ${window.mortgageUtils.formatCurrency(context.raw.y, DOM.currency.value)}`,
-                            title: (tooltipItems) => `Month: ${tooltipItems[0].label}`
+                            title: (tooltipItems) => `Period: ${tooltipItems[0].label}`
                         }
                     }
                 }
@@ -284,6 +316,58 @@ document.addEventListener('DOMContentLoaded', function() {
         DOM.amortizationTableBody.innerHTML = html;
     }
 
+    function renderOpportunityCostChart(standardSchedule, acceleratedSchedule, investmentGrowth) {
+        const inputs = getInputs();
+        if (inputs.extraPerPayment <= 0 && inputs.oneTimePayment <= 0) {
+            DOM.opportunityCostSection.classList.add('hidden');
+            return;
+        }
+        DOM.opportunityCostSection.classList.remove('hidden');
+
+        const extraEquityData = acceleratedSchedule.map((p, i) => {
+            const standardBalance = standardSchedule[i] ? standardSchedule[i].balance : standardSchedule[standardSchedule.length - 1].balance;
+            const extraEquity = standardBalance - p.balance;
+            return { x: p.period, y: extraEquity };
+        });
+
+        const investmentData = investmentGrowth.map(p => ({ x: p.period, y: p.value }));
+
+        const finalInvestmentValue = investmentData.length > 0 ? investmentData[investmentData.length - 1].y : 0;
+        const finalExtraEquity = extraEquityData.length > 0 ? extraEquityData[extraEquityData.length - 1].y : 0;
+
+        if (opportunityCostChart) opportunityCostChart.destroy();
+        const ctx = DOM.opportunityCostChart.getContext('2d');
+        opportunityCostChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                datasets: [
+                    { label: 'Investment Growth', data: investmentData, borderColor: '#166534', backgroundColor: 'rgba(22, 101, 52, 0.2)', fill: 'origin', tension: 0.1, pointRadius: 0 },
+                    { label: 'Extra Equity from Payments', data: extraEquityData, borderColor: '#1C768F', backgroundColor: 'rgba(28, 118, 143, 0.2)', fill: 'origin', tension: 0.1, pointRadius: 0 }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                scales: {
+                    x: { type: 'linear', title: { display: true, text: 'Payment Periods' } },
+                    y: { beginAtZero: true, ticks: { callback: v => window.mortgageUtils.formatCurrency(v, DOM.currency.value) } }
+                },
+                plugins: {
+                    tooltip: { mode: 'index', intersect: false, callbacks: { label: c => `${c.dataset.label}: ${window.mortgageUtils.formatCurrency(c.raw.y, DOM.currency.value)}` } }
+                }
+            }
+        });
+
+        const difference = finalInvestmentValue - finalExtraEquity;
+        let summaryHTML = '';
+        if (difference > 0) {
+            summaryHTML = `By <strong>investing</strong> your extra payments, you could potentially have <strong>${window.mortgageUtils.formatCurrency(difference, DOM.currency.value)} more</strong> in net worth by the time your mortgage would have been paid off.`;
+        } else {
+            summaryHTML = `By making extra payments on your mortgage, you are projected to be <strong>${window.mortgageUtils.formatCurrency(Math.abs(difference), DOM.currency.value)} ahead</strong> compared to investing.`;
+        }
+        DOM.opportunityCostSummary.innerHTML = summaryHTML;
+    }
+
+
     function validateInputs() {
         DOM.errorMessages.innerHTML = '';
         DOM.errorMessages.classList.add('hidden');
@@ -294,6 +378,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (inputs.loanAmount <= 0) errors.push('Loan Amount must be positive. Check Home Price and Down Payment.');
         if (inputs.interestRate <= 0) errors.push('Interest Rate must be positive.');
         if (inputs.loanTerm <= 0) errors.push('Loan Term must be positive.');
+        if (inputs.investmentReturn < 0) errors.push('Investment Return cannot be negative.');
 
         if (errors.length > 0) {
             DOM.errorMessages.innerHTML = errors.join('<br>');
@@ -305,14 +390,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // --- Event Listeners & Initialization ---
     function setupEventListeners() {
-        // Helper to sync a slider with its number input and handle updates
         const syncSliderAndInput = (slider, input) => {
             if (!slider || !input) return;
             const debouncedCalc = debounce(handleCalculate, 250);
 
             const update = () => {
                 updateSliderFill(slider);
-                debouncedCalc(); // Trigger calculation after any change
+                debouncedCalc();
             };
 
             slider.addEventListener('input', () => {
@@ -321,7 +405,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
             input.addEventListener('input', () => {
-                 // Ensure value doesn't exceed slider max/min before updating
                 const val = parseFloat(input.value);
                 const max = parseFloat(slider.max);
                 const min = parseFloat(slider.min);
@@ -333,22 +416,19 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         };
         
-        // Sync our sliders
         syncSliderAndInput(DOM.homePriceSlider, DOM.homePrice);
         syncSliderAndInput(DOM.interestRateSlider, DOM.interestRate);
         syncSliderAndInput(DOM.extraMonthlyPaymentSlider, DOM.extraMonthlyPayment);
 
-        // Listeners for other inputs that don't have sliders
         const otherInputs = [
             DOM.downPayment, DOM.downPaymentType, DOM.loanTerm, DOM.currency,
-            DOM.oneTimePayment, DOM.oneTimePaymentMonth
+            DOM.oneTimePayment, DOM.oneTimePaymentMonth, DOM.paymentFrequency, DOM.investmentReturn
         ];
         otherInputs.forEach(input => {
             if (input) {
                 input.addEventListener('input', debounce(handleCalculate, 250));
             }
         });
-
 
         DOM.calculateBtn.addEventListener('click', handleCalculate);
         
@@ -357,7 +437,6 @@ document.addEventListener('DOMContentLoaded', function() {
             handleCalculate();
         });
 
-        // FAQ Accordion
         document.querySelectorAll('.faq-question').forEach(button => {
             button.addEventListener('click', () => {
                 const answer = button.nextElementSibling;
@@ -366,11 +445,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 button.setAttribute('aria-expanded', !isExpanded);
                 answer.style.maxHeight = isExpanded ? '0px' : answer.scrollHeight + 'px';
-                chevron.classList.toggle('rotate-180', !isExpanded);
+                if(chevron) chevron.classList.toggle('rotate-180', !isExpanded);
             });
         });
         
-        // Save & Share
         DOM.saveScenarioBtn.addEventListener('click', () => {
             const params = new URLSearchParams({
                 hp: DOM.homePrice.value,
@@ -378,10 +456,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 dpt: DOM.downPaymentType.value,
                 ir: DOM.interestRate.value,
                 lt: DOM.loanTerm.value,
+                pf: DOM.paymentFrequency.value,
                 cur: DOM.currency.value,
                 emp: DOM.extraMonthlyPayment.value,
                 otp: DOM.oneTimePayment.value,
-                otpm: DOM.oneTimePaymentMonth.value
+                otpm: DOM.oneTimePaymentMonth.value,
+                inv: DOM.investmentReturn.value
             });
             const newUrl = `${window.location.pathname}?${params.toString()}`;
             window.history.pushState({ path: newUrl }, '', newUrl);
@@ -389,7 +469,6 @@ document.addEventListener('DOMContentLoaded', function() {
             setTimeout(() => { DOM.saveFeedback.textContent = ''; }, 3000);
         });
         
-        // Add a resize listener to ensure sliders are responsive
         window.addEventListener('resize', debounce(() => {
             [DOM.homePriceSlider, DOM.interestRateSlider, DOM.extraMonthlyPaymentSlider].forEach(updateSliderFill);
         }, 100));
@@ -403,12 +482,13 @@ document.addEventListener('DOMContentLoaded', function() {
             DOM.downPaymentType.value = params.get('dpt');
             DOM.interestRate.value = params.get('ir');
             DOM.loanTerm.value = params.get('lt');
+            DOM.paymentFrequency.value = params.get('pf') || 'monthly';
             DOM.currency.value = params.get('cur');
             DOM.extraMonthlyPayment.value = params.get('emp');
             DOM.oneTimePayment.value = params.get('otp');
             DOM.oneTimePaymentMonth.value = params.get('otpm');
+            DOM.investmentReturn.value = params.get('inv') || 7.0;
 
-            // Sync sliders to URL params
             DOM.homePriceSlider.value = DOM.homePrice.value;
             DOM.interestRateSlider.value = DOM.interestRate.value;
             DOM.extraMonthlyPaymentSlider.value = DOM.extraMonthlyPayment.value;
@@ -416,10 +496,9 @@ document.addEventListener('DOMContentLoaded', function() {
         
         setupEventListeners();
         updateCurrencySymbols();
-        getInputs(); // To calculate initial loan amount
+        getInputs();
         handleCalculate();
         
-        // Initial slider fill
         [DOM.homePriceSlider, DOM.interestRateSlider, DOM.extraMonthlyPaymentSlider].forEach(updateSliderFill);
     }
 
