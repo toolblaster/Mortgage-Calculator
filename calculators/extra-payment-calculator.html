@@ -310,60 +310,61 @@
                                 </div>
                             </div>
 
-                            <!-- Modern Summary Cards -->
-                            <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                            <!-- Reverted Compact Summary Cards -->
+                            <div class="mt-2 grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
                                 <!-- Standard Payoff Card -->
-                                <div class="bg-gray-100 rounded-lg border p-4 space-y-3 flex flex-col">
+                                <div class="bg-gray-100 rounded-lg border p-3 space-y-2">
                                     <h3 class="font-bold text-gray-800 text-center text-sm flex items-center justify-center gap-2">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
                                         Standard Payoff
                                     </h3>
-                                    <div class="flex-grow space-y-2">
-                                        <div class="flex justify-between items-center border-b pb-2">
+                                    <div class="space-y-1">
+                                        <div class="flex justify-between items-baseline">
                                             <span class="text-gray-600">Payment:</span>
-                                            <span id="standardMonthlyPayment" class="font-semibold text-gray-800 text-base"></span>
+                                            <span id="standardMonthlyPayment" class="font-semibold text-gray-800 text-sm"></span>
                                         </div>
-                                        <div class="flex justify-between items-center border-b pb-2">
+                                        <div class="flex justify-between items-baseline">
                                             <span class="text-gray-600">Total Interest:</span>
-                                            <span id="standardTotalInterest" class="font-semibold text-gray-800 text-base"></span>
+                                            <span id="standardTotalInterest" class="font-semibold text-gray-800 text-sm"></span>
                                         </div>
-                                        <div class="flex justify-between items-center border-b pb-2">
+                                        <div class="flex justify-between items-baseline">
                                              <span class="text-gray-600">Total Paid:</span>
-                                            <span id="standardTotalPaid" class="font-semibold text-gray-800 text-base"></span>
+                                            <span id="standardTotalPaid" class="font-semibold text-gray-800 text-sm"></span>
                                         </div>
-                                        <div class="flex justify-between items-center pt-1">
+                                        <div class="flex justify-between items-baseline">
                                             <span class="text-gray-600">Payoff Date:</span>
-                                            <span id="originalPayoffDate" class="font-semibold text-gray-800 text-base"></span>
+                                            <span id="originalPayoffDate" class="font-semibold text-gray-800 text-sm"></span>
                                         </div>
                                     </div>
                                 </div>
 
                                 <!-- Accelerated Payoff Card -->
-                                <div class="bg-accent/10 rounded-lg border border-accent/30 p-4 space-y-3 flex flex-col">
+                                <div class="bg-accent/10 rounded-lg border border-accent/30 p-3 space-y-2">
                                     <h3 class="font-bold text-accent text-center text-sm flex items-center justify-center gap-2">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
                                         Accelerated Payoff
                                     </h3>
-                                    <div class="flex-grow space-y-2">
-                                        <div class="flex justify-between items-center border-b border-accent/20 pb-2">
+                                    <div class="space-y-1">
+                                        <div class="flex justify-between items-baseline">
                                             <span class="text-accent/80">Payment + Extra:</span>
-                                            <span id="acceleratedMonthlyPayment" class="font-semibold text-accent text-base"></span>
+                                            <span id="acceleratedMonthlyPayment" class="font-semibold text-accent text-sm"></span>
                                         </div>
-                                        <div class="flex justify-between items-center border-b border-accent/20 pb-2">
+                                        <div class="flex justify-between items-baseline">
                                             <span class="text-accent/80">Total Interest:</span>
-                                            <span id="acceleratedTotalInterest" class="font-semibold text-accent text-base"></span>
+                                            <span id="acceleratedTotalInterest" class="font-semibold text-accent text-sm"></span>
                                         </div>
-                                        <div class="flex justify-between items-center border-b border-accent/20 pb-2">
+                                        <div class="flex justify-between items-baseline">
                                             <span class="text-accent/80">Total Paid:</span>
-                                            <span id="acceleratedTotalPaid" class="font-semibold text-accent text-base"></span>
+                                            <span id="acceleratedTotalPaid" class="font-semibold text-accent text-sm"></span>
                                         </div>
-                                         <div class="flex justify-between items-center pt-1">
+                                         <div class="flex justify-between items-baseline">
                                             <span class="text-accent/80">New Payoff Date:</span>
-                                            <span id="newPayoffDateSummary" class="font-semibold text-accent text-base"></span>
+                                            <span id="newPayoffDateSummary" class="font-semibold text-accent text-sm"></span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
 
                             <!-- NEW: Opportunity Cost Section -->
                             <div id="opportunity-cost-section" class="hidden mt-4 bg-white border rounded-lg p-3">
