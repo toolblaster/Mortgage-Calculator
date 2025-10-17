@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                 <div class="text-center text-xs space-y-1">
                     <p>&copy; <span id="copyright-year"></span> Strategic Mortgage Planner. All Rights Reserved.</p>
-                    <p>A proud part of the <a href="https://toolblaster.com" target="_blank" rel="noopener noreferrer" class="text-white hover:underline font-semibold">toolblaster.com</a> Network</p>
+                    <p>A proud part of the <a href="https://toolblaster.com" target="_blank" rel="noopener noreferrer" class="text-white hover:underline font-semibold">toolblaster.com</a> Network by <a href="https://x.com/vikasrana03" target="_blank" rel="noopener noreferrer" class="text-white hover:underline font-semibold">Vikas Rana</a></p>
                      <p><strong>Disclaimer:</strong> This tool is for informational purposes only. Consult a financial professional before making decisions.</p>
                 </div>
             </div>
