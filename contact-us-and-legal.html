@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact & Legal - Strategic Mortgage Planner</title>
-    <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIHJ4PSIyMCIgZmlsbD0iIzFDNzY4RiIvPjxwYXRoIGQ9Ik01MCAyNUwyNSA0NVY3NUg0MS42NjY3VjU4LjMzMzNINTguMzMzM1Y3NUg3NVY0NUw1MCAyNVoiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik00MCA2NUw1MCA1NUw2MCA2NSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNNTAgNTVWNDUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PC9zdmc+">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100' height='100' rx='20' fill='%231C768F'/%3E%3Cpath d='M50 25L25 45V75H41.6667V58.3333H58.3333V75H75V45L50 25Z' stroke='white' stroke-width='5' stroke-linejoin='round'/%3E%3Cpath d='M40 65L50 55L60 65' stroke='white' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M50 55V45' stroke='white' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
     
     <!-- Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -27,111 +27,142 @@
     <!-- Global Stylesheet -->
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="bg-gray-100">
     <!-- Main Content Area -->
     <main class="content-wrapper">
-        <div class="bg-white p-4 sm:p-6 md:p-8 rounded-xl shadow-2xl w-full max-w-4xl mx-auto my-4">
-            <h1 class="text-xl md:text-2xl font-extrabold text-primary text-center">Contact & Legal Information</h1>
+        <div class="bg-white p-3 sm:p-4 md:p-6 rounded-xl shadow-2xl w-full max-w-3xl mx-auto my-3">
+            <h1 class="text-lg md:text-xl font-extrabold text-primary text-center">Contact & Legal</h1>
             
-            <div class="text-center bg-sky-50 p-4 rounded-lg my-6 border border-sky-200">
-                <h2 class="font-bold text-base text-primary">Contact Us</h2>
-                <p class="text-sm text-gray-600">For any questions, feedback, or inquiries, please reach out to us at:</p>
-                <a href="mailto:vikas@toolblaster.com" class="text-accent font-semibold hover:underline text-sm">vikas@toolblaster.com</a>
+            <div class="text-center bg-sky-50 p-3 rounded-lg my-4 border border-sky-200">
+                <h2 class="font-bold text-sm text-primary">Contact Us</h2>
+                <p class="text-xs text-gray-600 mb-2">For questions or feedback, please use the links below:</p>
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+                    <a href="mailto:vikas@toolblaster.com" class="inline-flex items-center justify-center px-3 py-1.5 bg-accent text-white font-semibold rounded-lg shadow-md hover:bg-green-800 transition-colors duration-300 text-xs">
+                         <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path></svg>
+                        <span>vikas@toolblaster.com</span>
+                    </a>
+                    <a href="https://x.com/vikasrana03" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center px-3 py-1.5 bg-gray-800 text-white font-semibold rounded-lg shadow-md hover:bg-black transition-colors duration-300 text-xs">
+                        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 16 16"><path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75z"/></svg>
+                        <span>Follow on X</span>
+                    </a>
+                </div>
             </div>
 
             <!-- Redesigned Disclaimer and Privacy Sections -->
-            <div class="space-y-8 mt-10">
+            <div class="space-y-6 mt-6">
 
                 <!-- Disclaimer Section -->
-                <div class="bg-amber-50 border-l-4 border-amber-400 p-4 sm:p-6 rounded-lg shadow-md">
-                    <h2 class="font-bold text-lg text-amber-800 mb-4">Disclaimer</h2>
-                    <ul class="space-y-4 text-sm text-gray-700">
+                <div class="bg-amber-50 border-l-4 border-amber-400 p-3 sm:p-4 rounded-lg shadow-sm">
+                    <h2 class="font-bold text-base text-amber-800 mb-3">Disclaimer</h2>
+                    <ul class="space-y-3 text-xs text-gray-700">
                         <li class="flex items-start">
-                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-amber-400 text-white flex items-center justify-center mr-4">
-                               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <div class="flex-shrink-0 w-6 h-6 rounded-full bg-amber-400 text-white flex items-center justify-center mr-3">
+                               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                   <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                </svg>
                             </div>
                             <span>The information and calculations are for <strong>informational and illustrative purposes only</strong> and are not a substitute for professional financial advice.</span>
                         </li>
                         <li class="flex items-start">
-                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-amber-400 text-white flex items-center justify-center mr-4">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <div class="flex-shrink-0 w-6 h-6 rounded-full bg-amber-400 text-white flex items-center justify-center mr-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                    <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
                                 </svg>
                             </div>
                             <span>We do not guarantee the accuracy or applicability of this information to your <strong>individual circumstances</strong>. All examples are hypothetical.</span>
                         </li>
                          <li class="flex items-start">
-                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-amber-400 text-white flex items-center justify-center mr-4">
-                               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <div class="flex-shrink-0 w-6 h-6 rounded-full bg-amber-400 text-white flex items-center justify-center mr-3">
+                               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                   <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283-.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                               </svg>
+                                </svg>
                             </div>
                             <span>We strongly encourage you to <strong>seek personalized advice</strong> from qualified professionals regarding all personal finance issues.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0 w-6 h-6 rounded-full bg-amber-400 text-white flex items-center justify-center mr-3">
+                               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                                </svg>
+                            </div>
+                            <span>This website is not a lender, does not broker loans, and does not provide financial products. It is a free informational tool.</span>
                         </li>
                     </ul>
                 </div>
 
                 <!-- Privacy Policy Section -->
-                <div class="bg-sky-50 border-l-4 border-sky-400 p-4 sm:p-6 rounded-lg shadow-md">
-                    <h2 class="font-bold text-lg text-sky-800 mb-4">Privacy Policy</h2>
-                    <ul class="space-y-4 text-sm text-gray-700">
+                <div class="bg-sky-50 border-l-4 border-sky-400 p-3 sm:p-4 rounded-lg shadow-sm">
+                    <h2 class="font-bold text-base text-sky-800 mb-3">Privacy Policy</h2>
+                    <ul class="space-y-3 text-xs text-gray-700">
                         <li class="flex items-start">
-                           <div class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-400 text-white flex items-center justify-center mr-4">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                           <div class="flex-shrink-0 w-6 h-6 rounded-full bg-sky-400 text-white flex items-center justify-center mr-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                   <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                                 </svg>
                             </div>
                             <span>We are committed to <strong>protecting your privacy</strong>. This website does not collect, store, or share any personal financial data you enter.</span>
                         </li>
                         <li class="flex items-start">
-                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-400 text-white flex items-center justify-center mr-4">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <div class="flex-shrink-0 w-6 h-6 rounded-full bg-sky-400 text-white flex items-center justify-center mr-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
                                 </svg>
                             </div>
                             <span>All calculations are <strong>performed within your browser</strong> and are never transmitted to our servers. Your data stays with you.</span>
                         </li>
                          <li class="flex items-start">
-                           <div class="flex-shrink-0 w-8 h-8 rounded-full bg-sky-400 text-white flex items-center justify-center mr-4">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                           <div class="flex-shrink-0 w-6 h-6 rounded-full bg-sky-400 text-white flex items-center justify-center mr-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                   <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                   <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                 </svg>
                             </div>
                             <span>We may use <strong>anonymous analytics</strong> to understand site usage, but this data is aggregated and cannot be used to identify you personally.</span>
                         </li>
+                        <li class="flex items-start">
+                           <div class="flex-shrink-0 w-6 h-6 rounded-full bg-sky-400 text-white flex items-center justify-center mr-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" /></svg>
+                            </div>
+                            <span>The "Save & Share" feature works by encoding your data directly into the URL; this information is not stored on our servers.</span>
+                        </li>
                     </ul>
                 </div>
 
                 <!-- Terms of Use Section -->
-                <div class="bg-gray-50 border-l-4 border-gray-400 p-4 sm:p-6 rounded-lg shadow-md">
-                    <h2 class="font-bold text-lg text-gray-800 mb-4">Terms of Use</h2>
-                    <ul class="space-y-4 text-sm text-gray-700">
+                <div class="bg-gray-50 border-l-4 border-gray-400 p-3 sm:p-4 rounded-lg shadow-sm">
+                    <h2 class="font-bold text-base text-gray-800 mb-3">Terms of Use</h2>
+                    <ul class="space-y-3 text-xs text-gray-700">
                         <li class="flex items-start">
-                           <div class="flex-shrink-0 w-8 h-8 rounded-full bg-gray-400 text-white flex items-center justify-center mr-4">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                           <div class="flex-shrink-0 w-6 h-6 rounded-full bg-gray-400 text-white flex items-center justify-center mr-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                   <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
                             </div>
                             <span>By using this website, you agree to accept these terms and conditions in full. If you disagree with any part of these terms, you must not use this website.</span>
                         </li>
                         <li class="flex items-start">
-                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-gray-400 text-white flex items-center justify-center mr-4">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <div class="flex-shrink-0 w-6 h-6 rounded-full bg-gray-400 text-white flex items-center justify-center mr-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                    <path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
                             </div>
                             <span>You must not use this website in any way that causes, or may cause, damage to the website or impairment of the availability or accessibility of the website.</span>
                         </li>
                          <li class="flex items-start">
-                           <div class="flex-shrink-0 w-8 h-8 rounded-full bg-gray-400 text-white flex items-center justify-center mr-4">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                           <div class="flex-shrink-0 w-6 h-6 rounded-full bg-gray-400 text-white flex items-center justify-center mr-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                   <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
                             </div>
                             <span>The content on this website is for your general information and use only. It is subject to change without notice.</span>
+                        </li>
+                        <li class="flex items-start">
+                           <div class="flex-shrink-0 w-6 h-6 rounded-full bg-gray-400 text-white flex items-center justify-center mr-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                                </svg>
+                            </div>
+                            <span>All content and tools on this website are the intellectual property of the site owner and may not be reproduced without permission.</span>
                         </li>
                     </ul>
                 </div>
