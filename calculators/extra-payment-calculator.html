@@ -115,6 +115,14 @@
                     "@type": "Answer",
                     "text": "It depends on the interest rates. As a general rule, you should prioritize paying off debts with the highest interest rates first. If you have credit card debt at 20% interest and your mortgage is at 6%, every extra dollar should go toward the credit card debt. Paying off high-interest debt provides a guaranteed 'return' equal to the interest rate you're no longer paying."
                 }
+            },
+            {
+                "@type": "Question",
+                "name": "What's the difference between bi-weekly and accelerated bi-weekly payments?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "A standard bi-weekly plan takes your total annual payment, divides it by 26, and pays that amount every two weeks, resulting in 12 full payments a year. An 'accelerated' bi-weekly plan takes your standard monthly payment, divides it by two, and pays that half-amount every two weeks. Because there are 26 two-week periods in a year, this results in 13 full monthly payments, with the extra payment going directly to principal, thus accelerating your payoff."
+                }
             }
           ]
         },
@@ -207,8 +215,18 @@
                                     <label for="loanTerm" class="block font-medium text-xs text-gray-700">Loan Term</label>
                                     <select id="loanTerm" class="w-full mt-1 p-1.5 text-xs border border-gray-300 rounded-md h-[30px]">
                                         <option value="30">30 Years</option>
+                                        <option value="25">25 Years</option>
                                         <option value="20">20 Years</option>
                                         <option value="15">15 Years</option>
+                                    </select>
+                                </div>
+                                <!-- Payment Frequency -->
+                                <div>
+                                    <label for="paymentFrequency" class="block font-medium text-xs text-gray-700">Payment Frequency</label>
+                                    <select id="paymentFrequency" class="w-full mt-1 p-1.5 text-xs border border-gray-300 rounded-md h-[30px]">
+                                        <option value="monthly">Monthly</option>
+                                        <option value="biweekly">Bi-Weekly</option>
+                                        <option value="accelerated-biweekly">Accelerated Bi-Weekly</option>
                                     </select>
                                 </div>
                                 <div>
@@ -232,7 +250,7 @@
                            <div class="p-3 border-t space-y-4">
                                 <div>
                                     <div class="flex justify-between items-center">
-                                        <label for="extraMonthlyPayment" class="block font-medium text-xs text-gray-700">Extra Monthly (<span class="currency-symbol-small">$</span>)</label>
+                                        <label for="extraMonthlyPayment" class="block font-medium text-xs text-gray-700">Extra Per Payment (<span class="currency-symbol-small">$</span>)</label>
                                         <input type="number" id="extraMonthlyPayment" value="100" class="w-24 p-1 text-xs text-right border border-gray-300 rounded-md">
                                     </div>
                                     <input type="range" id="extraMonthlyPaymentSlider" min="0" max="1000" value="100" step="10" class="w-full mt-2 range-slider">
@@ -244,6 +262,16 @@
                                 <div>
                                     <label for="oneTimePaymentMonth" class="block font-medium text-xs text-gray-700">Apply Lump Sum in Month #</label>
                                     <input type="number" id="oneTimePaymentMonth" value="1" min="1" class="w-full mt-1 p-1.5 text-xs border border-gray-300 rounded-md">
+                                </div>
+                                <!-- NEW: Investment Return -->
+                                <div class="border-t pt-3">
+                                     <label for="investmentReturn" class="block font-medium text-xs text-gray-700">
+                                        <span class="tooltip-container">Expected Annual Investment Return (%):
+                                            <span class="tooltip-icon" tabindex="0" aria-label="Annual Investment Return tooltip">?</span>
+                                            <span class="tooltip-text" role="tooltip">The average annual return you expect if you invested your extra payments instead. Used for Opportunity Cost Analysis.</span>
+                                        </span>
+                                    </label>
+                                    <input type="number" id="investmentReturn" value="7.0" step="0.1" class="w-full mt-1 p-1.5 text-xs border border-gray-300 rounded-md">
                                 </div>
                             </div>
                         </details>
@@ -292,7 +320,7 @@
                                     </h3>
                                     <div class="flex-grow space-y-2">
                                         <div class="flex justify-between items-center border-b pb-2">
-                                            <span class="text-gray-600">Monthly P&I:</span>
+                                            <span class="text-gray-600">Payment:</span>
                                             <span id="standardMonthlyPayment" class="font-semibold text-gray-800 text-base"></span>
                                         </div>
                                         <div class="flex justify-between items-center border-b pb-2">
@@ -318,7 +346,7 @@
                                     </h3>
                                     <div class="flex-grow space-y-2">
                                         <div class="flex justify-between items-center border-b border-accent/20 pb-2">
-                                            <span class="text-accent/80">Monthly P&I + Extra:</span>
+                                            <span class="text-accent/80">Payment + Extra:</span>
                                             <span id="acceleratedMonthlyPayment" class="font-semibold text-accent text-base"></span>
                                         </div>
                                         <div class="flex justify-between items-center border-b border-accent/20 pb-2">
@@ -336,6 +364,18 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- NEW: Opportunity Cost Section -->
+                            <div id="opportunity-cost-section" class="hidden mt-4 bg-white border rounded-lg p-3">
+                                <h3 class="text-base font-bold text-secondary text-center">Opportunity Cost: Pay Mortgage vs. Invest</h3>
+                                 <p class="text-center text-xs text-gray-600 mb-2">Compares the extra equity gained vs. the potential growth of investing your extra payments.</p>
+                                <div class="relative h-64 md:h-72 mt-2">
+                                    <canvas id="opportunityCostChart"></canvas>
+                                </div>
+                                <div id="opportunityCostSummary" class="mt-4 text-xs text-center bg-secondary/10 p-3 rounded-lg">
+                                    <!-- Summary text will be injected here -->
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -351,7 +391,7 @@
                             <table class="min-w-full text-xs">
                                 <thead class="bg-gray-50 sticky top-0">
                                     <tr>
-                                        <th class="p-2 text-left">Month</th>
+                                        <th class="p-2 text-left">Period</th>
                                         <th class="p-2 text-right">Standard Balance</th>
                                         <th class="p-2 text-right text-accent">Accelerated Balance</th>
                                     </tr>
@@ -383,7 +423,7 @@
                     <p class="mt-2 text-xs">Every mortgage payment you make is split between principal (the amount you borrowed) and interest (the cost of borrowing). In the early years of your loan, a large portion goes to interest. When you <strong>add an extra payment</strong> and direct it toward the principal, you reduce the loan balance itself. This means that in the following months, the interest is calculated on a smaller amount, creating a snowball effect of savings. Using a <strong>pay off mortgage faster calculator</strong> like the one on this page visualizes this powerful concept in real-time.</p>
                 </section>
                 
-                <!-- NEW HOW-TO SECTION -->
+                <!-- HOW-TO SECTION -->
                 <section class="bg-gray-50/70 p-4 rounded-lg border">
                     <h3 class="text-lg font-bold text-gray-800">How to Use This Calculator</h3>
                     <p class="mt-2 text-xs">This tool is designed to be interactive and insightful. Follow these steps to get the most out of it:</p>
@@ -423,6 +463,49 @@
                             <div><strong>Use a Bi-Weekly Payment Plan:</strong> A true bi-weekly plan involves paying half your mortgage every two weeks. This results in 26 half-payments, or 13 full payments, per year instead of 12. This tool can function as a <strong>biweekly mortgage calculator</strong>—simply take your monthly payment, divide it by 12, and enter that amount in the "Extra Monthly" field to simulate the effect.</div>
                         </li>
                     </ul>
+                </section>
+                
+                <!-- Country-Specific Section -->
+                <section class="bg-gray-50/70 p-4 rounded-lg border">
+                    <h3 class="text-lg font-bold text-gray-800 text-center">Country-Specific Considerations</h3>
+                    <p class="mt-2 text-xs text-center">Mortgage rules and associated costs can vary significantly by country. Here are a few key points for international users:</p>
+                    <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <!-- UK Card -->
+                        <div class="bg-white p-4 rounded-lg border shadow-sm">
+                            <div class="flex items-center gap-3">
+                                <img src="https://flagcdn.com/gb.svg" width="30" alt="UK Flag">
+                                <h3 class="font-bold text-primary">United Kingdom</h3>
+                            </div>
+                            <ul class="text-xs mt-2 space-y-1 text-gray-600 list-disc list-inside">
+                                <li><strong>Stamp Duty Land Tax (SDLT):</strong> A significant tax paid on property purchases, with rates depending on the property value and buyer status.</li>
+                                <li><strong>Mortgage Terms:</strong> Fixed-rate periods are often shorter (2, 5, or 10 years) before reverting to a Standard Variable Rate (SVR).</li>
+                            </ul>
+                        </div>
+                        <!-- Canada Card -->
+                        <div class="bg-white p-4 rounded-lg border shadow-sm">
+                            <div class="flex items-center gap-3">
+                                <img src="https://flagcdn.com/ca.svg" width="30" alt="Canada Flag">
+                                <h3 class="font-bold text-primary">Canada</h3>
+                            </div>
+                             <ul class="text-xs mt-2 space-y-1 text-gray-600 list-disc list-inside">
+                                <li><strong>Amortization vs. Term:</strong> Mortgages are amortized over a long period (e.g., 25 years), but the contract term is shorter (e.g., 5 years), after which you must renew.</li>
+                                <li><strong>Payment Frequency:</strong> Accelerated bi-weekly payments are very common and are a great way to pay down your mortgage faster.</li>
+                                <li><strong>Land Transfer Tax (LTT):</strong> A provincial or municipal tax paid on property purchases.</li>
+                            </ul>
+                        </div>
+                        <!-- Australia Card -->
+                        <div class="bg-white p-4 rounded-lg border shadow-sm">
+                            <div class="flex items-center gap-3">
+                                 <img src="https://flagcdn.com/au.svg" width="30" alt="Australia Flag">
+                                <h3 class="font-bold text-primary">Australia</h3>
+                            </div>
+                             <ul class="text-xs mt-2 space-y-1 text-gray-600 list-disc list-inside">
+                                <li><strong>Stamp Duty:</strong> A state-based tax on property transactions, which can be a major upfront cost.</li>
+                                <li><strong>Lenders Mortgage Insurance (LMI):</strong> Similar to PMI, LMI is typically required if you borrow more than 80% of the property's value.</li>
+                                <li><strong>Offset Accounts:</strong> A popular feature where a savings account is linked to the mortgage, and the balance "offsets" the loan principal, reducing interest.</li>
+                            </ul>
+                        </div>
+                    </div>
                 </section>
 
                 <section class="bg-gray-50/70 p-4 rounded-lg border">
@@ -471,22 +554,22 @@
                                 <p class="p-4 pt-0 text-gray-600 text-xs">The exact time saved depends on your loan amount, interest rate, and term. However, as an example, adding an extra $100 per month to a $300,000, 30-year mortgage at 6.5% could help you pay it off over 4 years earlier and save more than $55,000 in interest. Use our <strong>add extra payment mortgage calculator</strong> above to find your exact numbers.</p>
                             </div>
                         </div>
-                        <div class="faq-item">
+                         <div class="faq-item">
+                            <button class="faq-question w-full flex justify-between items-center text-left text-gray-800 font-semibold p-4 hover:bg-gray-50 transition" aria-expanded="false">
+                                <span class="text-sm">What's the difference between bi-weekly and accelerated bi-weekly payments?</span>
+                                <svg class="faq-chevron w-5 h-5 transform transition-transform text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                            </button>
+                            <div class="faq-answer">
+                                <p class="p-4 pt-0 text-gray-600 text-xs">A standard bi-weekly plan takes your total annual payment, divides it by 26, and pays that amount every two weeks, resulting in 12 full payments a year. An 'accelerated' bi-weekly plan takes your standard monthly payment, divides it by two, and pays that half-amount every two weeks. Because there are 26 two-week periods in a year, this results in 13 full monthly payments, with the extra payment going directly to principal, thus accelerating your payoff.</p>
+                            </div>
+                        </div>
+                         <div class="faq-item">
                             <button class="faq-question w-full flex justify-between items-center text-left text-gray-800 font-semibold p-4 hover:bg-gray-50 transition" aria-expanded="false">
                                 <span class="text-sm">Is it better to make extra monthly payments or one big lump-sum payment?</span>
                                 <svg class="faq-chevron w-5 h-5 transform transition-transform text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
                             </button>
                             <div class="faq-answer">
                                 <p class="p-4 pt-0 text-gray-600 text-xs">Mathematically, a large lump-sum payment made early in the loan will save you more interest because it drastically reduces the principal balance that interest is calculated on. However, consistent extra monthly payments are often more manageable and still lead to significant savings. The best strategy depends on your financial situation.</p>
-                            </div>
-                        </div>
-                         <div class="faq-item">
-                            <button class="faq-question w-full flex justify-between items-center text-left text-gray-800 font-semibold p-4 hover:bg-gray-50 transition" aria-expanded="false">
-                                <span class="text-sm">Does this tool work as a biweekly mortgage calculator?</span>
-                                <svg class="faq-chevron w-5 h-5 transform transition-transform text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
-                            </button>
-                            <div class="faq-answer">
-                                <p class="p-4 pt-0 text-gray-600 text-xs">Yes, you can easily simulate a biweekly payment plan. A true biweekly plan results in one extra monthly payment per year. To model this, calculate your standard monthly payment, divide it by 12, and enter that amount into the 'Extra Monthly' field. This will accurately reflect the accelerated payoff of a biweekly schedule.</p>
                             </div>
                         </div>
                         <div class="faq-item">
