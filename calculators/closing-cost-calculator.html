@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Closing Cost Calculator: Estimate Your Home Buying Fees</title>
+    
+    <!-- SEO & Meta Tags -->
+    <meta name="description" content="Use our free Closing Cost Calculator to estimate your lender fees, third-party charges, and prepaids for a home purchase or refinance. Get a detailed breakdown in seconds.">
+    <meta name="keywords" content="closing cost calculator, home buying costs, mortgage closing costs, refinance closing costs, estimate closing costs, closing cost estimator, lender fees, third-party fees, prepaids, escrow">
+    <meta name="author" content="Vikas Rana">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100' height='100' rx='20' fill='%231C768F'/%3E%3Cpath d='M50 25L25 45V75H41.6667V58.3333H58.3333V75H75V45L50 25Z' stroke='white' stroke-width='5' stroke-linejoin='round'/%3E%3Cpath d='M40 65L50 55L60 65' stroke='white' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M50 55V45' stroke='white' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+    <link rel="canonical" href="https://mortgageplanner.toolblaster.com/calculators/closing-cost-calculator.html" />
+
+    <!-- Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    
+    <!-- App Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#1C768F', 'accent': '#166534', 'secondary': '#b45309'
+                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+
+    <!-- Global & Page-Specific Styles -->
+    <link rel="stylesheet" href="../style.css">
+    
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "name": "Closing Cost Calculator",
+          "description": "A free tool to estimate total closing costs for a home purchase or refinance, including lender fees, third-party charges, and prepaids.",
+          "applicationCategory": "FinanceApplication",
+          "operatingSystem": "Any (Web Application)",
+          "url": "https://mortgageplanner.toolblaster.com/calculators/closing-cost-calculator.html",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+        },
+        {
+          "@type": "MathSolver",
+          "name": "Closing Cost Calculator",
+          "description": "Estimates total closing costs based on home price, down payment, location (US State), and transaction type (purchase or refinance).",
+          "toolType": "ClosingCostCalculator",
+          "url": "https://mortgageplanner.toolblaster.com/calculators/closing-cost-calculator.html",
+          "variable": [
+            { "name": "Home Price", "variableType": "https://schema.org/Price" },
+            { "name": "Down Payment", "variableType": "https://schema.org/Price" },
+            { "name": "Location", "variableType": "https://schema.org/Text" },
+            { "name": "Transaction Type", "variableType": "https://schema.org/Text" }
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [{
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://mortgageplanner.toolblaster.com/"
+          },{
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Calculators",
+            "item": "https://mortgageplanner.toolblaster.com/calculators/"
+          },{
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Closing Cost Calculator"
+          }]
+        },
+        {
+          "@type": "HowTo",
+          "name": "How to Estimate Closing Costs",
+          "step": [
+            { "@type": "HowToStep", "name": "Step 1: Enter Your Loan Details", "text": "Input the home price, your down payment (as a percentage or amount), and the loan term." },
+            { "@type": "HowToStep", "name": "Step 2: Select Your Location", "text": "Choose your state from the dropdown menu. This is crucial as many costs, especially transfer taxes, vary significantly by location." },
+            { "@type": "HowToStep", "name": "Step 3: Specify Transaction Type", "text": "Indicate whether you are purchasing a new home or refinancing an existing mortgage, as the associated costs differ." },
+            { "@type": "HowToStep", "name": "Step 4: Analyze Your Estimated Costs", "text": "Review the detailed breakdown of lender fees, third-party fees, and prepaid items to understand your total estimated cash needed to close." }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            { "@type": "Question", "name": "What are closing costs?", "acceptedAnswer": { "@type": "Answer", "text": "Closing costs are a collection of fees you pay to finalize a real estate transaction. They typically range from 2% to 5% of the loan amount and cover services from your lender, attorney, and other third parties involved in the purchase." } },
+            { "@type": "Question", "name": "Who pays closing costs?", "acceptedAnswer": { "@type": "Answer", "text": "Typically, the buyer pays most of the closing costs. However, in a buyer's market, you can often negotiate for the seller to pay a portion of these costs as a concession to close the deal." } },
+            { "@type": "Question", "name": "Can closing costs be included in the loan?", "acceptedAnswer": { "@type": "Answer", "text": "Sometimes. In a refinance, you can often roll the closing costs into the new loan principal. For a purchase, this is less common, but some loan programs may allow it. It's generally better to pay them upfront if possible to avoid paying interest on them." } },
+            { "@type": "Question", "name": "What's the difference between closing costs and a down payment?", "acceptedAnswer": { "@type": "Answer", "text": "A down payment is your initial equity contribution toward the purchase price of the home. Closing costs are separate fees paid for the services required to complete the transaction. Both are typically paid at the time of closing." } }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+<body class="bg-gray-100 text-sm">
+    <main class="content-wrapper">
+        <div class="w-full max-w-7xl mx-auto my-4 px-2 sm:px-4 space-y-4">
+            <div id="calculator-container" class="bg-white p-3 sm:p-4 rounded-xl shadow-2xl">
+                <!-- Header -->
+                <header class="text-center mb-4 pb-4 border-b">
+                    <h1 class="text-xl md:text-2xl font-extrabold text-primary">Closing Cost Calculator</h1>
+                    <p class="mt-1 text-xs text-gray-700">Estimate the fees you'll need to save for your home purchase or refinance.</p>
+                </header>
+
+                <div class="grid grid-cols-1 lg:grid-cols-5 gap-4">
+                    <!-- Input Column -->
+                    <div class="lg:col-span-2 space-y-3">
+                        <div class="bg-gray-50 border rounded-lg p-3">
+                            <h2 class="text-sm font-bold text-primary mb-2">Transaction Details</h2>
+                            <div class="space-y-4">
+                                <!-- Home Price -->
+                                <div>
+                                    <div class="flex justify-between items-center">
+                                        <label for="homePrice" class="block font-medium text-xs text-gray-700">Home Price (<span id="currency-symbol">$</span>):</label>
+                                        <input type="number" id="homePrice" value="400000" class="w-24 p-1 text-xs text-right border border-gray-300 rounded-md">
+                                    </div>
+                                    <input type="range" id="homePriceSlider" min="50000" max="2000000" value="400000" step="5000" class="w-full mt-2 range-slider">
+                                </div>
+                                <!-- Down Payment -->
+                                <div>
+                                    <div class="flex justify-between items-center mb-2">
+                                        <label class="block font-medium text-xs text-gray-700">Down Payment:</label>
+                                        <div class="flex items-center bg-gray-200 rounded-lg p-0.5">
+                                            <button id="dpTypePercent" class="px-2 py-1 text-xs font-bold rounded-md bg-primary text-white">%</button>
+                                            <button id="dpTypeAmount" class="px-2 py-1 text-xs font-bold rounded-md text-gray-600">$</button>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <input type="range" id="downPaymentSlider" min="0" max="50" value="20" step="0.5" class="w-full range-slider">
+                                        <input type="number" id="downPaymentInput" value="20" class="w-20 p-1 text-xs text-right border border-gray-300 rounded-md">
+                                    </div>
+                                </div>
+                                <!-- Loan Term -->
+                                <div>
+                                    <label for="loanTerm" class="block font-medium text-xs text-gray-700">Loan Term (Years):</label>
+                                    <input type="number" id="loanTerm" value="30" class="w-full p-1.5 text-xs border border-gray-300 rounded-md">
+                                </div>
+                                <!-- Currency -->
+                                 <div>
+                                    <label for="currency" class="block font-medium text-xs text-gray-700">Currency:</label>
+                                    <select id="currency" class="w-full p-1.5 text-xs border border-gray-300 rounded-md h-[30px]">
+                                        <option value="USD">USD ($)</option>
+                                        <option value="EUR">EUR (€)</option>
+                                        <option value="GBP">GBP (£)</option>
+                                        <option value="CAD">CAD (C$)</option>
+                                        <option value="AUD">AUD (A$)</option>
+                                    </select>
+                                </div>
+                                 <!-- Location (State) -->
+                                <div>
+                                    <label for="location" class="block font-medium text-xs text-gray-700">Location (US State):</label>
+                                    <select id="location" class="w-full p-1.5 text-xs border border-gray-300 rounded-md h-[30px]">
+                                        <option value="">Select a State for Tax Estimates</option>
+                                        <!-- Options will be populated by JS -->
+                                    </select>
+                                </div>
+                                <!-- Transaction Type -->
+                                <div>
+                                    <label class="block font-medium text-xs text-gray-700 mb-1">Transaction Type:</label>
+                                    <div class="flex items-center bg-gray-200 rounded-lg p-0.5">
+                                        <button id="typePurchase" class="w-1/2 px-2 py-1 text-xs font-bold rounded-md bg-primary text-white">Purchase</button>
+                                        <button id="typeRefinance" class="w-1/2 px-2 py-1 text-xs font-bold rounded-md text-gray-600">Refinance</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="sticky bottom-2 sm:bottom-4">
+                            <button id="saveScenarioBtn" class="w-full px-4 py-2 bg-accent text-white font-bold rounded-lg shadow-lg hover:bg-green-800 transition duration-150 text-sm">
+                                Save & Share Estimate
+                            </button>
+                            <p id="saveFeedback" class="text-xs text-accent text-center h-5 mt-1"></p>
+                        </div>
+                    </div>
+
+                    <!-- Results Column -->
+                    <div class="lg:col-span-3 space-y-3">
+                        <div class="p-4 rounded-lg bg-primary/10 border-2 border-primary/50 shadow text-center">
+                            <h2 class="text-base font-bold text-primary">Total Estimated Closing Costs</h2>
+                            <p id="totalClosingCosts" class="text-3xl font-extrabold text-primary" data-value="0">$0</p>
+                            <p id="closingCostsPercent" class="text-sm font-semibold text-primary" data-value="0">~0.0% of Loan Amount</p>
+                        </div>
+                        
+                        <div class="p-3 bg-gray-50 rounded-lg shadow-inner border border-gray-200">
+                             <h2 class="font-bold text-primary text-center text-base mb-2">Estimated Cost Breakdown</h2>
+                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 items-center">
+                                <div class="relative h-40 md:h-48">
+                                    <canvas id="costsPieChart"></canvas>
+                                </div>
+                                <ul id="cost-breakdown-list" class="space-y-2 text-xs">
+                                    <!-- Breakdown will be populated by JS -->
+                                </ul>
+                            </div>
+                        </div>
+
+                         <div class="mt-4 text-center p-4 bg-accent/10 border border-accent/20 rounded-lg">
+                            <h3 class="font-bold text-accent">Ready to Budget for Your Monthly Payment?</h3>
+                            <p class="text-xs text-gray-700 mt-1">Closing costs are a one-time expense. Use our main calculator to plan your ongoing mortgage payments.</p>
+                             <a href="../#mortgage-tab" class="mt-2 inline-block text-sm font-semibold text-primary hover:underline">
+                                Go to the Full Mortgage Planner &rarr;
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="share-section-placeholder" class="mt-4"></div>
+
+            <!-- SEO Content Section -->
+            <div class="bg-white p-4 sm:p-5 mt-4 rounded-xl shadow-2xl max-w-none text-gray-800 space-y-4 text-sm">
+                <h2 class="text-xl font-extrabold text-primary !mb-4">A Buyer's Guide to Understanding Closing Costs</h2>
+                
+                <section class="bg-gray-50/70 p-4 rounded-lg border">
+                    <h3 class="text-lg font-bold text-gray-800">What Are Closing Costs?</h3>
+                    <p class="mt-2 text-xs">Closing costs are a collection of fees you pay to finalize a real estate transaction. They are separate from your down payment and are typically paid at the closing meeting. These costs cover the services provided by your lender, real estate attorney, title company, and other third parties involved in the sale. As a general rule, you can expect closing costs to be between <strong class="font-semibold">2% and 5% of the loan amount</strong>. Our closing cost estimator helps you budget for this significant expense.</p>
+                </section>
+
+                <section class="bg-gray-50/70 p-4 rounded-lg border">
+                    <h3 class="text-lg font-bold text-gray-800">How to Use This Closing Cost Calculator</h3>
+                     <ul class="space-y-3 mt-3 text-xs">
+                        <li class="flex items-start">
+                           <span class="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center mr-3 font-bold">1</span>
+                            <div><strong class="font-semibold text-primary block">Enter Loan Details:</strong> Input the home price, your down payment, and the loan term. This establishes the loan amount, which is the basis for many closing cost calculations.</div>
+                        </li>
+                         <li class="flex items-start">
+                           <span class="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center mr-3 font-bold">2</span>
+                            <div><strong class="font-semibold text-primary block">Select Your Location:</strong> Choose your state from the dropdown. This is crucial as some of the largest fees, like transfer taxes, are determined by state and local governments.</div>
+                        </li>
+                         <li class="flex items-start">
+                           <span class="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center mr-3 font-bold">3</span>
+                            <div><strong class="font-semibold text-primary block">Specify Transaction Type:</strong> Indicate whether you are purchasing a new home or refinancing. Refinance closing costs are often slightly lower as some fees (like home inspection) may not be required.</div>
+                        </li>
+                         <li class="flex items-start">
+                           <span class="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center mr-3 font-bold">4</span>
+                            <div><strong class="font-semibold text-primary block">Analyze Your Estimate:</strong> The calculator provides a total estimated cost and a detailed breakdown. Use this to understand where your money is going and to budget for the cash you'll need at closing.</div>
+                        </li>
+                    </ul>
+                </section>
+                
+                <section class="bg-gray-50/70 p-4 rounded-lg border">
+                    <h3 class="text-lg font-bold text-gray-800">Common Closing Costs Explained</h3>
+                    <p class="mt-2 text-xs">Closing costs can be grouped into three main categories. Our closing cost calculator provides an estimate for each of these.</p>
+                     <ul class="space-y-3 mt-3 text-xs">
+                        <li class="flex items-start">
+                           <span class="flex-shrink-0 w-5 h-5 mr-2 text-secondary"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" /></svg></span>
+                            <div><strong class="font-semibold">Lender Fees:</strong> These are charges from your mortgage provider for creating the loan. This includes the origination fee, application fee, and points (if you choose to buy them to lower your rate).</div>
+                        </li>
+                        <li class="flex items-start">
+                             <span class="flex-shrink-0 w-5 h-5 mr-2 text-secondary"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-4.663l.001.109m-8.381 3.362a4.875 4.875 0 01-7.247-4.513M12 12.75c-1.848 0-3.543.58-5.024 1.572l.002.111a4.875 4.875 0 01-.58 3.512M12 12.75c1.848 0 3.543.58 5.024 1.572l-.002.111a4.875 4.875 0 00.58 3.512M12 12.75v-2.25m0 0c-1.848 0-3.543-.58-5.024-1.572S2.955 6.44 2.955 4.5a3 3 0 013-3h.004c1.168 0 2.22.61 2.853 1.572l.002.002S9.44 6.44 12 6.44s2.553-2.368 2.553-2.368l.002-.002a2.982 2.982 0 012.853-1.572h.004a3 3 0 013 3 3.955 3.955 0 01-1.428 2.955S14.543 9.75 12 9.75v2.25z" /></svg></span>
+                            <div><strong class="font-semibold">Third-Party Fees:</strong> Charges for services from other companies, such as the appraisal fee, title insurance, credit report fee, and attorney fees.</div>
+                        </li>
+                         <li class="flex items-start">
+                             <span class="flex-shrink-0 w-5 h-5 mr-2 text-secondary"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5" /></svg></span>
+                            <div><strong class="font-semibold">Prepaids & Escrow:</strong> These are not fees, but upfront payments for ongoing expenses. This includes prepaying your first year of homeowner's insurance and funding your escrow account with several months of property taxes and insurance.</div>
+                        </li>
+                    </ul>
+                </section>
+                
+                <!-- FAQ Section -->
+                <section class="py-4">
+                    <h2 class="text-xl font-bold text-primary mb-3 text-center">Frequently Asked Questions</h2>
+                    <div class="max-w-3xl mx-auto border-t border-b border-gray-200 divide-y divide-gray-200">
+                       <div class="faq-item">
+                            <button class="faq-question w-full flex justify-between items-center text-left text-gray-800 font-semibold p-4 hover:bg-gray-50 transition" aria-expanded="false">
+                                <span class="text-sm">What are closing costs?</span>
+                                <svg class="faq-chevron w-5 h-5 transform transition-transform text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                            </button>
+                            <div class="faq-answer"><div class="p-4 pt-0 text-gray-600 text-xs"><p>Closing costs are a collection of fees you pay to finalize a real estate transaction. They typically range from 2% to 5% of the loan amount and cover services from your lender, attorney, and other third parties involved in the purchase.</p></div></div>
+                        </div>
+                        <div class="faq-item">
+                            <button class="faq-question w-full flex justify-between items-center text-left text-gray-800 font-semibold p-4 hover:bg-gray-50 transition" aria-expanded="false">
+                                <span class="text-sm">Who pays closing costs?</span>
+                                <svg class="faq-chevron w-5 h-5 transform transition-transform text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                            </button>
+                            <div class="faq-answer"><div class="p-4 pt-0 text-gray-600 text-xs"><p>Typically, the buyer pays most of the closing costs. However, in a buyer's market, you can often negotiate for the seller to pay a portion of these costs as a concession to close the deal.</p></div></div>
+                        </div>
+                        <div class="faq-item">
+                            <button class="faq-question w-full flex justify-between items-center text-left text-gray-800 font-semibold p-4 hover:bg-gray-50 transition" aria-expanded="false">
+                                <span class="text-sm">Can closing costs be included in the loan?</span>
+                                <svg class="faq-chevron w-5 h-5 transform transition-transform text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                            </button>
+                            <div class="faq-answer"><div class="p-4 pt-0 text-gray-600 text-xs"><p>Sometimes. In a refinance, you can often roll the closing costs into the new loan principal. For a purchase, this is less common, but some loan programs may allow it. It's generally better to pay them upfront if possible to avoid paying interest on them.</p></div></div>
+                        </div>
+                        <div class="faq-item">
+                            <button class="faq-question w-full flex justify-between items-center text-left text-gray-800 font-semibold p-4 hover:bg-gray-50 transition" aria-expanded="false">
+                                <span class="text-sm">What's the difference between closing costs and a down payment?</span>
+                                <svg class="faq-chevron w-5 h-5 transform transition-transform text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                            </button>
+                            <div class="faq-answer"><div class="p-4 pt-0 text-gray-600 text-xs"><p>A down payment is your initial equity contribution toward the purchase price of the home. Closing costs are separate fees paid for the services required to complete the transaction. Both are typically paid at the time of closing.</p></div></div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+    <script src="../js/utils.js" defer></script>
+    <script src="../global-elements.js" defer></script>
+    <script src="closing-cost-calculator.js" defer></script>
+</body>
+</html>
