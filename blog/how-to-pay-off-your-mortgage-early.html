@@ -30,6 +30,7 @@
 
     <!-- Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     <!-- App Configuration -->
@@ -187,7 +188,7 @@
             <div class="relative max-w-4xl mx-auto">
                 <article class="bg-white p-4 sm:p-6 md:p-8 rounded-xl shadow-2xl">
                     <header class="text-center mb-8">
-                        <h1 class="text-2xl sm:text-3xl font-extrabold text-primary">How to Pay Off Your Mortgage Early</h1>
+                        <h1 class="text-2xl sm:text-3xl font-extrabold text-primary">How to Pay Off Your Mortgage Early (With Free Extra Payment Calculator)</h1>
                         <p class="mt-2 text-sm sm:text-base text-gray-800">Your step-by-step guide to becoming mortgage-free faster and saving thousands in the process.</p>
                          <div class="mt-4 text-xs text-gray-800">
                             <span>Published By <strong>Vikas Rana</strong></span>
@@ -267,6 +268,27 @@
                             </div>
                         </section>
 
+                        <!-- NEW VISUALIZATION SECTION -->
+                        <section class="mt-6 content-section">
+                            <h2 class="!mt-0">Visualizing the Impact: How Extra Payments Change Your Mortgage</h2>
+                            <p class="text-xs">It’s one thing to talk about saving money, but it’s another to see it. The chart below shows the journey of a typical $300,000 mortgage. The top line is the standard 30-year payoff. The bottom, faster-declining line shows the powerful effect of adding just $200 extra per month.</p>
+                            <div class="my-4 p-4 bg-white rounded-lg border shadow-sm">
+                                <div class="relative h-64 sm:h-80">
+                                    <canvas id="impactChart"></canvas>
+                                </div>
+                            </div>
+                            <ul class="space-y-3 mt-4 text-xs">
+                                <li class="flex items-start">
+                                    <span class="flex-shrink-0 w-5 h-5 mr-3 text-accent"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></span>
+                                    <div>The accelerated payoff curve (in green) drops much more steeply, showing how quickly your balance decreases.</div>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="flex-shrink-0 w-5 h-5 mr-3 text-accent"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0h18" /></svg></span>
+                                    <div>Notice how the accelerated loan finishes years earlier, completely cutting off the long "tail" of interest payments at the end.</div>
+                                </li>
+                            </ul>
+                        </section>
+
                         <section class="mt-6">
                             <div class="bg-primary/10 p-6 rounded-lg text-center shadow-inner border border-primary/20">
                                 <h2 class="text-lg font-bold text-primary">See How Much You Can Save Instantly</h2>
@@ -309,11 +331,35 @@
 
                         <section class="mt-6 content-section">
                             <h2 class="!mt-0">FAQs About Paying Off Your Mortgage Early</h2>
-                            <div class="space-y-4 mt-4 text-xs">
-                                <div><h3 class="font-semibold">How much faster can I pay off my mortgage with extra payments?</h3><p>The time saved depends on your loan amount, interest rate, and how much extra you pay. For example, adding just $200 extra per month to a $300,000, 30-year loan could help you pay it off about 7 years sooner. Our Extra Payment Calculator can give you a precise answer for your specific loan.</p></div>
-                                <div><h3 class="font-semibold">Is it smart to pay off your mortgage early?</h3><p>In many cases, yes. It provides a guaranteed 'return' on your money equal to your mortgage interest rate and offers significant peace of mind. However, if you have higher-interest debt (like credit cards) or believe you can earn a much higher return by investing, it might be better to put your extra cash there.</p></div>
-                                <div><h3 class="font-semibold">Does paying biweekly really save money?</h3><p>Yes, an 'accelerated' biweekly plan saves a significant amount of money. By paying half your monthly payment every two weeks, you end up making 13 full payments a year instead of 12. That extra payment goes directly to the principal, which can shave years off your loan and reduce total interest.</p></div>
-                                <div><h3 class="font-semibold">Can I make one-time lump-sum payments?</h3><p>Absolutely. Applying a lump sum from a bonus, tax refund, or inheritance directly to your principal is one of the most effective ways to reduce your loan balance and future interest payments. Just be sure to specify that the payment is for 'principal only'.</p></div>
+                            <div class="space-y-4 mt-4">
+                                <div class="flex items-start">
+                                    <span class="flex-shrink-0 flex items-center justify-center h-6 w-6 mr-3 rounded-full bg-primary text-white font-bold text-xs">1</span>
+                                    <div>
+                                        <h3 class="font-semibold text-gray-800">How much faster can I pay off my mortgage with extra payments?</h3>
+                                        <p class="text-xs text-gray-700 mt-1">The time saved depends on your loan amount, interest rate, and how much extra you pay. For example, adding just $200 extra per month to a $300,000, 30-year loan could help you pay it off about 7 years sooner. Our Extra Payment Calculator can give you a precise answer for your specific loan.</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <span class="flex-shrink-0 flex items-center justify-center h-6 w-6 mr-3 rounded-full bg-primary text-white font-bold text-xs">2</span>
+                                    <div>
+                                        <h3 class="font-semibold text-gray-800">Is it smart to pay off your mortgage early?</h3>
+                                        <p class="text-xs text-gray-700 mt-1">In many cases, yes. It provides a guaranteed 'return' on your money equal to your mortgage interest rate and offers significant peace of mind. However, if you have higher-interest debt (like credit cards) or believe you can earn a much higher return by investing, it might be better to put your extra cash there.</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <span class="flex-shrink-0 flex items-center justify-center h-6 w-6 mr-3 rounded-full bg-primary text-white font-bold text-xs">3</span>
+                                    <div>
+                                        <h3 class="font-semibold text-gray-800">Does paying biweekly really save money?</h3>
+                                        <p class="text-xs text-gray-700 mt-1">Yes, an 'accelerated' biweekly plan saves a significant amount of money. By paying half your monthly payment every two weeks, you end up making 13 full payments a year instead of 12. That extra payment goes directly to the principal, which can shave years off your loan and reduce total interest.</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <span class="flex-shrink-0 flex items-center justify-center h-6 w-6 mr-3 rounded-full bg-primary text-white font-bold text-xs">4</span>
+                                    <div>
+                                        <h3 class="font-semibold text-gray-800">Can I make one-time lump-sum payments?</h3>
+                                        <p class="text-xs text-gray-700 mt-1">Absolutely. Applying a lump sum from a bonus, tax refund, or inheritance directly to your principal is one of the most effective ways to reduce your loan balance and future interest payments. Just be sure to specify that the payment is for 'principal only'.</p>
+                                    </div>
+                                </div>
                             </div>
                         </section>
 
@@ -321,7 +367,7 @@
                             <div class="bg-primary/10 p-6 rounded-lg text-center shadow-inner border border-primary/20">
                                 <h2 class="text-xl font-bold text-primary">Your Path to a Debt-Free Home Starts Now</h2>
                                 <p class="mt-2 text-gray-700">Paying off your mortgage early is an achievable goal. With the right strategies and a clear plan, you can save thousands and build wealth faster. Take the first step today.</p>
-                                <a href="../calculators/extra-payment-calculator.html" class="mt-4 inline-block bg-accent hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-transform transform hover:scale-105">
+                                <a href="../calculators/extra-payment-calculator.html" class="mt-4 inline-block bg-accent hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg shadow-lg transition-transform transform hover:scale-105 text-sm">
                                     🎯 Use our free Extra Payment Calculator now!
                                 </a>
                             </div>
@@ -336,5 +382,91 @@
         <div id="mobile-sidebar-placeholder"></div>
     </main>
     <script src="../global-elements.js" defer></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- Chart Rendering for the new section ---
+            const impactCtx = document.getElementById('impactChart');
+            if (impactCtx) {
+                // Simplified amortization calculation for chart data
+                function generateBalanceData(principal, rate, termYears, extraPayment) {
+                    let balance = principal;
+                    const monthlyRate = rate / 100 / 12;
+                    const termMonths = termYears * 12;
+                    const payment = (principal * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -termMonths));
+                    const balances = [];
+                    for (let i = 0; i < termMonths; i++) {
+                        const interest = balance * monthlyRate;
+                        const principalPaid = (payment - interest) + extraPayment;
+                        balance -= principalPaid;
+                        if (balance < 0) balance = 0;
+                        balances.push(balance);
+                        if (balance === 0) break;
+                    }
+                    return balances;
+                }
+
+                const standardBalance = generateBalanceData(300000, 6.5, 30, 0);
+                const acceleratedBalance = generateBalanceData(300000, 6.5, 30, 200);
+
+                const labels = Array.from({ length: 360 }, (_, i) => i + 1);
+
+                new Chart(impactCtx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Standard Loan Balance',
+                            data: standardBalance,
+                            borderColor: '#1C768F',
+                            borderWidth: 2,
+                            fill: false,
+                            pointRadius: 0,
+                            tension: 0.1
+                        }, {
+                            label: 'Accelerated Loan Balance (+$200/mo)',
+                            data: acceleratedBalance,
+                            borderColor: '#166534',
+                            borderWidth: 2,
+                            fill: 'origin',
+                            backgroundColor: 'rgba(22, 101, 52, 0.1)',
+                            pointRadius: 0,
+                            tension: 0.1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            title: { display: true, text: 'Loan Payoff: Standard vs. Accelerated' },
+                            tooltip: { mode: 'index', intersect: false }
+                        },
+                        scales: {
+                             x: {
+                                title: { display: true, text: 'Months' },
+                                ticks: {
+                                    stepSize: 60,
+                                    callback: function(value, index, values) {
+                                        if (value === 0) return 'Start';
+                                        if ((value +1) % 60 === 0) {
+                                            return `Year ${(value + 1) / 12}`;
+                                        }
+                                        return null;
+                                    }
+                                }
+                            },
+                            y: {
+                                title: { display: true, text: 'Remaining Loan Balance' },
+                                ticks: {
+                                    callback: function(value) {
+                                        return '$' + (value / 1000) + 'k';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>
