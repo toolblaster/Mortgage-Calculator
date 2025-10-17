@@ -305,32 +305,57 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // --- Event Listeners & Initialization ---
     function setupEventListeners() {
-        const allInputs = [
-            DOM.homePrice, DOM.homePriceSlider, DOM.downPayment, DOM.downPaymentType,
-            DOM.interestRate, DOM.interestRateSlider, DOM.loanTerm, DOM.currency,
-            DOM.extraMonthlyPayment, DOM.extraMonthlyPaymentSlider, DOM.oneTimePayment, DOM.oneTimePaymentMonth
-        ];
+        // Helper to sync a slider with its number input and handle updates
+        const syncSliderAndInput = (slider, input) => {
+            if (!slider || !input) return;
+            const debouncedCalc = debounce(handleCalculate, 250);
 
-        allInputs.forEach(input => {
+            const update = () => {
+                updateSliderFill(slider);
+                debouncedCalc(); // Trigger calculation after any change
+            };
+
+            slider.addEventListener('input', () => {
+                input.value = slider.value;
+                update();
+            });
+
+            input.addEventListener('input', () => {
+                 // Ensure value doesn't exceed slider max/min before updating
+                const val = parseFloat(input.value);
+                const max = parseFloat(slider.max);
+                const min = parseFloat(slider.min);
+                if (val > max) input.value = max;
+                if (val < min) input.value = min;
+
+                slider.value = input.value;
+                update();
+            });
+        };
+        
+        // Sync our sliders
+        syncSliderAndInput(DOM.homePriceSlider, DOM.homePrice);
+        syncSliderAndInput(DOM.interestRateSlider, DOM.interestRate);
+        syncSliderAndInput(DOM.extraMonthlyPaymentSlider, DOM.extraMonthlyPayment);
+
+        // Listeners for other inputs that don't have sliders
+        const otherInputs = [
+            DOM.downPayment, DOM.downPaymentType, DOM.loanTerm, DOM.currency,
+            DOM.oneTimePayment, DOM.oneTimePaymentMonth
+        ];
+        otherInputs.forEach(input => {
             if (input) {
                 input.addEventListener('input', debounce(handleCalculate, 250));
             }
         });
 
-        DOM.calculateBtn.addEventListener('click', handleCalculate);
 
-        // Slider-Input Sync
-        const sync = (slider, input) => {
-            if(slider && input) {
-                slider.addEventListener('input', () => input.value = slider.value);
-                input.addEventListener('input', () => slider.value = input.value);
-            }
-        };
-        sync(DOM.homePriceSlider, DOM.homePrice);
-        sync(DOM.interestRateSlider, DOM.interestRate);
-        sync(DOM.extraMonthlyPaymentSlider, DOM.extraMonthlyPayment);
+        DOM.calculateBtn.addEventListener('click', handleCalculate);
         
-        DOM.currency.addEventListener('change', updateCurrencySymbols);
+        DOM.currency.addEventListener('change', () => {
+            updateCurrencySymbols();
+            handleCalculate();
+        });
 
         // FAQ Accordion
         document.querySelectorAll('.faq-question').forEach(button => {
@@ -363,6 +388,11 @@ document.addEventListener('DOMContentLoaded', function() {
             DOM.saveFeedback.textContent = 'Scenario saved to URL! You can copy it.';
             setTimeout(() => { DOM.saveFeedback.textContent = ''; }, 3000);
         });
+        
+        // Add a resize listener to ensure sliders are responsive
+        window.addEventListener('resize', debounce(() => {
+            [DOM.homePriceSlider, DOM.interestRateSlider, DOM.extraMonthlyPaymentSlider].forEach(updateSliderFill);
+        }, 100));
     }
 
     function init() {
@@ -377,6 +407,11 @@ document.addEventListener('DOMContentLoaded', function() {
             DOM.extraMonthlyPayment.value = params.get('emp');
             DOM.oneTimePayment.value = params.get('otp');
             DOM.oneTimePaymentMonth.value = params.get('otpm');
+
+            // Sync sliders to URL params
+            DOM.homePriceSlider.value = DOM.homePrice.value;
+            DOM.interestRateSlider.value = DOM.interestRate.value;
+            DOM.extraMonthlyPaymentSlider.value = DOM.extraMonthlyPayment.value;
         }
         
         setupEventListeners();
