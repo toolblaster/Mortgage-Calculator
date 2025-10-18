@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     </a>
                     <!-- Desktop Menu -->
                     <div class="hidden md:flex items-center space-x-4">
-                        <a href="${homePath}" class="text-sm font-semibold text-primary hover:underline">All-in-One Planner</a>
+                        <a href="${homePath}" class="text-sm font-semibold text-primary hover:underline">#All-in-One Planner</a>
                         <a href="${calcHubPath}" class="text-sm font-semibold text-primary hover:underline">Calculator Hub</a>
                         <a href="${quizPath}" class="text-sm font-semibold text-primary hover:underline">Refinance Quiz</a>
                         <a href="${blogPath}" class="text-sm font-semibold text-primary hover:underline">Blog</a>
