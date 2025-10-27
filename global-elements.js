@@ -15,6 +15,48 @@ document.addEventListener('DOMContentLoaded', function() {
     
     const logoIconPath = '#logo-icon';
 
+    /**
+     * Dynamically loads all necessary favicon links into the <head>.
+     * Uses the calculated rootPath to ensure links work from any directory depth.
+     * @param {string} basePath - The relative path to the site root (e.g., './' or '../').
+     */
+    function loadFavicons(basePath) {
+        console.log('Loading favicons with base path:', basePath);
+        const favicons = [
+            // Standard PWA/Android
+            { rel: 'manifest', href: `${basePath}favicon/site.webmanifest` },
+            { rel: 'icon', type: 'image/png', sizes: '192x192', href: `${basePath}favicon/android-chrome-192x192.png` },
+            { rel: 'icon', type: 'image/png', sizes: '512x512', href: `${basePath}favicon/android-chrome-512x512.png` },
+            
+            // Apple iOS
+            { rel: 'apple-touch-icon', sizes: '180x180', href: `${basePath}favicon/apple-touch-icon.png` },
+            
+            // Standard Browser
+            { rel: 'icon', type: 'image/png', sizes: '32x32', href: `${basePath}favicon/favicon-32x32.png` },
+            // Note: 48x48 and 96x96 are non-standard but included since they exist
+            { rel: 'icon', type: 'image/png', sizes: '48x48', href: `${basePath}favicon/favicon-48x48.png` },
+            { rel: 'icon', type: 'image/png', sizes: '96x96', href: `${basePath}favicon/favicon-96x96.png` },
+            
+            // Fallback .ico
+            { rel: 'icon', type: 'image/x-icon', href: `${basePath}favicon/favicon.ico` }
+            
+            // Note: The data:image/svg+xml is already in the HTML <head> of each page, so we don't add it again.
+        ];
+
+        const head = document.head;
+        favicons.forEach(linkInfo => {
+            // Check if a similar link already exists (to avoid duplicates, though unlikely)
+            if (!document.querySelector(`link[rel="${linkInfo.rel}"][href="${linkInfo.href}"]`)) {
+                const link = document.createElement('link');
+                link.rel = linkInfo.rel;
+                if (linkInfo.type) link.type = linkInfo.type;
+                if (linkInfo.sizes) link.sizes = linkInfo.sizes;
+                link.href = linkInfo.href;
+                head.appendChild(link);
+            }
+        });
+    }
+
     const headerHTML = `
         <header class="bg-white/80 backdrop-blur-lg shadow-sm no-print sticky md:static top-0 z-40">
             <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -95,6 +137,9 @@ document.addEventListener('DOMContentLoaded', function() {
     document.body.insertAdjacentHTML('afterbegin', svgIcon);
     document.body.insertAdjacentHTML('afterbegin', headerHTML);
     document.body.insertAdjacentHTML('beforeend', footerHTML);
+
+    // *** CALL THE NEW FAVICON FUNCTION ***
+    loadFavicons(rootPath); // Load all the favicon links
 
     const copyrightYearEl = document.getElementById('copyright-year');
     if (copyrightYearEl) {
